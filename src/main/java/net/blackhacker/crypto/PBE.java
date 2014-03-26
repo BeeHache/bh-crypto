@@ -1,8 +1,8 @@
 package net.blackhacker.crypto;
 
-import java.security.*;
-import java.security.spec.*;
-import javax.crypto.*;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.PBEParameterSpec;
 
 /**

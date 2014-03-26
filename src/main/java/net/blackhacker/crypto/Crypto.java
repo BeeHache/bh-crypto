@@ -15,7 +15,7 @@ import javax.crypto.NoSuchPaddingException;
  */
 public class Crypto {
     final private Cipher cipher;
-    final private  SecureRandom secureRandom;
+    final private SecureRandom secureRandom;
     
     static final Logger LOG = Logger.getLogger(Crypto.class.getName());
     

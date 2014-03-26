@@ -1,13 +1,12 @@
 package net.blackhacker.crypto;
 
-import java.security.*;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
-import java.security.spec.*;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.crypto.*;
+
+
 
 /**
  *
@@ -18,6 +17,8 @@ public class RSASigner {
     
     final private RSA rsa;
     final private MD md;
+    
+    static final Logger LOG = Logger.getLogger(RSASigner.class.getName());
     
     /**
      *
@@ -33,7 +34,7 @@ public class RSASigner {
         try {
             return new RSASigner(new RSA(), new MD(digestAlgorithm));
         } catch (Exception e) {
-            Logger.getLogger(RSASigner.class.getName()).log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
         
         return null;
@@ -49,7 +50,7 @@ public class RSASigner {
             byte[] digest = md.digest(data);
             return rsa.encrypt(digest,rsa.getPrivateKey());
         } catch(Exception e) {
-            Logger.getLogger(RSASigner.class.getName()).log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
         return null;
     }
@@ -59,7 +60,7 @@ public class RSASigner {
             byte[] digest = md.digest(data);
             return rsa.encrypt(digest,key);
         } catch(Exception e) {
-            Logger.getLogger(RSASigner.class.getName()).log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
         return null;
     }
@@ -70,7 +71,7 @@ public class RSASigner {
             byte[] c = rsa.decrypt(signature,rsa.getPublicKey());
             return Arrays.equals(d, c);
         } catch(Exception e) {
-            Logger.getLogger(RSASigner.class.getName()).log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
         return false;
     }
@@ -81,7 +82,7 @@ public class RSASigner {
             byte[] c = rsa.decrypt(signature,key);
             return Arrays.equals(d, c);
         } catch(Exception e) {
-            Logger.getLogger(RSASigner.class.getName()).log(Level.SEVERE, null, e);
+            LOG.log(Level.SEVERE, null, e);
         }
         return false;
     }

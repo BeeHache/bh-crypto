@@ -1,6 +1,7 @@
 package net.blackhacker.crypto;
 
-import java.security.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  *
