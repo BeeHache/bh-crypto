@@ -1,10 +1,7 @@
 package net.blackhacker.crypto;
 
-import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
-import java.security.spec.InvalidKeySpecException;
-import javax.crypto.NoSuchPaddingException;
 
 /**
  *
@@ -12,13 +9,11 @@ import javax.crypto.NoSuchPaddingException;
  */
 public class RSA extends PKBase {
     
-    public RSA() throws NoSuchAlgorithmException, NoSuchPaddingException {
+    public RSA() throws CryptoException {
         super("RSA");
     }
     
-    public RSA(byte[] publicKeyEncoded, byte[] privateKeyEncoded) 
-            throws NoSuchAlgorithmException, InvalidKeySpecException, 
-            NoSuchPaddingException {
+    public RSA(byte[] publicKeyEncoded, byte[] privateKeyEncoded) throws CryptoException {
         super("RSA",publicKeyEncoded, privateKeyEncoded);
     }
     

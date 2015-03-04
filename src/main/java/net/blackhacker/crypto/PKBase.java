@@ -19,30 +19,42 @@ import javax.crypto.NoSuchPaddingException;
  * @author ben
  */
 abstract public class PKBase extends Crypto {
-    private PublicKey publicKey;
-    private PrivateKey privateKey;
+    final private PublicKey publicKey;
+    final private PrivateKey privateKey;
     
-    public  PKBase(String algorithm) throws NoSuchAlgorithmException, NoSuchPaddingException {
+    public  PKBase(String algorithm) throws CryptoException {
         super(algorithm);
-        KeyPairGenerator kpg = KeyPairGenerator.getInstance(algorithm);
-        kpg.initialize(2048);
-        KeyPair kp = kpg.generateKeyPair();        
-        publicKey = kp.getPublic();
-        privateKey = kp.getPrivate();
+        try {
+	        KeyPairGenerator kpg = KeyPairGenerator.getInstance(algorithm);
+	        kpg.initialize(2048);
+	        KeyPair kp = kpg.generateKeyPair();        
+	        publicKey = kp.getPublic();
+	        privateKey = kp.getPrivate();
+        } catch (NoSuchAlgorithmException e) {
+			throw new CryptoException(e);
+		}
     }
     
     /**
      *
+     * @param algorithm
      * @param publicKeyEncoded
      * @param privateKeyEncoded
+     * @throws java.security.NoSuchAlgorithmException
+     * @throws java.security.spec.InvalidKeySpecException
+     * @throws javax.crypto.NoSuchPaddingException
      */
-    public PKBase(String algorithm, byte[] publicKeyEncoded, byte[] privateKeyEncoded) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException {
+    public PKBase(String algorithm, byte[] publicKeyEncoded, byte[] privateKeyEncoded) throws CryptoException {
         super(algorithm);
-        EncodedKeySpec pubSpec = new X509EncodedKeySpec(publicKeyEncoded);
-        EncodedKeySpec privSpec = new PKCS8EncodedKeySpec(privateKeyEncoded);
-        KeyFactory kf = KeyFactory.getInstance(getAlgorithm());
-        publicKey = kf.generatePublic(pubSpec);
-        privateKey = kf.generatePrivate(privSpec);
+        try {
+	        EncodedKeySpec pubSpec = new X509EncodedKeySpec(publicKeyEncoded);
+	        EncodedKeySpec privSpec = new PKCS8EncodedKeySpec(privateKeyEncoded);
+	        KeyFactory kf = KeyFactory.getInstance(getAlgorithm());
+	        publicKey = kf.generatePublic(pubSpec);
+	        privateKey = kf.generatePrivate(privSpec);
+        } catch(Exception e) {
+        	throw new CryptoException(e);
+        }
     }
 
     public PublicKey getPublicKey() {
@@ -53,32 +65,12 @@ abstract public class PKBase extends Crypto {
         return privateKey;
     }
     
-    public byte[] encrypt(byte[] data) {
+    public byte[] encrypt(byte[] data) throws CryptoException {
         return encrypt(data, publicKey);
     }
     
-    public byte[] decrypt(byte[] data) {
+    public byte[] decrypt(byte[] data) throws CryptoException {
         return decrypt(data, privateKey);
-    }
-    
-    public void setPublicKeyEncoded(byte[] encoded) {
-        try {
-            X509EncodedKeySpec spec = new X509EncodedKeySpec(encoded);
-            KeyFactory kf = KeyFactory.getInstance(getAlgorithm());
-            publicKey = kf.generatePublic(spec);
-        } catch (Exception ex) {
-            Logger.getLogger(PKBase.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
-    public void setPrivateKeyEncoded(byte[] encoded) {
-        try {
-            X509EncodedKeySpec spec = new X509EncodedKeySpec(encoded);
-            KeyFactory kf = KeyFactory.getInstance(getAlgorithm());
-            privateKey = kf.generatePrivate(spec);
-        } catch (Exception ex) {
-            Logger.getLogger(PKBase.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
     
     public byte[] getPublicKeyEncoded() {

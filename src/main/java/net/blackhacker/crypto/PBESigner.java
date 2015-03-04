@@ -5,8 +5,6 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
 import javax.crypto.NoSuchPaddingException;
 
-
-
 /**
  *
  * @author ben
@@ -19,15 +17,17 @@ public class PBESigner {
     
     /**
      *
-     * @param publicKeyAlgorithm
+     * @param passphrase
+     * @param pbeAlgorithm
      * @param digestAlgorithm
+     * @param salt
      * @return
      * @throws NoSuchAlgorithmException
      * @throws NoSuchPaddingException
      * @throws InvalidKeySpecException
      */
     static public PBESigner newInstance(String passphrase, String pbeAlgorithm, String digestAlgorithm, byte[] salt) 
-            throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeySpecException {
+            throws CryptoException {
         return new PBESigner(new PBE(pbeAlgorithm, passphrase, salt), new MD(digestAlgorithm));
     }
     
@@ -55,19 +55,20 @@ public class PBESigner {
         }
     }
 
-/*
-    public byte[] issueCertificate(PublicKey publicKey, String subject, PrivateKey privateKey, byte[] salt){
+    /*
+    public byte[] issueCertificate(PublicKey publicKey, String subject){
         byte[] publicKeyEncoded = publicKey.getEncoded();
         byte[] subjectBytes = subject.getBytes();
         byte[] x = ArrayUtils.addAll(publicKeyEncoded, subjectBytes);
         return sign(x,privateKey, salt);
     }
-    
+   
     public boolean verifyCertificate(byte[] certificate, PublicKey subjectPublicKey, String subject, PublicKey issuerPublicKey, byte[] salt){
         byte[] publicKeyEncoded = subjectPublicKey.getEncoded();
         byte[] subjectBytes = subject.getBytes();
         byte[] x = ArrayUtils.addAll(publicKeyEncoded, subjectBytes);
         return verify(x,certificate,issuerPublicKey, salt);
     }
-*/
+    */ 
+
 }

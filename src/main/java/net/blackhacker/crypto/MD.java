@@ -11,8 +11,12 @@ import java.security.NoSuchAlgorithmException;
 public class MD {
     final private MessageDigest messageDigest;
     
-    public MD(String algorithm) throws NoSuchAlgorithmException {
-        messageDigest = MessageDigest.getInstance(algorithm);
+    public MD(String algorithm) throws CryptoException {
+    	try {
+    		messageDigest = MessageDigest.getInstance(algorithm);
+    	} catch(NoSuchAlgorithmException e) {
+    		throw new CryptoException(e);
+    	}
     }
     
     public String getAlgorithm() {
@@ -21,9 +25,9 @@ public class MD {
     
     public byte[] digest(byte[] data) {
         synchronized(messageDigest) {
-            byte[] digest=  messageDigest.digest(data);
-            messageDigest.reset();
-            return digest;
+        	byte[] digest =  messageDigest.digest(data);
+        	messageDigest.reset();        	
+        	return digest;
         }
     }
 }

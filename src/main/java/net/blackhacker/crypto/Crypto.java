@@ -1,62 +1,56 @@
 package net.blackhacker.crypto;
 
 import java.security.Key;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import javax.crypto.Cipher;
-import javax.crypto.NoSuchPaddingException;
 
 /**
  *
  * @author ben
  */
-public class Crypto {
+abstract public class Crypto {
     final private Cipher cipher;
     final private SecureRandom secureRandom;
     
-    static final Logger LOG = Logger.getLogger(Crypto.class.getName());
-    
-    public  Crypto(String algorithm) throws NoSuchAlgorithmException, NoSuchPaddingException {
-        cipher = Cipher.getInstance(algorithm);
-        secureRandom = new SecureRandom();
+    protected  Crypto(String algorithm) throws CryptoException {
+    	try {
+    		cipher = Cipher.getInstance(algorithm);
+    		secureRandom = new SecureRandom();
+    	} catch (Exception  e) {
+    		throw new CryptoException("Could not initialize Crypto object",e);
+    	}
     }
    
-    public byte[] encrypt(byte[] data, Key key) {
+    public byte[] encrypt(byte[] data, Key key) throws CryptoException {
         return encrypt(data,key, null);
     }
     
-    public byte[] encrypt(byte[] data, Key key, AlgorithmParameterSpec param) {
+    public byte[] encrypt(byte[] data, Key key, AlgorithmParameterSpec param) throws CryptoException {
         synchronized(cipher) {
             try {
                 cipher.init(Cipher.ENCRYPT_MODE, key, param);
                 return cipher.doFinal(data);
             } catch (Exception ex) {
-                LOG.log(Level.SEVERE, null, ex);
+            	throw new CryptoException("Could not encrypt data",ex);
             }
         }
-        return null;
     }
     
-    public byte[] decrypt(byte[] data, Key key) {
+    public byte[] decrypt(byte[] data, Key key) throws CryptoException {
         return decrypt(data, key, null);
     }
     
-    public byte[] decrypt(byte[] data, Key key, AlgorithmParameterSpec param) {
-        if (data==null) {
-            return null;
-        }
+    public byte[] decrypt(byte[] data, Key key, AlgorithmParameterSpec param) throws CryptoException {
         
         synchronized(cipher) {
             try {
                 cipher.init(Cipher.DECRYPT_MODE, key, param);
                 return cipher.doFinal(data);
             } catch (Exception ex) {
-                LOG.log(Level.SEVERE, null, ex);
+            	throw new CryptoException("Could not encrypt data",ex);
             }
-            return null;
         }
     }
    

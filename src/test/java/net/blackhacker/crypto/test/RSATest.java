@@ -2,6 +2,7 @@ package net.blackhacker.crypto.test;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.PublicKey;
 import java.security.Security;
 import java.security.interfaces.RSAPublicKey;
 import org.junit.BeforeClass;
@@ -19,6 +20,8 @@ public class RSATest {
     
     static String passphrase;
     static String message;
+    static String subject;
+    static String signerId;
     
     static RSA rsa;
     static RSASigner signer;
@@ -30,7 +33,9 @@ public class RSATest {
         try {
             passphrase = "The quickbown fox jumped over the lazy dog.";
             message = "A far far better thing I do than I have ever done before.";
-
+            subject = "Subject";
+            signerId = "Signer";
+            
             Security.insertProviderAt(new BouncyCastleProvider(),1);
             
             rsa = new RSA();
@@ -41,9 +46,10 @@ public class RSATest {
 
             KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
             kpg.initialize(2048);
-            keyPair = kpg.generateKeyPair();             
+            keyPair = kpg.generateKeyPair();
            
         } catch (Exception ex) {
+        	ex.printStackTrace();
             fail(ex.getMessage());
         }
     }
@@ -66,8 +72,9 @@ public class RSATest {
             assertNotNull(cleartext);
             
             assertTrue(Arrays.equals(cleartext, message.getBytes()));
-        } catch(Exception e) {
-            fail(e.getLocalizedMessage());
+        } catch(Exception ex) {
+        	ex.printStackTrace();
+            fail("EXCEPTION:" + ex.getMessage());
         }
     }
 
@@ -85,7 +92,24 @@ public class RSATest {
             assertFalse(verified);
             
         } catch (Exception ex) {
+        	ex.printStackTrace();
             fail("EXCEPTION:" + ex.getMessage());
         }
+    }
+    
+    @Test
+    public void certTest() {
+    	try {
+    		byte[] cert = signer.issueCertificate(rsa.getPublicKey(), subject, signerId);
+    		assertNotNull(cert);
+    		
+            PublicKey publicKey = signer.getPublicKey(cert);
+            assertNotNull(publicKey);
+            
+            assertEquals(publicKey, rsa.getPublicKey());
+    	} catch(Exception ex) {
+    		ex.printStackTrace();
+    		fail("EXCEPTION:" + ex.getMessage());
+    	}
     }
 }
