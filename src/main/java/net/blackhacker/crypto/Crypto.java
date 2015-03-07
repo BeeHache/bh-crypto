@@ -16,11 +16,11 @@ abstract public class Crypto {
     
     protected  Crypto(String algorithm) throws CryptoException {
     	try {
-    		cipher = Cipher.getInstance(algorithm);
-    		secureRandom = new SecureRandom();
-    	} catch (Exception  e) {
-    		throw new CryptoException("Could not initialize Crypto object",e);
-    	}
+            cipher = Cipher.getInstance(algorithm);
+            secureRandom = new SecureRandom();
+        } catch (Exception  e) {
+    		throw new CryptoException("Could not initialize Crypto object: " + e.getLocalizedMessage(),e);
+        }
     }
    
     public byte[] encrypt(byte[] data, Key key) throws CryptoException {
@@ -33,7 +33,7 @@ abstract public class Crypto {
                 cipher.init(Cipher.ENCRYPT_MODE, key, param);
                 return cipher.doFinal(data);
             } catch (Exception ex) {
-            	throw new CryptoException("Could not encrypt data",ex);
+            	throw new CryptoException("Could not encrypt data: " + ex.getLocalizedMessage(),ex);
             }
         }
     }
@@ -49,7 +49,7 @@ abstract public class Crypto {
                 cipher.init(Cipher.DECRYPT_MODE, key, param);
                 return cipher.doFinal(data);
             } catch (Exception ex) {
-            	throw new CryptoException("Could not encrypt data",ex);
+            	throw new CryptoException("Could not encrypt data: " + ex.getLocalizedMessage(),ex);
             }
         }
     }

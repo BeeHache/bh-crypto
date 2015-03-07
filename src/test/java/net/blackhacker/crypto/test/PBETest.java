@@ -5,6 +5,7 @@ import javax.crypto.SecretKey;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import java.security.spec.AlgorithmParameterSpec;
+import net.blackhacker.crypto.CryptoException;
 import net.blackhacker.crypto.MD;
 import net.blackhacker.crypto.PBE;
 import net.blackhacker.crypto.PBESigner;
@@ -13,8 +14,10 @@ import static org.junit.Assert.*;
 
 public class PBETest {
     final static private String digestAlgorithm ="SHA-256";
-    final static private String pbeAlgorithm = "PBEWithSHA256And256BitAES-CBC-BC";
+    final static private String keyAlgorithm = "PBEWithSHA256And256BitAES-CBC-BC";
+    //final static private String pbeAlgorithm = "PBEWithSHA256And128BitAES-CBC-BC";
     final static private String cipherAlgorithm = "AES/CTR/NOPADDING";
+    final static private int keyLength = 256;
     
     static String passphrase;
     static String message;
@@ -35,13 +38,11 @@ public class PBETest {
             passphrase = "The quickbown fox jumped over the lazy dog.";
             message = "A far far better thing I do than I have ever done before.";
             
-            
-            
             Security.insertProviderAt(new BouncyCastleProvider(),1);
             
             md = new MD(digestAlgorithm);
-            pbe = new PBE(pbeAlgorithm, salt);
-        } catch (Exception ex) {
+            pbe = new PBE(cipherAlgorithm, keyAlgorithm, salt);
+        } catch (CryptoException ex) {
             fail(ex.getMessage());
         }
     }
@@ -66,7 +67,7 @@ public class PBETest {
     @Test
     public void signingTest() {
         try {
-            signer = PBESigner.newInstance(passphrase,pbeAlgorithm,digestAlgorithm, salt);
+            signer = PBESigner.newInstance(passphrase,cipherAlgorithm, keyAlgorithm,digestAlgorithm, salt, keyLength);
 
             byte[] data = message.getBytes();
             byte[] signature = signer.sign(data);

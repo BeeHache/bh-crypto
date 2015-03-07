@@ -13,9 +13,9 @@ public class MD {
     
     public MD(String algorithm) throws CryptoException {
     	try {
-    		messageDigest = MessageDigest.getInstance(algorithm);
+            messageDigest = MessageDigest.getInstance(algorithm);
     	} catch(NoSuchAlgorithmException e) {
-    		throw new CryptoException(e);
+            throw new CryptoException(e);
     	}
     }
     
@@ -25,9 +25,9 @@ public class MD {
     
     public byte[] digest(byte[] data) {
         synchronized(messageDigest) {
-        	byte[] digest =  messageDigest.digest(data);
-        	messageDigest.reset();        	
-        	return digest;
+            byte[] digest =  messageDigest.digest(data);
+            messageDigest.reset();        	
+            return digest;
         }
     }
 }

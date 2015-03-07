@@ -18,17 +18,17 @@ public class PBESigner {
     /**
      *
      * @param passphrase
-     * @param pbeAlgorithm
+     * @param cipherAlgorithm
+     * @param keyAlgorithm
      * @param digestAlgorithm
      * @param salt
+     * @param keyLength
      * @return
-     * @throws NoSuchAlgorithmException
-     * @throws NoSuchPaddingException
-     * @throws InvalidKeySpecException
+     * @throws net.blackhacker.crypto.CryptoException
      */
-    static public PBESigner newInstance(String passphrase, String pbeAlgorithm, String digestAlgorithm, byte[] salt) 
+    static public PBESigner newInstance(String passphrase, String cipherAlgorithm, String keyAlgorithm, String digestAlgorithm, byte[] salt, int keyLength) 
             throws CryptoException {
-        return new PBESigner(new PBE(pbeAlgorithm, passphrase, salt), new MD(digestAlgorithm));
+        return new PBESigner(new PBE(cipherAlgorithm, keyAlgorithm, passphrase, salt), new MD(digestAlgorithm));
     }
     
     private PBESigner(PBE sk, MD md) {

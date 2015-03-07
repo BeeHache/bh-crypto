@@ -100,10 +100,11 @@ public class RSATest {
     @Test
     public void certTest() {
     	try {
-    		byte[] cert = signer.issueCertificate(rsa.getPublicKey(), subject, signerId);
-    		assertNotNull(cert);
+            byte[] cert = signer.issueCertificate(rsa.getPublicKey(), subject, signerId);
+            assertNotNull(cert);
     		
-            PublicKey publicKey = signer.getPublicKey(cert);
+            PublicKey publicKey = signer.extractPublicKey(cert);
+            //PublicKey publicKey = signer.getPublicKey(cert);
             assertNotNull(publicKey);
             
             assertEquals(publicKey, rsa.getPublicKey());
