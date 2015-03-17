@@ -10,18 +10,16 @@ import java.security.interfaces.RSAPublicKey;
 public class RSA extends PKBase {
     
     public RSA() throws CryptoException {
-        super("RSA");
+        super("RSA", null);
     }
     
     public RSA(byte[] publicKeyEncoded, byte[] privateKeyEncoded) throws CryptoException {
-        super("RSA",publicKeyEncoded, privateKeyEncoded);
+        super("RSA",null,publicKeyEncoded, privateKeyEncoded);
     }
     
     public RSAPublicKey getRSAPublicKey() {
         return (RSAPublicKey) getPublicKey();
     }
-    
-    
     
     public RSAPrivateKey getRSAPrivateKey() {
         return (RSAPrivateKey) getPrivateKey();

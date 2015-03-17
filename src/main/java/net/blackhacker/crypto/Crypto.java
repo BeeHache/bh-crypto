@@ -1,6 +1,5 @@
 package net.blackhacker.crypto;
 
-import java.security.Key;
 import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
 
@@ -13,56 +12,78 @@ import javax.crypto.Cipher;
 abstract public class Crypto {
     final private Cipher cipher;
     final private SecureRandom secureRandom;
+    final private AlgorithmParameterSpec algorithmParameterSpec;
     
-    protected  Crypto(String algorithm) throws CryptoException {
+    static final public byte[] DEFAULT_IV = {
+        (byte)0xc9, (byte)0x95, (byte)0x9b, (byte)0x10,
+        (byte)0xf4, (byte)0xee, (byte)0x15, (byte)0xeb
+    };
+    
+    /**
+     *
+     * @param algorithm
+     * @param algorithmParameterSpec
+     * @throws CryptoException
+     */
+    protected  Crypto(String algorithm, AlgorithmParameterSpec algorithmParameterSpec) throws CryptoException {
     	try {
             cipher = Cipher.getInstance(algorithm);
             secureRandom = new SecureRandom();
-        } catch (Exception  e) {
-    		throw new CryptoException("Could not initialize Crypto object: " + e.getLocalizedMessage(),e);
-        }
-    }
-   
-    public byte[] encrypt(byte[] data, Key key) throws CryptoException {
-        return encrypt(data,key, null);
-    }
-    
-    public byte[] encrypt(byte[] data, Key key, AlgorithmParameterSpec param) throws CryptoException {
-        synchronized(cipher) {
-            try {
-                cipher.init(Cipher.ENCRYPT_MODE, key, param);
-                return cipher.doFinal(data);
-            } catch (Exception ex) {
-            	throw new CryptoException("Could not encrypt data: " + ex.getLocalizedMessage(),ex);
-            }
+            this.algorithmParameterSpec = algorithmParameterSpec;
+        } catch (Exception e) {
+            throw new CryptoException("Could not initialize Crypto object: " + e.getLocalizedMessage(),e);
         }
     }
     
-    public byte[] decrypt(byte[] data, Key key) throws CryptoException {
-        return decrypt(data, key, null);
+    /**
+     *
+     * @param data
+     * @return
+     * @throws CryptoException
+     */
+    abstract public byte[] encrypt(byte[] data) throws CryptoException;
+    
+    /**
+     * 
+     * @param data
+     * @return
+     * @throws CryptoException 
+     */
+    abstract public byte[] decrypt(byte[] data) throws CryptoException;
+
+    /**
+     *
+     * @return
+     */
+    final public AlgorithmParameterSpec getAlgorithmParameterSpec() {
+        return algorithmParameterSpec;
     }
     
-    public byte[] decrypt(byte[] data, Key key, AlgorithmParameterSpec param) throws CryptoException {
-        
-        synchronized(cipher) {
-            try {
-                cipher.init(Cipher.DECRYPT_MODE, key, param);
-                return cipher.doFinal(data);
-            } catch (Exception ex) {
-            	throw new CryptoException("Could not encrypt data: " + ex.getLocalizedMessage(),ex);
-            }
-        }
-    }
-   
-    public Cipher getCipher()  {
+    /**
+     * 
+     * @return 
+     */
+    final public Cipher getCipher()  {
         return cipher;
     }
-   
-    public String getAlgorithm() {
+    
+    /**
+     * 
+     * @return 
+     */
+    final public SecureRandom getSecureRandom() {
+        return secureRandom;
+    }
+
+    final public String getAlgorithm() {
         return cipher.getAlgorithm();
     }
+
+    final public int getBlockSize() {
+        return cipher.getBlockSize();
+    }
     
-    public SecureRandom getSecureRandom() {
-        return secureRandom;
+    final public byte[] getIV() {
+        return cipher.getIV();
     }
 }
