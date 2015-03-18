@@ -4,7 +4,7 @@
 
   <groupId>net.blackhacker</groupId>
   <artifactId>bh-crypto</artifactId>
-  <version>0.1</version>
+  <version>0.2</version>
   <packaging>jar</packaging>
 
   <name>bh-crypto</name>
