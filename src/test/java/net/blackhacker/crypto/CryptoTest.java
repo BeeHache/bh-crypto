@@ -1,11 +1,15 @@
 package net.blackhacker.crypto;
 
 import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.Security;
 import java.security.spec.AlgorithmParameterSpec;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
@@ -13,6 +17,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import org.junit.Rule;
+import org.junit.rules.ErrorCollector;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -29,16 +35,24 @@ public class CryptoTest {
     static Signer signerFriend;
     static Signer signerFoe;
     
-    private final SKBase friend;
-    private final SKBase foe;
-    private final SKBase me;
+    private final SK friend;
+    private final SK foe;
+    private final SK me;
 
-    public CryptoTest(SKBase friend, SKBase foe, SKBase me) {
+    public CryptoTest(SK friend, SK foe, SK me) {
       this.friend = friend;
       this.foe = foe;
       this.me = me;
     }
 
+    static boolean jce() {
+        try {
+            return Cipher.getMaxAllowedKeyLength("AES/ECB/PKCS5Padding") == Integer.MAX_VALUE;
+        } catch (NoSuchAlgorithmException ex) {
+            return false;
+        }
+    }    
+    
     // creates the test data
     @Parameters
     public static Collection<Object[]> data() throws CryptoException {
@@ -48,25 +62,39 @@ public class CryptoTest {
         sr.nextBytes(iv8);
         sr.nextBytes(iv16);
         
-        SKBase hold;
+        SK hold;
         
-        return Arrays.asList(
+        List<Object[]> l = new ArrayList<Object[]>(Arrays.asList(
             new Object[][] {
                 /* DES */
-                { hold = SKBase.getInstanceDESWithECB(), SKBase.getInstanceDESWithECB(), SKBase.getInstanceDESWithECB(hold.getKeyEncoded())},
-                { hold = SKBase.getInstanceDESWithCBC(iv8), SKBase.getInstanceDESWithCBC(iv8), SKBase.getInstanceDESWithCBC(iv8,hold.getKeyEncoded())},
-                { hold = SKBase.getInstanceDESWithCFB(iv8), SKBase.getInstanceDESWithCFB(iv8), SKBase.getInstanceDESWithCFB(iv8,hold.getKeyEncoded())},
-                { hold = SKBase.getInstanceDESWithOFB(iv8), SKBase.getInstanceDESWithOFB(iv8), SKBase.getInstanceDESWithOFB(iv8,hold.getKeyEncoded())},
+                { hold = SK.getInstanceDESWithECB(), SK.getInstanceDESWithECB(), SK.getInstanceDESWithECB(hold.getKeyEncoded())},
+                { hold = SK.getInstanceDESWithCBC(iv8), SK.getInstanceDESWithCBC(iv8), SK.getInstanceDESWithCBC(iv8,hold.getKeyEncoded())},
+                { hold = SK.getInstanceDESWithCFB(iv8), SK.getInstanceDESWithCFB(iv8), SK.getInstanceDESWithCFB(iv8,hold.getKeyEncoded())},
+                { hold = SK.getInstanceDESWithOFB(iv8), SK.getInstanceDESWithOFB(iv8), SK.getInstanceDESWithOFB(iv8,hold.getKeyEncoded())},
 
                 /* DESede */
-                { hold = SKBase.getInstanceDESedeWithECB(), SKBase.getInstanceDESedeWithECB(), SKBase.getInstanceDESedeWithECB(hold.getKeyEncoded())},
-                { hold = SKBase.getInstanceDESedeWithCBC(iv8), SKBase.getInstanceDESedeWithCBC(iv8), SKBase.getInstanceDESedeWithCBC(iv8,hold.getKeyEncoded())},
-                { hold = SKBase.getInstanceDESedeWithCFB(iv8), SKBase.getInstanceDESedeWithCFB(iv8), SKBase.getInstanceDESedeWithCFB(iv8,hold.getKeyEncoded())},
-                { hold = SKBase.getInstanceDESedeWithOFB(iv8), SKBase.getInstanceDESedeWithOFB(iv8), SKBase.getInstanceDESedeWithOFB(iv8,hold.getKeyEncoded())},
+                { hold = SK.getInstanceDESedeWithECB(), SK.getInstanceDESedeWithECB(), SK.getInstanceDESedeWithECB(hold.getKeyEncoded())},
+                { hold = SK.getInstanceDESedeWithCBC(iv8), SK.getInstanceDESedeWithCBC(iv8), SK.getInstanceDESedeWithCBC(iv8,hold.getKeyEncoded())},
+                { hold = SK.getInstanceDESedeWithCFB(iv8), SK.getInstanceDESedeWithCFB(iv8), SK.getInstanceDESedeWithCFB(iv8,hold.getKeyEncoded())},
+                { hold = SK.getInstanceDESedeWithOFB(iv8), SK.getInstanceDESedeWithOFB(iv8), SK.getInstanceDESedeWithOFB(iv8,hold.getKeyEncoded())},
                 
-                /* AES */
-                { hold = SKBase.getInstanceAESWithCBC(iv16), SKBase.getInstanceAESWithCBC(iv16), SKBase.getInstanceAESWithCBC(iv16,hold.getKeyEncoded())},
-            });
+                /* AES 128 */
+                { hold = SK.getInstanceAES128WithECB(), SK.getInstanceAES128WithECB(), SK.getInstanceAESWithECB(hold.getKeyEncoded())},
+                { hold = SK.getInstanceAES128WithCBC(iv16), SK.getInstanceAES128WithCBC(iv16), SK.getInstanceAESWithCBC(iv16,hold.getKeyEncoded())},
+                { hold = SK.getInstanceAES128WithCFB(iv16), SK.getInstanceAES128WithCFB(iv16), SK.getInstanceAESWithCFB(iv16,hold.getKeyEncoded())},
+                { hold = SK.getInstanceAES128WithOFB(iv16), SK.getInstanceAES128WithOFB(iv16), SK.getInstanceAESWithOFB(iv16,hold.getKeyEncoded())},
+                { hold = SK.getInstanceAES128WithCTR(iv16), SK.getInstanceAES128WithCTR(iv16), SK.getInstanceAES128WithCTR(iv16,hold.getKeyEncoded())},
+            }));
+        
+        if (jce()) {
+            l.addAll(
+                Arrays.asList(
+                    new Object[][] {
+                        { hold = SK.getInstanceAES128WithOCB(iv16), SK.getInstanceAES128WithOCB(iv16), SK.getInstanceAES128WithOCB(iv16,hold.getKeyEncoded())},
+                    })
+            );
+        }
+        return l;
     }
     
     @BeforeClass
@@ -75,6 +103,9 @@ public class CryptoTest {
         message = "A far far better thing I do than I have ever done before.";
         Security.insertProviderAt(new BouncyCastleProvider(),1);
     }
+
+    @Rule
+    public ErrorCollector collector= new ErrorCollector();
     
     @Test
     public void encryptionTest() throws CryptoException {
@@ -93,8 +124,8 @@ public class CryptoTest {
         assertEquals("friend.decrypt: friend can't decrypt friendCipherBytes", message, new String(clearbytes, StandardCharsets.UTF_8));
 
         try {
-            foe.decrypt(friendCipherBytes);
-            fail("foe.decrypt: foe decrypted friend's message");
+            byte[] clearbytes2 = foe.decrypt(friendCipherBytes);
+            assertFalse("foe.decrypt: foe decrypted friend's message", Arrays.equals(clearbytes, clearbytes2));
         } catch (CryptoException ex) { }
         
         byte[] friendKeyEncoded = friend.getKeyEncoded();

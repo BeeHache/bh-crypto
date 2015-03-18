@@ -24,7 +24,7 @@ public class Signer {
     static public Signer newInstanceDES(String digestAlgorithm) 
             throws SignerException {
         try {
-            return new Signer(SKBase.getInstanceDESWithECB(), new MD(digestAlgorithm));
+            return new Signer(SK.getInstanceDESWithECB(), new MD(digestAlgorithm));
         } catch(CryptoException e) {
             throw new SignerException("Coun't init DES Signer",e);
         }
@@ -38,7 +38,7 @@ public class Signer {
      * @param digestAlgorithm
      * @return
      * @throws net.blackhacker.crypto.SignerException
-     */
+     *
     static public Signer newInstancePBE(String passphrase, String cipherAlgorithm, String keyAlgorithm, String digestAlgorithm) 
             throws SignerException {
         try {
@@ -47,6 +47,7 @@ public class Signer {
             throw new SignerException("Coun't init PBE Signer",e);
         }
     }
+    */ 
     
     /**
      *

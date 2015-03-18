@@ -5,7 +5,6 @@ import java.security.spec.AlgorithmParameterSpec;
 import javax.crypto.SecretKey;
 
 import org.junit.BeforeClass;
-import org.junit.Test;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
@@ -19,8 +18,8 @@ public class SignerTest {
     static String message;
     static AlgorithmParameterSpec pbeCipherParams;
     
-    static SKBase[] friends;
-    static SKBase[] foes;
+    static SK[] friends;
+    static SK[] foes;
     static Mode[] modes = Mode.values();
     static Algorithm[] algorithms = Algorithm.values();
     static SecretKey key;
@@ -42,8 +41,8 @@ public class SignerTest {
             Security.insertProviderAt(new BouncyCastleProvider(),1);            
     
             
-            friends = new SKBase[]{SKBase.getInstanceDESWithECB()};
-            foes = new SKBase[]{SKBase.getInstanceDESWithECB()};
+            friends = new SK[]{SK.getInstanceDESWithECB()};
+            foes = new SK[]{SK.getInstanceDESWithECB()};
             signerFriend = Signer.newInstanceDES(digestAlgorithm);
             signerFoe = Signer.newInstanceDES(digestAlgorithm);
         } catch (CryptoException ex) {
