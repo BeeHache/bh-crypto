@@ -7,15 +7,12 @@ import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 import javax.crypto.spec.DESedeKeySpec;
-import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
@@ -55,9 +52,7 @@ public class SK extends Crypto {
             } else {
                 key = SecretKeyFactory.getInstance(keyAlgorithm).generateSecret(spec);
             }
-        } catch (NoSuchAlgorithmException ex) {
-            throw new CryptoException("Couldn't create key factory: " + ex.getLocalizedMessage(),ex);
-        } catch (InvalidKeySpecException ex) {
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
             throw new CryptoException("Couldn't create key factory: " + ex.getLocalizedMessage(),ex);
         }
     }
@@ -92,11 +87,7 @@ public class SK extends Crypto {
      * @throws CryptoException
      */
     final static public SK getInstanceDESWithCBC(byte[] iv) throws CryptoException {
-        return new SK(
-                "DES/CBC/PKCS5Padding", 
-                "DES", 
-                new IvParameterSpec(iv == null ? Crypto.DEFAULT_IV : iv)
-        );
+        return new SK("DES/CBC/PKCS5Padding", "DES", IV64_BIT_CHECK(iv));
     }
 
     /**
@@ -108,11 +99,7 @@ public class SK extends Crypto {
      */
     final static public SK getInstanceDESWithCBC(byte[] iv, byte[]key) throws CryptoException {
         try {
-            return new SK(
-                    "DES/CBC/PKCS5Padding",
-                    "DES",
-                    new IvParameterSpec(iv == null ? Crypto.DEFAULT_IV : iv),
-                    new DESKeySpec(key)
+            return new SK("DES/CBC/PKCS5Padding","DES",IV64_BIT_CHECK(iv),new DESKeySpec(key)
             );
         } catch (InvalidKeyException ex) {
             throw new CryptoException(ex);
@@ -125,7 +112,7 @@ public class SK extends Crypto {
      * @throws CryptoException
      */
     final static public SK getInstanceDESWithCBC() throws CryptoException {
-        return SK.getInstanceDESWithCBC(IV8());
+        return SK.getInstanceDESWithCBC(IV64());
     }
 
     /**
@@ -135,11 +122,7 @@ public class SK extends Crypto {
      * @throws CryptoException
      */
     final static public SK getInstanceDESWithCFB(byte[] iv) throws CryptoException {
-        return new SK(
-                "DES/CFB/PKCS5Padding", 
-                "DES", 
-                new IvParameterSpec(iv == null ? Crypto.DEFAULT_IV : iv)
-        );
+        return new SK("DES/CFB/PKCS5Padding", "DES", IV64_BIT_CHECK(iv));
     }
 
     /**
@@ -151,11 +134,7 @@ public class SK extends Crypto {
      */
     final static public SK getInstanceDESWithCFB(byte[] iv, byte[] key) throws CryptoException {
         try {
-            return new SK(
-                    "DES/CFB/PKCS5Padding",
-                    "DES",
-                    new IvParameterSpec(iv == null ? Crypto.DEFAULT_IV : iv),
-                    new DESKeySpec(key)
+            return new SK("DES/CFB/PKCS5Padding","DES", IV64_BIT_CHECK(iv), new DESKeySpec(key)
             );
         } catch (InvalidKeyException ex) {
             throw new CryptoException(ex);
@@ -168,7 +147,7 @@ public class SK extends Crypto {
      * @throws CryptoException
      */
     final static public SK getInstanceDESWithCFB() throws CryptoException {
-        return SK.getInstanceDESWithCFB(IV8());
+        return SK.getInstanceDESWithCFB(IV64());
     }    
 
     /**
@@ -178,11 +157,7 @@ public class SK extends Crypto {
      * @throws CryptoException
      */
     final static public SK getInstanceDESWithOFB(byte[] iv) throws CryptoException {
-        return new SK(
-                "DES/OFB/PKCS5Padding", 
-                "DES", 
-                new IvParameterSpec(iv == null ? Crypto.DEFAULT_IV : iv)
-        );
+        return new SK("DES/OFB/PKCS5Padding", "DES", IV64_BIT_CHECK(iv));
     }
 
     /**
@@ -194,12 +169,7 @@ public class SK extends Crypto {
      */
     final static public SK getInstanceDESWithOFB(byte[] iv, byte[] key) throws CryptoException {
         try {
-            return new SK(
-                    "DES/OFB/PKCS5Padding",
-                    "DES",
-                    new IvParameterSpec(iv == null ? Crypto.DEFAULT_IV : iv),
-                    new DESKeySpec(key)
-            );
+            return new SK("DES/OFB/PKCS5Padding","DES", IV64_BIT_CHECK(iv), new DESKeySpec(key));
         } catch (InvalidKeyException ex) {
             throw new CryptoException(ex);
         }
@@ -211,7 +181,7 @@ public class SK extends Crypto {
      * @throws CryptoException
      */
     final static public SK getInstanceDESWithOFB() throws CryptoException {
-        return SK.getInstanceDESWithOFB(IV8());
+        return SK.getInstanceDESWithOFB(IV64());
     }
     
     
@@ -221,11 +191,7 @@ public class SK extends Crypto {
      * @throws CryptoException
      */
     final static public SK getInstanceDESedeWithECB() throws CryptoException {
-        return new SK(
-                "DESede/ECB/PKCS5Padding", 
-                "DESede", 
-                null
-        );
+        return new SK("DESede/ECB/PKCS5Padding", "DESede", null);
     }
 
      /**
@@ -236,12 +202,7 @@ public class SK extends Crypto {
      */
     final static public SK getInstanceDESedeWithECB(byte[] key) throws CryptoException {
         try {
-            return new SK(
-                    "DESede/ECB/PKCS5Padding", 
-                    "DESede", 
-                    null, 
-                    new DESedeKeySpec(key)
-            );
+            return new SK("DESede/ECB/PKCS5Padding", "DESede", null, new DESedeKeySpec(key));
         } catch (InvalidKeyException ex) {
             throw new CryptoException(ex);
         }
@@ -254,11 +215,7 @@ public class SK extends Crypto {
      * @throws CryptoException
      */
     final static public SK getInstanceDESedeWithCBC(byte[] iv) throws CryptoException {
-        return new SK(
-                "DESede/CBC/PKCS5Padding", 
-                "DESede", 
-                new IvParameterSpec(iv == null ? Crypto.DEFAULT_IV : iv)
-        );
+        return new SK("DESede/CBC/PKCS5Padding", "DESede", IV64_BIT_CHECK(iv));
     }
 
     /**
@@ -270,12 +227,7 @@ public class SK extends Crypto {
      */
     final static public SK getInstanceDESedeWithCBC(byte[] iv, byte[] key) throws CryptoException {
         try {
-            return new SK(
-                    "DESede/CBC/PKCS5Padding",
-                    "DESede",
-                    new IvParameterSpec(iv == null ? Crypto.DEFAULT_IV : iv),
-                    new DESedeKeySpec(key)
-            );
+            return new SK("DESede/CBC/PKCS5Padding","DESede", IV64_BIT_CHECK(iv), new DESedeKeySpec(key));
         } catch (InvalidKeyException ex) {
             throw new CryptoException(ex);
         }
@@ -287,7 +239,7 @@ public class SK extends Crypto {
      * @throws CryptoException
      */
     final static public SK getInstanceDESedeWithCBC() throws CryptoException {
-        return SK.getInstanceDESedeWithCBC(IV8());
+        return SK.getInstanceDESedeWithCBC(IV64());
     }
     
     /**
@@ -297,9 +249,7 @@ public class SK extends Crypto {
      * @throws CryptoException
      */
     final static public SK getInstanceDESedeWithCFB(byte[] iv) throws CryptoException {
-        return new SK(
-                "DESede/CFB/PKCS5Padding", 
-                "DESede", new IvParameterSpec(iv == null ? Crypto.DEFAULT_IV : iv)
+        return new SK("DESede/CFB/PKCS5Padding", "DESede", IV64_BIT_CHECK(iv)
         );
     }
 
@@ -312,12 +262,7 @@ public class SK extends Crypto {
      */
     final static public SK getInstanceDESedeWithCFB(byte[] iv, byte[] key) throws CryptoException {
         try {
-            return new SK(
-                    "DESede/CFB/PKCS5Padding",
-                    "DESede",
-                    new IvParameterSpec(iv == null ? Crypto.DEFAULT_IV : iv),
-                    new DESedeKeySpec(key)
-            );
+            return new SK("DESede/CFB/PKCS5Padding","DESede", IV64_BIT_CHECK(iv), new DESedeKeySpec(key));
         } catch (InvalidKeyException ex) {
             throw new CryptoException(ex);
         }
@@ -329,7 +274,7 @@ public class SK extends Crypto {
      * @throws CryptoException
      */
     final static public SK getInstanceDESedeWithCFB() throws CryptoException {
-        return SK.getInstanceDESedeWithCFB(IV8());
+        return SK.getInstanceDESedeWithCFB(IV64());
     }
     
     /**
@@ -339,11 +284,7 @@ public class SK extends Crypto {
      * @throws CryptoException
      */
     final static public SK getInstanceDESedeWithOFB(byte[] iv) throws CryptoException {
-        return new SK(
-                "DESede/OFB/PKCS5Padding", 
-                "DESede", 
-                new IvParameterSpec(iv == null ? Crypto.DEFAULT_IV : iv)
-        );
+        return new SK("DESede/OFB/PKCS5Padding", "DESede", IV64_BIT_CHECK(iv));
     }
 
     /**
@@ -358,7 +299,7 @@ public class SK extends Crypto {
             return new SK(
                     "DESede/OFB/PKCS5Padding",
                     "DESede",
-                    new IvParameterSpec(iv == null ? Crypto.DEFAULT_IV : iv),
+                    IV64_BIT_CHECK(iv),
                     new DESedeKeySpec(key)
             );
         } catch (InvalidKeyException ex) {
@@ -372,32 +313,25 @@ public class SK extends Crypto {
      * @throws CryptoException
      */
     final static public SK getInstanceDESedeWithOFB() throws CryptoException {
-        return SK.getInstanceDESedeWithOFB(IV8());
+        return SK.getInstanceDESedeWithOFB(IV64());
     }
     /**
      *
-     * @param iv
      * @param key
      * @return
      * @throws CryptoException
      */
-    final static public SK getInstanceAESWithECB(byte[] key) throws CryptoException {
-        return new SK(
-                "AES/ECB/PKCS5Padding",
-                "AES",
-                null,
-                new SecretKeySpec(key,"AES")
-        );
+    final static public SK getInstanceAES128WithECB(byte[] key) throws CryptoException {
+        return new SK("AES/ECB/PKCS5Padding","AES",null,KEY128_BIT_CHECK(key, "AES"));
     }
 
     /**
      *
-     * @param iv
      * @return
      * @throws CryptoException
      */
     final static public SK getInstanceAES128WithECB() throws CryptoException {
-        return SK.getInstanceAESWithECB(KEY(128));
+        return SK.getInstanceAES128WithECB(KEY(128));
     }
     
     /**
@@ -407,12 +341,12 @@ public class SK extends Crypto {
      * @return
      * @throws CryptoException
      */
-    final static public SK getInstanceAESWithCBC(byte[] iv, byte[] key) throws CryptoException {
+    final static public SK getInstanceAES128WithCBC(byte[] iv, byte[] key) throws CryptoException {
         return new SK(
                 "AES/CBC/PKCS5Padding",
                 "AES",
-                new IvParameterSpec(iv == null ? Crypto.DEFAULT_IV : iv),
-                new SecretKeySpec(key,"AES")
+                IV128_BIT_CHECK(iv),
+                KEY128_BIT_CHECK(key, "AES")
         );
     }
 
@@ -423,7 +357,7 @@ public class SK extends Crypto {
      * @throws CryptoException
      */
     final static public SK getInstanceAES128WithCBC(byte[] iv) throws CryptoException {
-        return SK.getInstanceAESWithCBC(iv, KEY(128));
+        return SK.getInstanceAES128WithCBC(iv, KEY(128));
     }
     
     /**
@@ -432,7 +366,7 @@ public class SK extends Crypto {
      * @throws CryptoException
      */
     final static public SK getInstanceAES128WithCBC() throws CryptoException {
-        return SK.getInstanceAESWithCBC(IV16(), KEY(128));
+        return SK.getInstanceAES128WithCBC(IV128(), KEY(128));
     }
 
     /**
@@ -446,8 +380,8 @@ public class SK extends Crypto {
         return new SK(
                 "AES/CFB/PKCS5Padding",
                 "AES",
-                new IvParameterSpec(iv == null ? Crypto.DEFAULT_IV : iv),
-                new SecretKeySpec(key,"AES")
+                IV128_BIT_CHECK(iv),
+                KEY128_BIT_CHECK(key, "AES")
         );
     }
 
@@ -467,7 +401,7 @@ public class SK extends Crypto {
      * @throws CryptoException
      */
     final static public SK getInstanceAES128WithCFB() throws CryptoException {
-        return SK.getInstanceAESWithCFB(IV16(), KEY(128));
+        return SK.getInstanceAESWithCFB(IV128(), KEY(128));
     }
 
     /**
@@ -481,8 +415,8 @@ public class SK extends Crypto {
         return new SK(
                 "AES/OFB/PKCS5Padding",
                 "AES",
-                new IvParameterSpec(iv == null ? Crypto.DEFAULT_IV : iv),
-                new SecretKeySpec(key,"AES")
+                IV128_BIT_CHECK(iv),
+                KEY128_BIT_CHECK(key, "AES")
         );
     }
 
@@ -502,7 +436,7 @@ public class SK extends Crypto {
      * @throws CryptoException
      */
     final static public SK getInstanceAES128WithOFB() throws CryptoException {
-        return SK.getInstanceAESWithOFB(IV16(), KEY(128));
+        return SK.getInstanceAESWithOFB(IV128(), KEY(128));
     }
 
     
@@ -517,8 +451,8 @@ public class SK extends Crypto {
         return new SK(
                 "AES/CTR/PKCS5Padding",
                 "AES",
-                new IvParameterSpec(iv == null ? Crypto.DEFAULT_IV : iv),
-                new SecretKeySpec(key,"AES")
+                IV128_BIT_CHECK(iv),
+                KEY128_BIT_CHECK(key, "AES")
         );
     }
 
@@ -538,7 +472,7 @@ public class SK extends Crypto {
      * @throws CryptoException
      */
     final static public SK getInstanceAES128WithCTR() throws CryptoException {
-        return SK.getInstanceAES128WithCTR(IV16(), KEY(128));
+        return SK.getInstanceAES128WithCTR(IV128(), KEY(128));
     }
     
 
@@ -553,8 +487,8 @@ public class SK extends Crypto {
         return new SK(
                 "AES/OCB/PKCS5Padding",
                 "AES",
-                new IvParameterSpec(iv == null ? Crypto.DEFAULT_IV : iv),
-                new SecretKeySpec(key,"AES")
+                IV128_BIT_CHECK(iv),
+                KEY128_BIT_CHECK(key, "AES")
         );
     }
 
@@ -574,9 +508,27 @@ public class SK extends Crypto {
      * @throws CryptoException
      */
     final static public SK getInstanceAES128WithOCB() throws CryptoException {
-        return SK.getInstanceAES128WithOCB(IV16(), KEY(128));
-    }
+        return SK.getInstanceAES128WithOCB(IV128(), KEY(128));
+    }  
+
+    /**
+     *
+     * @param key
+     * @return
+     * @throws CryptoException
+     */
+    final static public SK getInstanceAES192WithECB(byte[] key) throws CryptoException {
+        return new SK("AES/ECB/PKCS5Padding","AES",null,KEY192_BIT_CHECK(key, "AES"));
+    }    
     
+    /**
+     *
+     * @return
+     * @throws CryptoException
+     */
+    final static public SK getInstanceAES192WithECB() throws CryptoException {
+        return SK.getInstanceAES192WithECB(KEY(192));
+    }
     
     /**
      *
@@ -585,8 +537,24 @@ public class SK extends Crypto {
      * @throws CryptoException
      */
     final static public SK getInstanceAES192WithCBC(byte[] iv) throws CryptoException {
-        return SK.getInstanceAESWithCBC(iv, KEY(192));
+        return SK.getInstanceAES192WithCBC(iv, KEY(192));
     }
+
+    /**
+     *
+     * @param iv
+     * @param key
+     * @return
+     * @throws CryptoException
+     */
+    final static public SK getInstanceAES192WithCBC(byte[] iv, byte[] key) throws CryptoException {
+        return new SK(
+                "AES/CBC/PKCS5Padding",
+                "AES",
+                IV192_BIT_CHECK(iv),
+                KEY192_BIT_CHECK(key, "AES")
+        );
+    }    
     
     /**
      *
@@ -594,7 +562,7 @@ public class SK extends Crypto {
      * @throws CryptoException
      */
     final static public SK getInstanceAES192WithCBC() throws CryptoException {
-        return SK.getInstanceAESWithCBC(IV16(), KEY(192));
+        return SK.getInstanceAES192WithCBC(IV128(), KEY(192));
     }
      
     /**
@@ -607,17 +575,19 @@ public class SK extends Crypto {
     public byte[] encrypt(byte[] data) throws CryptoException {
         AlgorithmParameterSpec param = getAlgorithmParameterSpec();
         Cipher cipher = getCipher();
+        SecureRandom secureRandom = getSecureRandom();
         
         synchronized(this) {
             try {
                 if (param !=null) {
-                    cipher.init(Cipher.ENCRYPT_MODE, key, param);
+                    cipher.init(Cipher.ENCRYPT_MODE, key, param, secureRandom);
                 } else {
-                    cipher.init(Cipher.ENCRYPT_MODE, key);
+                    cipher.init(Cipher.ENCRYPT_MODE, key, secureRandom);
                 }
+                
                 return cipher.doFinal(data);
             } catch (Exception ex) {
-            	throw new CryptoException(ex);
+            	throw new CryptoException("Could not encrypt data!", ex);
             }
         }
     }
@@ -653,25 +623,5 @@ public class SK extends Crypto {
     
     public byte[] getKeyEncoded() {
         return key.getEncoded();
-    }
-    
-    static private SecureRandom sr = new SecureRandom();
-    
-    static private byte[] IV8() {
-        byte[] iv = new byte[8];
-        sr.nextBytes(iv);
-        return iv;
-    }
-
-    static private byte[] IV16() {
-        byte[] iv = new byte[16];
-        sr.nextBytes(iv);
-        return iv;
-    }
-    
-    static private byte[] KEY(int size){
-        byte[] key = new byte[size / 8];
-        sr.nextBytes(key);
-        return key;
     }
 }

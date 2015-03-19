@@ -22,44 +22,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.6</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore</artifactId>
-            <version>4.2.4</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.8</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.jcouchdb</groupId>
-            <artifactId>jcouchdb</artifactId>
-            <version>0.11.0-1</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.svenson</groupId>
-            <artifactId>svenson</artifactId>
-            <version>1.4.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <!--
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.2.2</version>
-            <scope>provided</scope>
-        </dependency>
-        -->
-        <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk16</artifactId>
             <version>1.46</version>
@@ -86,13 +48,16 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.7</source>
+                    <target>1.7</target>
                     <showDeprecation>true</showDeprecation>
                 </configuration>
             </plugin>
         </plugins>
     </build>
-  
-  
+  <scm>
+      <connection>scm:git:git://github.com/BeeHache/bh-crypto.git</connection>
+      <developerConnection>scm:git:git://github.com/BeeHache/bh-crypto.git</developerConnection>
+      <url>https://github.com/BeeHache/bh-crypto</url>
+  </scm>
 </project>

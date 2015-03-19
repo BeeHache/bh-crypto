@@ -1,5 +1,8 @@
 *.class
-
+.settings
+.classpath
+.project
+nb-configuration.xml
 # Package Files #
 *.jar
 *.war
