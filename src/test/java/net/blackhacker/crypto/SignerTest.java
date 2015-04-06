@@ -20,17 +20,9 @@ public class SignerTest {
     
     static SK[] friends;
     static SK[] foes;
-    static Mode[] modes = Mode.values();
-    static Algorithm[] algorithms = Algorithm.values();
     static SecretKey key;
     static Signer signerFriend;
     static Signer signerFoe;
-    
-    public enum Mode { ECB, CBC }
-    public enum Algorithm { 
-        DES, PBE,
-        RSA
-    }
     
     @BeforeClass
     static public void setup() throws SignerException {
@@ -43,8 +35,8 @@ public class SignerTest {
             
             friends = new SK[]{SK.getInstanceDESWithECB()};
             foes = new SK[]{SK.getInstanceDESWithECB()};
-            signerFriend = Signer.newInstanceDES(digestAlgorithm);
-            signerFoe = Signer.newInstanceDES(digestAlgorithm);
+            signerFriend = Signer.newInstanceDESwithMD5();
+            signerFoe = Signer.newInstanceDESwithMD5();
         } catch (CryptoException ex) {
             fail(ex.getMessage());
         }

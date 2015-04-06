@@ -25,7 +25,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
-public class CryptoTest {
+public class EncryptorTest {
     
     static String passphrase;
     static String message;
@@ -39,7 +39,7 @@ public class CryptoTest {
     private final SK foe;
     private final SK me;
 
-    public CryptoTest(SK friend, SK foe, SK me) {
+    public EncryptorTest(SK friend, SK foe, SK me) {
       this.friend = friend;
       this.foe = foe;
       this.me = me;
