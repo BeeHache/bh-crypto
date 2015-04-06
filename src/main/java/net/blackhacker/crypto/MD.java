@@ -11,13 +11,32 @@ import java.security.NoSuchAlgorithmException;
 public class MD {
     final private MessageDigest messageDigest;
     
-    public MD(String algorithm) throws CryptoException {
+    private MD(String algorithm) throws CryptoException {
     	try {
             messageDigest = MessageDigest.getInstance(algorithm);
     	} catch(NoSuchAlgorithmException e) {
             throw new CryptoException(e);
     	}
     }
+
+    /**
+     *
+     * @return
+     * @throws CryptoException
+     */
+    final static public MD getInstanceSHA256() throws CryptoException {
+        return new MD("SHA-256");
+    }
+    
+    /**
+     *
+     * @return
+     * @throws CryptoException
+     */
+    final static public MD getInstanceMD5() throws CryptoException {
+        return new MD("MD5");
+    }
+    
     
     public String getAlgorithm() {
         return messageDigest.getAlgorithm();

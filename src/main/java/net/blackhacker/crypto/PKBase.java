@@ -16,7 +16,7 @@ import javax.crypto.Cipher;
  *
  * @author ben
  */
-abstract public class PKBase extends Crypto {
+abstract public class PKBase extends Encryptor {
     final private PublicKey publicKey;
     final private PrivateKey privateKey;
     

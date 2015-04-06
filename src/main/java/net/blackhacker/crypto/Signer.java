@@ -7,24 +7,22 @@ import java.util.Arrays;
  * @author ben
  */
 public class Signer {
-    final private Crypto crypto;
+    final private Encryptor crypto;
     final private MD md;
     
-    private Signer(Crypto crypto, MD md) {
+    private Signer(Encryptor crypto, MD md) {
         this.crypto = crypto;
         this.md = md;
     }
 
     /**
      *
-     * @param digestAlgorithm
      * @return Signer Object
      * @throws net.blackhacker.crypto.SignerException
      */
-    static public Signer newInstanceDES(String digestAlgorithm) 
-            throws SignerException {
+    static public Signer newInstanceDESwithMD5() throws SignerException {
         try {
-            return new Signer(SK.getInstanceDESWithECB(), new MD(digestAlgorithm));
+            return new Signer(SK.getInstanceDESWithECB(), MD.getInstanceMD5());
         } catch(CryptoException e) {
             throw new SignerException("Coun't init DES Signer",e);
         }
@@ -51,14 +49,13 @@ public class Signer {
     
     /**
      *
-     * @param digestAlgorithm
      * @return Signer object
      * @throws net.blackhacker.crypto.SignerException
      */
-    static public Signer newInstanceRSA(String digestAlgorithm) throws SignerException  {
+    static public Signer newInstanceRSAWithMD5() throws SignerException  {
         
         try {
-            return new Signer(new RSA(), new MD(digestAlgorithm));
+            return new Signer(new RSA(), MD.getInstanceMD5());
         } catch (CryptoException e) {
             throw new SignerException("Coun't init RSA Signer",e);
         }
@@ -84,6 +81,7 @@ public class Signer {
      * @param data
      * @param signature
      * @return true 
+     * @throws net.blackhacker.crypto.SignerException 
      */
     public boolean verify(byte[] data, byte[] signature) throws SignerException {
         try {
