@@ -67,6 +67,14 @@ abstract public class Encryptor {
     }
     
     /**
+     * 
+     * @return byte array of random 34 bytes (192 bits) long
+     */
+    static protected byte[] RANDOM_192_BITS() {
+        return RANDOM_BITS(192);
+    }
+    
+    /**
      * A random array of bytes
      * 
      * @param size -- size of array in bits, should be multiple of 8

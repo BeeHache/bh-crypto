@@ -27,13 +27,13 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class EncryptorTest {
     
-    static String passphrase;
-    static String message;
-    static AlgorithmParameterSpec pbeCipherParams;
+    static private String passphrase;
+    static private String message;
+    static private AlgorithmParameterSpec pbeCipherParams;
     
-    static SecretKey key;
-    static Signer signerFriend;
-    static Signer signerFoe;
+    static private SecretKey key;
+    static private Signer signerFriend;
+    static private Signer signerFoe;
     
     private final SK friend;
     private final SK foe;
@@ -67,23 +67,23 @@ public class EncryptorTest {
         List<Object[]> l = new ArrayList<>(Arrays.asList(
             new Object[][] {
                 /* DES */
-                { hold = SK.getInstanceDESWithECB(), SK.getInstanceDESWithECB(), SK.getInstanceDESWithECB(hold.getKeyEncoded())},
-                { hold = SK.getInstanceDESWithCBC(iv8), SK.getInstanceDESWithCBC(iv8), SK.getInstanceDESWithCBC(iv8,hold.getKeyEncoded())},
-                { hold = SK.getInstanceDESWithCFB(iv8), SK.getInstanceDESWithCFB(iv8), SK.getInstanceDESWithCFB(iv8,hold.getKeyEncoded())},
-                { hold = SK.getInstanceDESWithOFB(iv8), SK.getInstanceDESWithOFB(iv8), SK.getInstanceDESWithOFB(iv8,hold.getKeyEncoded())},
+                /* 0 */ { hold = SK.getInstanceDESWithECB(), SK.getInstanceDESWithECB(), SK.getInstanceDESWithECB(hold.getKeyEncoded())},               
+                /* 1 */ { hold = SK.getInstanceDESWithCBC(iv8), SK.getInstanceDESWithCBC(iv8), SK.getInstanceDESWithCBC(iv8,hold.getKeyEncoded())},
+                /* 2 */ { hold = SK.getInstanceDESWithCFB(iv8), SK.getInstanceDESWithCFB(iv8), SK.getInstanceDESWithCFB(iv8,hold.getKeyEncoded())},
+                /* 3 */ { hold = SK.getInstanceDESWithOFB(iv8), SK.getInstanceDESWithOFB(iv8), SK.getInstanceDESWithOFB(iv8,hold.getKeyEncoded())},
 
                 /* DESede */
-                { hold = SK.getInstanceDESedeWithECB(), SK.getInstanceDESedeWithECB(), SK.getInstanceDESedeWithECB(hold.getKeyEncoded())},
-                { hold = SK.getInstanceDESedeWithCBC(iv8), SK.getInstanceDESedeWithCBC(iv8), SK.getInstanceDESedeWithCBC(iv8,hold.getKeyEncoded())},
-                { hold = SK.getInstanceDESedeWithCFB(iv8), SK.getInstanceDESedeWithCFB(iv8), SK.getInstanceDESedeWithCFB(iv8,hold.getKeyEncoded())},
-                { hold = SK.getInstanceDESedeWithOFB(iv8), SK.getInstanceDESedeWithOFB(iv8), SK.getInstanceDESedeWithOFB(iv8,hold.getKeyEncoded())},
+                /* 4 */ { hold = SK.getInstanceDESedeWithECB(), SK.getInstanceDESedeWithECB(), SK.getInstanceDESedeWithECB(hold.getKeyEncoded())},
+                /* 5 */ { hold = SK.getInstanceDESedeWithCBC(iv8), SK.getInstanceDESedeWithCBC(iv8), SK.getInstanceDESedeWithCBC(iv8,hold.getKeyEncoded())},
+                /* 6 */ { hold = SK.getInstanceDESedeWithCFB(iv8), SK.getInstanceDESedeWithCFB(iv8), SK.getInstanceDESedeWithCFB(iv8,hold.getKeyEncoded())},
+                /* 7 */ { hold = SK.getInstanceDESedeWithOFB(iv8), SK.getInstanceDESedeWithOFB(iv8), SK.getInstanceDESedeWithOFB(iv8,hold.getKeyEncoded())},
                 
                 /* AES 128 */
-                { hold = SK.getInstanceAES128WithECB(), SK.getInstanceAES128WithECB(), SK.getInstanceAES128WithECB(hold.getKeyEncoded())},
-                { hold = SK.getInstanceAES128WithCBC(iv16), SK.getInstanceAES128WithCBC(iv16), SK.getInstanceAES128WithCBC(iv16,hold.getKeyEncoded())},
-                { hold = SK.getInstanceAES128WithCFB(iv16), SK.getInstanceAES128WithCFB(iv16), SK.getInstanceAESWithCFB(iv16,hold.getKeyEncoded())},
-                { hold = SK.getInstanceAES128WithOFB(iv16), SK.getInstanceAES128WithOFB(iv16), SK.getInstanceAESWithOFB(iv16,hold.getKeyEncoded())},
-                { hold = SK.getInstanceAES128WithCTR(iv16), SK.getInstanceAES128WithCTR(iv16), SK.getInstanceAES128WithCTR(iv16,hold.getKeyEncoded())},
+                /* 8 */ { hold = SK.getInstanceAES128WithECB(), SK.getInstanceAES128WithECB(), SK.getInstanceAES128WithECB(hold.getKeyEncoded())},
+                /* 9 */ { hold = SK.getInstanceAES128WithCBC(iv16), SK.getInstanceAES128WithCBC(iv16), SK.getInstanceAES128WithCBC(iv16,hold.getKeyEncoded())},
+                /* 10 */ { hold = SK.getInstanceAES128WithCFB(iv16), SK.getInstanceAES128WithCFB(iv16), SK.getInstanceAES128WithCFB(iv16,hold.getKeyEncoded())},
+                /* 11 */ { hold = SK.getInstanceAES128WithOFB(iv16), SK.getInstanceAES128WithOFB(iv16), SK.getInstanceAES128WithOFB(iv16,hold.getKeyEncoded())},
+                /* 12 */ { hold = SK.getInstanceAES128WithCTR(iv16), SK.getInstanceAES128WithCTR(iv16), SK.getInstanceAES128WithCTR(iv16,hold.getKeyEncoded())},
                                 
             }));
         
@@ -93,9 +93,9 @@ public class EncryptorTest {
                     new Object[][] {
                     /* AES 192 */
                      { hold = SK.getInstanceAES192WithECB(), SK.getInstanceAES192WithECB(), SK.getInstanceAES192WithECB(hold.getKeyEncoded())},
-                     //{ hold = SK.getInstanceAES192WithCBC(iv16), SK.getInstanceAES192WithCBC(iv16), SK.getInstanceAES128WithCBC(iv16,hold.getKeyEncoded())},
-                     //{ hold = SK.getInstanceAES192WithCFB(iv16), SK.getInstanceAES192WithCFB(iv16), SK.getInstanceAESWithCFB(iv16,hold.getKeyEncoded())},
-                     //{ hold = SK.getInstanceAES192WithOFB(iv16), SK.getInstanceAES192WithOFB(iv16), SK.getInstanceAESWithOFB(iv16,hold.getKeyEncoded())},
+                     //{ hold = SK.getInstanceAES192WithCBC(iv16), SK.getInstanceAES192WithCBC(iv16), SK.getInstanceAES192WithCBC(iv16,hold.getKeyEncoded())},
+                     //{ hold = SK.getInstanceAES192WithCFB(iv16), SK.getInstanceAES192WithCFB(iv16), SK.getInstanceAES192WithCFB(iv16,hold.getKeyEncoded())},
+                     //{ hold = SK.getInstanceAES192WithOFB(iv16), SK.getInstanceAES192WithOFB(iv16), SK.getInstanceAES192WithOFB(iv16,hold.getKeyEncoded())},
                      //{ hold = SK.getInstanceAES192WithCTR(iv16), SK.getInstanceAES192WithCTR(iv16), SK.getInstanceAES192WithCTR(iv16,hold.getKeyEncoded())},
 
                     /* AES OCB */
