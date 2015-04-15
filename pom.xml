@@ -7,20 +7,24 @@
   <version>0.2</version>
   <packaging>jar</packaging>
 
-  <name>bh-crypto</name>
-  <url>http://maven.apache.org</url>
+  <name>${project.groupId}:${project.artifactId}</name>
+  <description></description>
+  <url>https://github.com/BeeHache/bh-utils</url>
+  
+  <developers>
+    <developer>
+      <name>Benjaming King</name>
+      <email>bh@blackhacker.net</email>
+      <organization>Blackhacker</organization>
+      <organizationUrl>http://blackhacker.net</organizationUrl>
+    </developer>
+  </developers>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
   <dependencies>
-        <dependency>
-            <groupId>net.blackhacker</groupId>
-            <artifactId>bh-utils</artifactId>
-            <version>0.2</version>
-            <scope>provided</scope>
-        </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk16</artifactId>
@@ -84,4 +88,10 @@
       <developerConnection>scm:git:git://github.com/BeeHache/bh-crypto.git</developerConnection>
       <url>https://github.com/BeeHache/bh-crypto</url>
   </scm>
+  <licenses>
+      <license>
+          <name>MIT License</name>
+          <url>http://www.opensource.org/licenses/mit-license.php</url>
+      </license>
+  </licenses>
 </project>
