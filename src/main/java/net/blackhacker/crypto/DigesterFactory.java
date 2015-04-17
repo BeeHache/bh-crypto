@@ -40,7 +40,7 @@ final public class DigesterFactory {
      * @throws net.blackhacker.crypto.DigesterException
      * @see Digester
      */
-    static public Digester newMD5() throws DigesterException {
+    static public Digester newDigesterMD5() throws DigesterException {
         return new DigesterBase("MD5");
     }
     
@@ -51,7 +51,7 @@ final public class DigesterFactory {
      * @throws net.blackhacker.crypto.DigesterException
      * @see Digester
      */
-    static public Digester newSHA256() throws DigesterException {
+    static public Digester newDigesterSHA256() throws DigesterException {
         return new DigesterBase("SHA-256");
     }
 }

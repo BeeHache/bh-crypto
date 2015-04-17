@@ -24,14 +24,18 @@
 
 package net.blackhacker.crypto;
 
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
+import javax.crypto.BadPaddingException;
 
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.SecretKeySpec;
@@ -82,7 +86,7 @@ public class SK extends EncryptorBase {
     /**
      *
      * @param data
-     * @return
+     * @return encrypted version data
      * @throws CryptoException
      */
     @Override
@@ -109,7 +113,7 @@ public class SK extends EncryptorBase {
     /**
      * 
      * @param data
-     * @return
+     * @return clear version of data
      * @throws CryptoException 
      */
     @Override
@@ -125,16 +129,21 @@ public class SK extends EncryptorBase {
                     cipher.init(Cipher.DECRYPT_MODE, getKey());
                 }
                 return cipher.doFinal(data);
-            } catch (Exception ex) {
-            	throw new CryptoException("Could not decrypt data: " + ex.getLocalizedMessage(),ex);
+            } catch (CryptoException | InvalidKeyException | InvalidAlgorithmParameterException |
+                    IllegalBlockSizeException | BadPaddingException ex) {
+            	throw new CryptoException(
+                        "Could not decrypt data: " +
+                        getAlgorithm() + ":" +
+                        ex.getLocalizedMessage(),ex);
             }
         }
     }
     
     /**
      * 
-     * @return
+     * @return internal Key object
      * @throws CryptoException 
+     * @see Key
      */
     public Key getKey() throws CryptoException {
         return key;

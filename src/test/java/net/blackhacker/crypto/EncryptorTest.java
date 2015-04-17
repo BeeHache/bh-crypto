@@ -92,73 +92,73 @@ public class EncryptorTest {
             new Object[][] {
                 /* DES */
                 /* 0 */ {
-                    hold = EncryptorFactory.newDESWithECB(), 
-                    EncryptorFactory.newDESWithECB(), 
-                    EncryptorFactory.newDESWithECB(hold.getKeyEncoded())
+                    hold = EncryptorFactory.newEncryptorDESWithECB(), 
+                    EncryptorFactory.newEncryptorDESWithECB(), 
+                    EncryptorFactory.newEncryptorDESWithECB(hold.getKeyEncoded())
                 },
                 /* 1 */ {
-                    hold = EncryptorFactory.newDESWithCBC(iv8), 
-                    EncryptorFactory.newDESWithCBC(iv8), 
-                    EncryptorFactory.newDESWithCBC(iv8,hold.getKeyEncoded())
+                    hold = EncryptorFactory.newEncryptorDESWithCBC(iv8), 
+                    EncryptorFactory.newEncryptorDESWithCBC(iv8), 
+                    EncryptorFactory.newEncryptorDESWithCBC(iv8,hold.getKeyEncoded())
                 },
                 /* 2 */ {
-                    hold = EncryptorFactory.newDESWithCFB(iv8),
-                    EncryptorFactory.newDESWithCFB(iv8),
-                    EncryptorFactory.newDESWithCFB(iv8,hold.getKeyEncoded())
+                    hold = EncryptorFactory.newEncryptorDESWithCFB(iv8),
+                    EncryptorFactory.newEncryptorDESWithCFB(iv8),
+                    EncryptorFactory.newEncryptorDESWithCFB(iv8,hold.getKeyEncoded())
                 },
                 /* 3 */ {
-                    hold = EncryptorFactory.newDESWithOFB(iv8),
-                    EncryptorFactory.newDESWithOFB(iv8),
-                    EncryptorFactory.newDESWithOFB(iv8,hold.getKeyEncoded())
+                    hold = EncryptorFactory.newEncryptorDESWithOFB(iv8),
+                    EncryptorFactory.newEncryptorDESWithOFB(iv8),
+                    EncryptorFactory.newEncryptorDESWithOFB(iv8,hold.getKeyEncoded())
                 },
 
                 /* DESede */
                 /* 4 */ {
-                    hold = EncryptorFactory.newDESedeWithECB(),
-                    EncryptorFactory.newDESedeWithECB(),
-                    EncryptorFactory.newDESedeWithECB(hold.getKeyEncoded())
+                    hold = EncryptorFactory.newEncryptorDESedeWithECB(),
+                    EncryptorFactory.newEncryptorDESedeWithECB(),
+                    EncryptorFactory.newEncryptorDESedeWithECB(hold.getKeyEncoded())
                 },
                 /* 5 */ {
-                    hold = EncryptorFactory.newDESedeWithCBC(iv8),
-                    EncryptorFactory.newDESedeWithCBC(iv8),
-                    EncryptorFactory.newDESedeWithCBC(iv8,hold.getKeyEncoded())
+                    hold = EncryptorFactory.newEncryptorDESedeWithCBC(iv8),
+                    EncryptorFactory.newEncryptorDESedeWithCBC(iv8),
+                    EncryptorFactory.newEncryptorDESedeWithCBC(iv8,hold.getKeyEncoded())
                 },
                 /* 6 */ {
-                    hold = EncryptorFactory.newDESedeWithCFB(iv8),
-                    EncryptorFactory.newDESedeWithCFB(iv8),
-                    EncryptorFactory.newDESedeWithCFB(iv8,hold.getKeyEncoded())
+                    hold = EncryptorFactory.newEncryptorDESedeWithCFB(iv8),
+                    EncryptorFactory.newEncryptorDESedeWithCFB(iv8),
+                    EncryptorFactory.newEncryptorDESedeWithCFB(iv8,hold.getKeyEncoded())
                 },
                 /* 7 */ {
-                    hold = EncryptorFactory.newDESedeWithOFB(iv8),
-                    EncryptorFactory.newDESedeWithOFB(iv8),
-                    EncryptorFactory.newDESedeWithOFB(iv8,hold.getKeyEncoded())
+                    hold = EncryptorFactory.newEncryptorDESedeWithOFB(iv8),
+                    EncryptorFactory.newEncryptorDESedeWithOFB(iv8),
+                    EncryptorFactory.newEncryptorDESedeWithOFB(iv8,hold.getKeyEncoded())
                 },
                 
                 /* AES 128 */
                 /* 8 */ {
-                    hold = EncryptorFactory.newAES128WithECB(),
-                    EncryptorFactory.newAES128WithECB(),
-                    EncryptorFactory.newAES128WithECB(hold.getKeyEncoded())
+                    hold = EncryptorFactory.newEncryptorAES128WithECB(),
+                    EncryptorFactory.newEncryptorAES128WithECB(),
+                    EncryptorFactory.newEncryptorAES128WithECB(hold.getKeyEncoded())
                 },
                 /* 9 */ {
-                    hold = EncryptorFactory.newAES128WithCBC(iv16),
-                    EncryptorFactory.newAES128WithCBC(iv16),
-                    EncryptorFactory.newAES128WithCBC(iv16,hold.getKeyEncoded())
+                    hold = EncryptorFactory.newEncryptorAES128WithCBC(iv16),
+                    EncryptorFactory.newEncryptorAES128WithCBC(iv16),
+                    EncryptorFactory.newEncryptorAES128WithCBC(iv16, hold.getKeyEncoded())
                 },
                 /* 10 */ {
-                    hold = EncryptorFactory.newAES128WithCFB(iv16), 
-                    EncryptorFactory.newAES128WithCFB(iv16), 
-                    EncryptorFactory.newAES128WithCFB(iv16,hold.getKeyEncoded())
+                    hold = EncryptorFactory.newEncryptorAES128WithCFB(iv16), 
+                    EncryptorFactory.newEncryptorAES128WithCFB(iv16), 
+                    EncryptorFactory.newEncryptorAES128WithCFB(iv16,hold.getKeyEncoded())
                 },
                 /* 11 */ {
-                    hold = EncryptorFactory.newAES128WithOFB(iv16),
-                    EncryptorFactory.newAES128WithOFB(iv16),
-                    EncryptorFactory.newAES128WithOFB(iv16,hold.getKeyEncoded())
+                    hold = EncryptorFactory.newEncryptorAES128WithOFB(iv16),
+                    EncryptorFactory.newEncryptorAES128WithOFB(iv16),
+                    EncryptorFactory.newEncryptorAES128WithOFB(iv16,hold.getKeyEncoded())
                 },
                 /* 12 */ {
-                    hold = EncryptorFactory.newAES128WithCTR(iv16),
-                    EncryptorFactory.newAES128WithCTR(iv16),
-                    EncryptorFactory.newAES128WithCTR(iv16,hold.getKeyEncoded())
+                    hold = EncryptorFactory.newEncryptorAES128WithCTR(iv16),
+                    EncryptorFactory.newEncryptorAES128WithCTR(iv16),
+                    EncryptorFactory.newEncryptorAES128WithCTR(iv16,hold.getKeyEncoded())
                 },
             }));
         
@@ -167,16 +167,52 @@ public class EncryptorTest {
                 Arrays.asList(
                     new Object[][] {
                     /* AES 192 */
-                     { hold = EncryptorFactory.newAES192WithECB(), EncryptorFactory.newAES192WithECB(), EncryptorFactory.newAES192WithECB(hold.getKeyEncoded())},
-                     //{ hold = EncryptorFactory.newAES192WithCBC(iv16), EncryptorFactory.newAES192WithCBC(iv16), EncryptorFactory.newAES192WithCBC(iv16,hold.getKeyEncoded())},
-                     //{ hold = EncryptorFactory.newAES192WithCFB(iv16), EncryptorFactory.newAES192WithCFB(iv16), EncryptorFactory.newAES192WithCFB(iv16,hold.getKeyEncoded())},
-                     //{ hold = EncryptorFactory.newAES192WithOFB(iv16), EncryptorFactory.newAES192WithOFB(iv16), EncryptorFactory.newAES192WithOFB(iv16,hold.getKeyEncoded())},
-                     //{ hold = EncryptorFactory.newAES192WithCTR(iv16), EncryptorFactory.newAES192WithCTR(iv16), EncryptorFactory.newAES192WithCTR(iv16,hold.getKeyEncoded())},
+                     {
+                         hold = EncryptorFactory.newEncryptorAES192WithECB(),
+                         EncryptorFactory.newEncryptorAES192WithECB(),
+                         EncryptorFactory.newEncryptorAES192WithECB(hold.getKeyEncoded())
+                     },
+                     /*
+                     {
+                        hold = EncryptorFactory.newAES192WithCBC(iv16),
+                        EncryptorFactory.newAES192WithCBC(iv16), 
+                        EncryptorFactory.newAES192WithCBC(iv16,hold.getKeyEncoded())
+                     },
+                     {
+                        hold = EncryptorFactory.newAES192WithCFB(iv16),
+                        EncryptorFactory.newAES192WithCFB(iv16),
+                        EncryptorFactory.newAES192WithCFB(iv16,hold.getKeyEncoded())
+                     },
+                     {
+                        hold = EncryptorFactory.newAES192WithOFB(iv16),
+                        EncryptorFactory.newAES192WithOFB(iv16),
+                        EncryptorFactory.newAES192WithOFB(iv16,hold.getKeyEncoded())
+                     },
+                     {
+                        hold = EncryptorFactory.newAES192WithCTR(iv16), 
+                        EncryptorFactory.newAES192WithCTR(iv16), 
+                        EncryptorFactory.newAES192WithCTR(iv16,hold.getKeyEncoded())
+                     },
+                     */
 
                     /* AES OCB */
-                    { hold = EncryptorFactory.newAES128WithOCB(iv16), EncryptorFactory.newAES128WithOCB(iv16), EncryptorFactory.newAES128WithOCB(iv16,hold.getKeyEncoded())},
-                    //{ hold = EncryptorFactory.newAES192WithOCB(iv16), EncryptorFactory.newAES192WithOCB(iv16), EncryptorFactory.newAES192WithOCB(iv16,hold.getKeyEncoded())},
-                    //{ hold = EncryptorFactory.newAES255WithOCB(iv16), EncryptorFactory.newAES255WithOCB(iv16), EncryptorFactory.newAES255WithOCB(iv16,hold.getKeyEncoded())},
+                    {
+                        hold = EncryptorFactory.newEncryptorAES128WithOCB(iv16), 
+                        EncryptorFactory.newEncryptorAES128WithOCB(iv16), 
+                        EncryptorFactory.newEncryptorAES128WithOCB(iv16,hold.getKeyEncoded())
+                    },
+                    /*
+                    {
+                        hold = EncryptorFactory.newAES192WithOCB(iv16), 
+                        EncryptorFactory.newAES192WithOCB(iv16), 
+                        EncryptorFactory.newAES192WithOCB(iv16,hold.getKeyEncoded())
+                    },
+                    {
+                        hold = EncryptorFactory.newAES255WithOCB(iv16), 
+                        EncryptorFactory.newAES255WithOCB(iv16), 
+                        EncryptorFactory.newAES255WithOCB(iv16,hold.getKeyEncoded())
+                    },
+                    */
                 })
             );
         }
@@ -195,7 +231,6 @@ public class EncryptorTest {
     
     @Test
     public void encryptionTest() throws CryptoException {
-        System.out.println("Testing '" + friend.getAlgorithm()+"'");
         byte[] friendCipherBytes = friend.encrypt(message.getBytes(StandardCharsets.UTF_8));
         assertNotNull("friend.encrypt: failed", friendCipherBytes);
 
@@ -207,7 +242,8 @@ public class EncryptorTest {
 
         byte[] clearbytes = friend.decrypt(friendCipherBytes);
         assertNotNull("friend.decrypt: clearbytes null", clearbytes);
-        assertEquals("friend.decrypt: friend can't decrypt friendCipherBytes", message, new String(clearbytes, StandardCharsets.UTF_8));
+        assertEquals("friend.decrypt: friend can't decrypt friendCipherBytes",
+                message, new String(clearbytes, StandardCharsets.UTF_8));
 
         try {
             byte[] clearbytes2 = foe.decrypt(friendCipherBytes);

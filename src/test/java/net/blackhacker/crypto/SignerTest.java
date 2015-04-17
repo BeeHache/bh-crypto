@@ -57,8 +57,8 @@ public class SignerTest {
             Security.insertProviderAt(new BouncyCastleProvider(),1);            
     
             
-            friends = new SK[]{EncryptorFactory.newDESWithECB()};
-            foes = new SK[]{EncryptorFactory.newDESWithECB()};
+            friends = new SK[]{EncryptorFactory.newEncryptorDESWithECB()};
+            foes = new SK[]{EncryptorFactory.newEncryptorDESWithECB()};
             signerFriend= SignerFactory.newSignerDESwithMD5();
             signerFoe = SignerFactory.newSignerDESwithMD5();
         } catch (CryptoException ex) {

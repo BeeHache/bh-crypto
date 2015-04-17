@@ -44,7 +44,7 @@ final public class EncryptorFactory {
      * @throws CryptoException
      * @see PK
      */
-    static public PK newRSA() throws CryptoException {
+    static public PK newEncryptorRSA() throws CryptoException {
         return new PK("RSA", null);
     }
     
@@ -55,36 +55,33 @@ final public class EncryptorFactory {
      * @param privateKeyEncoded
      * @return PK object
      * @throws CryptoException
+     * @see PK
      */
-    static public PK newRSA(final byte[] publicKeyEncoded, final byte[] privateKeyEncoded) throws CryptoException {
+    static public PK newEncryptorRSA(final byte[] publicKeyEncoded, final byte[] privateKeyEncoded) 
+            throws CryptoException {
         return new PK("RSA", null, publicKeyEncoded, privateKeyEncoded);
     }
 
-
     /**
-     * Factory method initialized with :
+     * Factory method for generating SK object using DES algorithm in ECB mode
      * 
-     * Algorithm : DES
-     * Mode : ECB
-     * 
-     * @return
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
-    final static public SK newDESWithECB() throws CryptoException {
+    final static public SK newEncryptorDESWithECB() throws CryptoException {
         return new SK("DES/ECB/PKCS5Padding", "DES", null);
     }
 
     /**
-     * Factory method initialized with :
-     * 
-     * Algorithm : DES
-     * Mode : ECB
+     * Factory method for building SK object from encoded key using DES algorithm in ECB mode
      * 
      * @param key
-     * @return
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
-    final static public SK newDESWithECB(byte[] key) throws CryptoException {
+    final static public SK newEncryptorDESWithECB(byte[] key) throws CryptoException {
         try {
             return new SK("DES/ECB/PKCS5Padding", "DES", null, new DESKeySpec(key));
         } catch (InvalidKeyException ex) {
@@ -93,33 +90,31 @@ final public class EncryptorFactory {
     }    
     
     /**
-     * Factory method initialized with :
+     * Factory method for generating a new SK object using DES algorithm in CBC mode
+     * with the given IV
      * 
-     * Algorithm : DES
-     * Mode : CBC
-     *
-     * @param iv initialization vector
-     * @return
+     * @param iv
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
-    final static public SK newDESWithCBC(byte[] iv) throws CryptoException {
+    final static public SK newEncryptorDESWithCBC(byte[] iv) throws CryptoException {
         return new SK("DES/CBC/PKCS5Padding", "DES", IV64_BIT_CHECK(iv));
     }
 
     /**
-     * Factory method initialized with :
+     * Factory method for building an SK object from the encoded key using DES
+     * algorithm in CBC mode with the given IV
      * 
-     * Algorithm : DES
-     * Mode : CBC
-     *
      * @param iv
      * @param key
-     * @return
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
-    final static public SK newDESWithCBC(byte[] iv, byte[] key) throws CryptoException {
+    final static public SK newEncryptorDESWithCBC(byte[] iv, byte[] key) throws CryptoException {
         try {
-            return new SK("DES/CBC/PKCS5Padding","DES",IV64_BIT_CHECK(iv),new DESKeySpec(key)
+            return new SK("DES/CBC/PKCS5Padding","DES", IV64_BIT_CHECK(iv), new DESKeySpec(key)
             );
         } catch (InvalidKeyException ex) {
             throw new CryptoException(ex);
@@ -127,40 +122,41 @@ final public class EncryptorFactory {
     }    
     
     /**
-     * Factory method initialized with :
+     * Factory method for generating an SK object using DES algorithm in CBC mode
+     * with the given IV
      * 
-     * Algorithm : DES
-     * Mode : CBC
-     *
-     * @return
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
-    final static public SK newDESWithCBC() throws CryptoException {
-        return newDESWithCBC(RANDOM_64_BITS());
+    final static public SK newEncryptorDESWithCBC() throws CryptoException {
+        return newEncryptorDESWithCBC(DEFAULT_IV64);
     }
 
     /**
-     * Algorithm : DES
-     * Mode : CFB
-     *
+     * Factory method for generating an SK object using DES algorithm in CFB mode
+     * with the given IV
+     * 
      * @param iv
-     * @return
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
-    final static public SK newDESWithCFB(byte[] iv) throws CryptoException {
+    final static public SK newEncryptorDESWithCFB(byte[] iv) throws CryptoException {
         return new SK("DES/CFB/PKCS5Padding", "DES", IV64_BIT_CHECK(iv));
     }
 
     /**
-     * Algorithm : DES
-     * Mode : CFB
-     *
+     * Factory method for building an SK object from the encoded key using DES
+     * algorithm in CFB mode with the given IV
+     * 
      * @param iv
      * @param key
-     * @return
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
-    final static public SK newDESWithCFB(byte[] iv, byte[] key) throws CryptoException {
+    final static public SK newEncryptorDESWithCFB(byte[] iv, byte[] key) throws CryptoException {
         try {
             return new SK("DES/CFB/PKCS5Padding","DES", IV64_BIT_CHECK(iv), new DESKeySpec(key)
             );
@@ -170,38 +166,40 @@ final public class EncryptorFactory {
     }    
     
     /**
-     * Algorithm : DES
-     * Mode : CFB
-     *
-     * @return
+     * Factory method for generating an SK object using DES algorithm in CFB mode
+     * 
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
-    final static public SK newDESWithCFB() throws CryptoException {
-        return newDESWithCFB(RANDOM_64_BITS());
+    final static public SK newEncryptorDESWithCFB() throws CryptoException {
+        return newEncryptorDESWithOFB(DEFAULT_IV64);
     }    
 
     /**
-     * Algorithm : DES
-     * Mode : OFB
-     *
+     * Factory method for building an SK object using DES algorithm in OFB mode
+     * with the given IV
+     * 
      * @param iv
-     * @return
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
-    final static public SK newDESWithOFB(byte[] iv) throws CryptoException {
+    final static public SK newEncryptorDESWithOFB(byte[] iv) throws CryptoException {
         return new SK("DES/OFB/PKCS5Padding", "DES", IV64_BIT_CHECK(iv));
     }
 
     /**
-     * Algorithm : DES
-     * Mode : OFB
-     *
+     * Factory method for building an SK object from the encoded key using DES
+     * algorithm in OFB mode with the given IV
+     * 
      * @param iv
      * @param key
-     * @return
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
-    final static public SK newDESWithOFB(byte[] iv, byte[] key) throws CryptoException {
+    final static public SK newEncryptorDESWithOFB(byte[] iv, byte[] key) throws CryptoException {
         try {
             return new SK("DES/OFB/PKCS5Padding","DES", IV64_BIT_CHECK(iv), new DESKeySpec(key));
         } catch (InvalidKeyException ex) {
@@ -210,14 +208,14 @@ final public class EncryptorFactory {
     }
     
     /**
-     * Algorithm : DES
-     * Mode : OFB
-     *
-     * @return
+     * Factory method for building an SK object using DES algorithm in OFB mode
+     * 
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
-    final static public SK newDESWithOFB() throws CryptoException {
-        return newDESWithOFB(RANDOM_64_BITS());
+    final static public SK newEncryptorDESWithOFB() throws CryptoException {
+        return newEncryptorDESWithOFB(DEFAULT_IV64);
     }
     
     
@@ -228,7 +226,7 @@ final public class EncryptorFactory {
      * @return
      * @throws CryptoException
      */
-    final static public SK newDESedeWithECB() throws CryptoException {
+    final static public SK newEncryptorDESedeWithECB() throws CryptoException {
         return new SK("DESede/ECB/PKCS5Padding", "DESede", null);
     }
 
@@ -240,13 +238,13 @@ final public class EncryptorFactory {
      * @return
      * @throws CryptoException
      */
-    final static public SK newDESedeWithECB(byte[] key) throws CryptoException {
+    final static public SK newEncryptorDESedeWithECB(byte[] key) throws CryptoException {
         try {
             return new SK("DESede/ECB/PKCS5Padding", "DESede", null, new DESedeKeySpec(key));
         } catch (InvalidKeyException ex) {
             throw new CryptoException(ex);
         }
-    }    
+    }
     
     /**
      * Algorithm : Triple DES
@@ -256,7 +254,7 @@ final public class EncryptorFactory {
      * @return
      * @throws CryptoException
      */
-    final static public SK newDESedeWithCBC(byte[] iv) throws CryptoException {
+    final static public SK newEncryptorDESedeWithCBC(byte[] iv) throws CryptoException {
         return new SK("DESede/CBC/PKCS5Padding", "DESede", IV64_BIT_CHECK(iv));
     }
 
@@ -267,7 +265,7 @@ final public class EncryptorFactory {
      * @return
      * @throws CryptoException
      */
-    final static public SK newDESedeWithCBC(byte[] iv, byte[] key) throws CryptoException {
+    final static public SK newEncryptorDESedeWithCBC(byte[] iv, byte[] key) throws CryptoException {
         try {
             return new SK("DESede/CBC/PKCS5Padding","DESede", IV64_BIT_CHECK(iv), new DESedeKeySpec(key));
         } catch (InvalidKeyException ex) {
@@ -280,8 +278,8 @@ final public class EncryptorFactory {
      * @return
      * @throws CryptoException
      */
-    final static public SK newDESedeWithCBC() throws CryptoException {
-        return newDESedeWithCBC(RANDOM_64_BITS());
+    final static public SK newEncryptorDESedeWithCBC() throws CryptoException {
+        return newEncryptorDESedeWithCBC(DEFAULT_IV64);
     }
     
     /**
@@ -290,7 +288,7 @@ final public class EncryptorFactory {
      * @return
      * @throws CryptoException
      */
-    final static public SK newDESedeWithCFB(byte[] iv) throws CryptoException {
+    final static public SK newEncryptorDESedeWithCFB(byte[] iv) throws CryptoException {
         return new SK("DESede/CFB/PKCS5Padding", "DESede", IV64_BIT_CHECK(iv)
         );
     }
@@ -302,7 +300,7 @@ final public class EncryptorFactory {
      * @return
      * @throws CryptoException
      */
-    final static public SK newDESedeWithCFB(byte[] iv, byte[] key) throws CryptoException {
+    final static public SK newEncryptorDESedeWithCFB(byte[] iv, byte[] key) throws CryptoException {
         try {
             return new SK("DESede/CFB/PKCS5Padding","DESede", IV64_BIT_CHECK(iv), new DESedeKeySpec(key));
         } catch (InvalidKeyException ex) {
@@ -315,8 +313,8 @@ final public class EncryptorFactory {
      * @return
      * @throws CryptoException
      */
-    final static public SK newDESedeWithCFB() throws CryptoException {
-        return newDESedeWithCFB(RANDOM_64_BITS());
+    final static public SK newEncryptorDESedeWithCFB() throws CryptoException {
+        return newEncryptorDESedeWithCFB(DEFAULT_IV64);
     }
     
     /**
@@ -325,7 +323,7 @@ final public class EncryptorFactory {
      * @return
      * @throws CryptoException
      */
-    final static public SK newDESedeWithOFB(byte[] iv) throws CryptoException {
+    final static public SK newEncryptorDESedeWithOFB(byte[] iv) throws CryptoException {
         return new SK("DESede/OFB/PKCS5Padding", "DESede", IV64_BIT_CHECK(iv));
     }
 
@@ -336,7 +334,7 @@ final public class EncryptorFactory {
      * @return
      * @throws CryptoException
      */
-    final static public SK newDESedeWithOFB(byte[] iv, byte[] key) throws CryptoException {
+    final static public SK newEncryptorDESedeWithOFB(byte[] iv, byte[] key) throws CryptoException {
         try {
             return new SK(
                     "DESede/OFB/PKCS5Padding",
@@ -354,16 +352,17 @@ final public class EncryptorFactory {
      * @return
      * @throws CryptoException
      */
-    final static public SK newDESedeWithOFB() throws CryptoException {
-        return newDESedeWithOFB(RANDOM_64_BITS());
+    final static public SK newEncryptorDESedeWithOFB() throws CryptoException {
+        return newEncryptorDESedeWithOFB(DEFAULT_IV64);
     }
+
     /**
      *
      * @param key
      * @return
      * @throws CryptoException
      */
-    final static public SK newAES128WithECB(byte[] key) throws CryptoException {
+    final static public SK newEncryptorAES128WithECB(byte[] key) throws CryptoException {
         return new SK(
                 "AES/ECB/PKCS5Padding",
                 "AES",
@@ -377,8 +376,28 @@ final public class EncryptorFactory {
      * @return
      * @throws CryptoException
      */
-    final static public SK newAES128WithECB() throws CryptoException {
-        return newAES128WithECB(RANDOM_BITS(128));
+    final static public SK newEncryptorAES128WithECB() throws CryptoException {
+        return newEncryptorAES128WithECB(RANDOM_BITS(128));
+    }    
+    
+    
+    /**
+     *
+     * @param iv
+     * @return
+     * @throws CryptoException
+     */
+    final static public SK newEncryptorAES128WithCBC(byte[] iv) throws CryptoException {
+        return new SK("AES/CBC/PKCS5Padding", "AES", IV128_BIT_CHECK(iv));
+    }
+
+    /**
+     *
+     * @return
+     * @throws CryptoException
+     */
+    final static public SK newEncryptorAES128WithCBC() throws CryptoException {
+        return newEncryptorAES128WithCBC(DEFAULT_IV128);
     }
     
     /**
@@ -388,7 +407,7 @@ final public class EncryptorFactory {
      * @return
      * @throws CryptoException
      */
-    final static public SK newAES128WithCBC(byte[] iv, byte[] key) throws CryptoException {
+    final static public SK newEncryptorAES128WithCBC(byte[] iv, byte[] key) throws CryptoException {
         return new SK(
                 "AES/CBC/PKCS5Padding",
                 "AES",
@@ -400,30 +419,11 @@ final public class EncryptorFactory {
     /**
      *
      * @param iv
-     * @return
-     * @throws CryptoException
-     */
-    final static public SK newAES128WithCBC(byte[] iv) throws CryptoException {
-        return newAES128WithCBC(iv, RANDOM_128_BITS());
-    }
-    
-    /**
-     *
-     * @return
-     * @throws CryptoException
-     */
-    final static public SK newAES128WithCBC() throws CryptoException {
-        return newAES128WithCBC(RANDOM_128_BITS(), RANDOM_128_BITS());
-    }
-
-    /**
-     *
-     * @param iv
      * @param key
      * @return
      * @throws CryptoException
      */
-    final static public SK newAES128WithCFB(final byte[] iv, final byte[] key) 
+    final static public SK newEncryptorAES128WithCFB(final byte[] iv, final byte[] key) 
             throws CryptoException {
         return new SK(
                 "AES/CFB/PKCS5Padding",
@@ -439,8 +439,8 @@ final public class EncryptorFactory {
      * @return
      * @throws CryptoException
      */
-    final static public SK newAES128WithCFB(final byte[] iv) throws CryptoException {
-        return newAES128WithCFB(iv, RANDOM_128_BITS());
+    final static public SK newEncryptorAES128WithCFB(final byte[] iv) throws CryptoException {
+        return newEncryptorAES128WithCFB(iv, RANDOM_128_BITS());
     }
     
     /**
@@ -448,8 +448,8 @@ final public class EncryptorFactory {
      * @return
      * @throws CryptoException
      */
-    final static public SK newAES128WithCFB() throws CryptoException {
-        return newAES128WithCFB(DEFAULT_IV128, RANDOM_128_BITS());
+    final static public SK newEncryptorAES128WithCFB() throws CryptoException {
+        return newEncryptorAES128WithCFB(DEFAULT_IV128, RANDOM_128_BITS());
     }
 
     /**
@@ -459,7 +459,7 @@ final public class EncryptorFactory {
      * @return
      * @throws CryptoException
      */
-    final static public SK newAES128WithOFB(byte[] iv, byte[] key) throws CryptoException {
+    final static public SK newEncryptorAES128WithOFB(byte[] iv, byte[] key) throws CryptoException {
         return new SK(
                 "AES/OFB/PKCS5Padding",
                 "AES",
@@ -474,8 +474,8 @@ final public class EncryptorFactory {
      * @return
      * @throws CryptoException
      */
-    final static public SK newAES128WithOFB(byte[] iv) throws CryptoException {
-        return newAES128WithOFB(iv, RANDOM_128_BITS());
+    final static public SK newEncryptorAES128WithOFB(byte[] iv) throws CryptoException {
+        return newEncryptorAES128WithOFB(iv, RANDOM_128_BITS());
     }
     
     /**
@@ -483,8 +483,8 @@ final public class EncryptorFactory {
      * @return
      * @throws CryptoException
      */
-    final static public SK newAES128WithOFB() throws CryptoException {
-        return newAES128WithOFB(DEFAULT_IV128, RANDOM_128_BITS());
+    final static public SK newEncryptorAES128WithOFB() throws CryptoException {
+        return newEncryptorAES128WithOFB(DEFAULT_IV128, RANDOM_128_BITS());
     }
     
     /**
@@ -494,7 +494,7 @@ final public class EncryptorFactory {
      * @return
      * @throws CryptoException
      */
-    final static public SK newAES128WithCTR(byte[] iv, byte[] key) throws CryptoException {
+    final static public SK newEncryptorAES128WithCTR(byte[] iv, byte[] key) throws CryptoException {
         return new SK(
                 "AES/CTR/PKCS5Padding",
                 "AES",
@@ -509,8 +509,8 @@ final public class EncryptorFactory {
      * @return
      * @throws CryptoException
      */
-    final static public SK newAES128WithCTR(byte[] iv) throws CryptoException {
-        return newAES128WithCTR(iv, RANDOM_128_BITS());
+    final static public SK newEncryptorAES128WithCTR(byte[] iv) throws CryptoException {
+        return newEncryptorAES128WithCTR(iv, RANDOM_128_BITS());
     }
     
     /**
@@ -518,8 +518,8 @@ final public class EncryptorFactory {
      * @return
      * @throws CryptoException
      */
-    final static public SK newAES128WithCTR() throws CryptoException {
-        return newAES128WithCTR(DEFAULT_IV128, RANDOM_128_BITS());
+    final static public SK newEncryptorAES128WithCTR() throws CryptoException {
+        return newEncryptorAES128WithCTR(DEFAULT_IV128, RANDOM_128_BITS());
     }
     
 
@@ -530,7 +530,7 @@ final public class EncryptorFactory {
      * @return
      * @throws CryptoException
      */
-    final static public SK newAES128WithOCB(byte[] iv, byte[] key) throws CryptoException {
+    final static public SK newEncryptorAES128WithOCB(byte[] iv, byte[] key) throws CryptoException {
         return new SK(
                 "AES/OCB/PKCS5Padding",
                 "AES",
@@ -545,8 +545,8 @@ final public class EncryptorFactory {
      * @return
      * @throws CryptoException
      */
-    final static public SK newAES128WithOCB(byte[] iv) throws CryptoException {
-        return newAES128WithOCB(iv, RANDOM_128_BITS());
+    final static public SK newEncryptorAES128WithOCB(byte[] iv) throws CryptoException {
+        return newEncryptorAES128WithOCB(iv, RANDOM_128_BITS());
     }
     
     /**
@@ -554,8 +554,8 @@ final public class EncryptorFactory {
      * @return
      * @throws CryptoException
      */
-    final static public SK newAES128WithOCB() throws CryptoException {
-        return newAES128WithOCB(DEFAULT_IV128, RANDOM_128_BITS());
+    final static public SK newEncryptorAES128WithOCB() throws CryptoException {
+        return newEncryptorAES128WithOCB(DEFAULT_IV128, RANDOM_128_BITS());
     }
 
     /**
@@ -564,7 +564,7 @@ final public class EncryptorFactory {
      * @return
      * @throws CryptoException
      */
-    final static public SK newAES192WithECB(byte[] key) throws CryptoException {
+    final static public SK newEncryptorAES192WithECB(byte[] key) throws CryptoException {
         return new SK("AES/ECB/PKCS5Padding","AES",null,KEY192_BIT_CHECK(key, "AES"));
     }    
     
@@ -573,8 +573,8 @@ final public class EncryptorFactory {
      * @return
      * @throws CryptoException
      */
-    final static public SK newAES192WithECB() throws CryptoException {
-        return newAES192WithECB(RANDOM_192_BITS());
+    final static public SK newEncryptorAES192WithECB() throws CryptoException {
+        return newEncryptorAES192WithECB(RANDOM_192_BITS());
     }
     
     /**
@@ -584,7 +584,7 @@ final public class EncryptorFactory {
      * @throws CryptoException
      */
     final static public SK newARANDOM_BITS92WithCBC(byte[] iv) throws CryptoException {
-        return newAES192WithCBC(iv, RANDOM_192_BITS());
+        return newEncryptorAES192WithCBC(iv, RANDOM_192_BITS());
     }
 
     /**
@@ -594,7 +594,7 @@ final public class EncryptorFactory {
      * @return
      * @throws CryptoException
      */
-    final static public SK newAES192WithCBC(byte[] iv, byte[] key) throws CryptoException {
+    final static public SK newEncryptorAES192WithCBC(byte[] iv, byte[] key) throws CryptoException {
         return new SK(
                 "AES/CBC/PKCS5Padding",
                 "AES",
@@ -608,8 +608,8 @@ final public class EncryptorFactory {
      * @return
      * @throws CryptoException
      */
-    final static public SK getInstancRANDOM_BITSS192WithCBC() throws CryptoException {
-        return newAES192WithCBC(DEFAULT_IV128, RANDOM_192_BITS());
+    final static public SK newEncryptorAES192WithCBC() throws CryptoException {
+        return newEncryptorAES192WithCBC(DEFAULT_IV128, RANDOM_192_BITS());
     }
     
     

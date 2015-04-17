@@ -31,9 +31,10 @@ package net.blackhacker.crypto;
 public interface Digester {
 
     /**
-     *
+     * Returns an digest of the given byte array
+     * 
      * @param data
-     * @return
+     * @return digest of data
      */
     public byte[] digest(byte[] data);
 }
