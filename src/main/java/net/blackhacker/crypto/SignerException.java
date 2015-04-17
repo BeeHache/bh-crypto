@@ -26,7 +26,7 @@ package net.blackhacker.crypto;
 
 /**
  *
- * @author ben
+ * @author Benjamin King aka Blackhacker(bh@blackhacker.net)
  */
 public class SignerException extends Exception {
 

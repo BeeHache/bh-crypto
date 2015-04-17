@@ -24,6 +24,8 @@
 
 package net.blackhacker.crypto;
 
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -32,19 +34,34 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.EncodedKeySpec;
+import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
 
 /**
- *
- * @author ben
+ * Base class for all implementations of Asymetric (Public Key) Encryption
+ * 
+ * @author Benjamin King aka Blackhacker(bh@blackhacker.net)
+ * @see java.security.PrivateKey
+ * @see java.security.PublicKey
  */
-abstract public class PK extends Encryptor {
+
+public class PK extends EncryptorBase {
     final private PublicKey publicKey;
     final private PrivateKey privateKey;
     
-    public  PK(String algorithm, AlgorithmParameterSpec algorithmParameterSpec) throws CryptoException {
+    /**
+     * Constructor that generates random key pair.
+     * 
+     * @param algorithm
+     * @param algorithmParameterSpec 
+     * @throws CryptoException
+     * @see AlgorithmParameterSpec
+     */
+    protected  PK(String algorithm, AlgorithmParameterSpec algorithmParameterSpec) throws CryptoException {
         super(algorithm, algorithmParameterSpec);
         try {
             KeyPairGenerator kpg = KeyPairGenerator.getInstance(algorithm);
@@ -52,20 +69,24 @@ abstract public class PK extends Encryptor {
             KeyPair kp = kpg.generateKeyPair();        
             publicKey = kp.getPublic();
             privateKey = kp.getPrivate();
+            
         } catch (NoSuchAlgorithmException e) {
             throw new CryptoException(e);
         }
     }
     
     /**
-     *
+     * Constructor build public and private keys from the parameterSpec, and the
+     * encoded keys
+     * 
      * @param algorithm
      * @param algorithmParameterSpec
      * @param publicKeyEncoded
      * @param privateKeyEncoded
-     * @throws net.blackhacker.crypto.CryptoException
+     * @throws CryptoException
+     * @see AlgorithmParameterSpec
      */
-    public PK(String algorithm, AlgorithmParameterSpec algorithmParameterSpec, byte[] publicKeyEncoded, byte[] privateKeyEncoded) throws CryptoException {
+    protected PK(String algorithm, AlgorithmParameterSpec algorithmParameterSpec, byte[] publicKeyEncoded, byte[] privateKeyEncoded) throws CryptoException {
         super(algorithm, algorithmParameterSpec);
         try {
             EncodedKeySpec pubSpec = new X509EncodedKeySpec(publicKeyEncoded);
@@ -73,19 +94,20 @@ abstract public class PK extends Encryptor {
             KeyFactory kf = KeyFactory.getInstance(getAlgorithm());
             publicKey = kf.generatePublic(pubSpec);
             privateKey = kf.generatePrivate(privSpec);
-        } catch(Exception e) {
+        } catch(NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new CryptoException(e);
         }
     }
 
     /**
-     *
-     * @param data
-     * @return
+     * Encrypts array of bytes
+     * 
+     * @param clearBytes
+     * @return encrypted version of clearBytes
      * @throws CryptoException
      */
     @Override
-    public byte[] encrypt(byte[] data) throws CryptoException {
+    public byte[] encrypt(byte[] clearBytes) throws CryptoException {
         AlgorithmParameterSpec param = getAlgorithmParameterSpec();
         synchronized(getCipher()) {
             try {
@@ -94,21 +116,22 @@ abstract public class PK extends Encryptor {
                 } else {
                     getCipher().init(Cipher.ENCRYPT_MODE, publicKey);
                 }
-                return getCipher().doFinal(data);
-            } catch (Exception ex) {
+                return getCipher().doFinal(clearBytes);
+            } catch (InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException ex) {
             	throw new CryptoException("Could not encrypt data: " + ex.getLocalizedMessage(),ex);
             }
         }
     }
     
     /**
+     * Decrypts array of bytes
      * 
-     * @param data
-     * @return
+     * @param cipherBytes
+     * @return clear version of cipherBytes
      * @throws CryptoException 
      */
     @Override
-    public byte[] decrypt(byte[] data) throws CryptoException {
+    public byte[] decrypt(byte[] cipherBytes) throws CryptoException {
         AlgorithmParameterSpec param = getAlgorithmParameterSpec();
         synchronized(getCipher()) {
             try {
@@ -117,27 +140,30 @@ abstract public class PK extends Encryptor {
                 } else {
                     getCipher().init(Cipher.DECRYPT_MODE, privateKey);
                 }
-                return getCipher().doFinal(data);
-            } catch (Exception ex) {
+                return getCipher().doFinal(cipherBytes);
+            } catch (InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException ex) {
             	throw new CryptoException("Could not encrypt data: " + ex.getLocalizedMessage(),ex);
             }
         }
     }
-    
-    
-    public PublicKey getPublicKey() {
+
+    /**
+     * Gets internal PubicKey object
+     * 
+     * @return PublicKey
+     * @see PublicKey
+     */
+    final public PublicKey getPublicKey() {
         return publicKey;
     }
 
-    public PrivateKey getPrivateKey() {
+    /**
+     * Gets internal PrivateKey object
+     * 
+     * @return PrivateKey
+     * @see PrivateKey
+     */
+    final public PrivateKey getPrivateKey() {
         return privateKey;
-    }
-    
-    public byte[] getPublicKeyEncoded() {
-        return publicKey.getEncoded();
-    }
-    
-    public byte[] getPrivateKeyEncoded() {
-        return privateKey.getEncoded();
     }
 }

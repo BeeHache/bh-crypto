@@ -24,29 +24,58 @@
 
 package net.blackhacker.crypto;
 
+import java.util.Arrays;
+
 /**
  *
  * @author Benjamin King aka Blackhacker(bh@blackhacker.net)
  */
-public interface Signer {
+public class SignerBase implements Signer{
+    final private Encryptor encryptor;
+    final private Digester md;
+    
+    protected SignerBase(Encryptor crypto, Digester md) {
+        this.encryptor = crypto;
+        this.md = md;
+    }
 
+
+    
     /**
-     * Signs given object
+     * signs an array of bytes
      * 
-     * @param data bytes that should be signed
-     * @return signature
-     * @throws SignerException
+     * @param data
+     * @return signature for given data
+     * @throws net.blackhacker.crypto.SignerException
      */
-    public byte[] sign(byte[] data) throws SignerException;
-
+    @Override
+    public byte[] sign(byte[] data) throws SignerException {
+        try {
+            byte[] digest = md.digest(data);
+            return encryptor.encrypt(digest);
+        } catch (CryptoException ex) {
+            throw new SignerException("Couldn't sign data",ex);
+        }
+    }
+    
     /**
-     * Verifies that the given signature of the given data was created by the
-     * internally stored key(s)
+     * verifies signature for a given array of bytes
      * 
      * @param data
      * @param signature
-     * @return true if the signature is valid
-     * @throws SignerException
+     * @return true 
+     * @throws net.blackhacker.crypto.SignerException 
      */
-    public boolean verify(byte[] data, byte[] signature) throws SignerException;
+    @Override
+    public boolean verify(byte[] data, byte[] signature) throws SignerException {
+        try {
+            byte[] d = md.digest(data);
+            byte[] c = encryptor.decrypt(signature);
+            return Arrays.equals(d, c);
+        } catch(CryptoException ex) {
+            return false;
+        } catch (Exception ex) {
+            throw new SignerException("Couldn't verify signature",ex);
+        }
+    }
 }

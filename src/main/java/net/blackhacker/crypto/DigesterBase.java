@@ -24,55 +24,62 @@
 
 package net.blackhacker.crypto;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 /**
  *
  * @author Benjamin King aka Blackhacker(bh@blackhacker.net)
  */
-public class CryptoException extends Exception {
-	private static final long serialVersionUID = 5053734212036543935L;
+public class DigesterBase implements Digester {
+    final private MessageDigest messageDigest;
+    
+    /**
+     * Constructor
+     * 
+     * @param algorithm
+     * @throws net.blackhacker.crypto.DigesterException
+     */
+    protected DigesterBase(String algorithm) throws DigesterException {
+    	try {
+            messageDigest = MessageDigest.getInstance(algorithm);
+    	} catch(NoSuchAlgorithmException e) {
+            throw new DigesterException(e);
+    	}
+    }
+    
+    /**
+     * Constructor
+     * 
+     * @param messageDigest
+     * @see MessageDigest
+     */
+    protected DigesterBase(MessageDigest messageDigest){
+        if (messageDigest==null)
+            throw new NullPointerException();
+        
+        this.messageDigest = messageDigest;
+    }
 
     /**
      *
+     * @return algorithm name
      */
-    public CryptoException() {
-		super();
-	}
-
+    public String getAlgorithm() {
+        return messageDigest.getAlgorithm();
+    }
+    
     /**
      *
-     * @param message
-     * @param cause
-     * @param enableSuppression
-     * @param writableStackTrace
+     * @param data
+     * @return digest of data
      */
-    public CryptoException(String message, Throwable cause,
-			boolean enableSuppression, boolean writableStackTrace) {
-		super(message, cause, enableSuppression, writableStackTrace);
-	}
-
-    /**
-     *
-     * @param message
-     * @param cause
-     */
-    public CryptoException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
-    /**
-     *
-     * @param message
-     */
-    public CryptoException(String message) {
-		super(message);
-	}
-
-    /**
-     *
-     * @param cause
-     */
-    public CryptoException(Throwable cause) {
-		super(cause);
-	}
-
+    @Override
+    public byte[] digest(byte[] data) {
+        synchronized(messageDigest) {
+            byte[] digest =  messageDigest.digest(data);
+            messageDigest.reset();        	
+            return digest;
+        }
+    }
 }

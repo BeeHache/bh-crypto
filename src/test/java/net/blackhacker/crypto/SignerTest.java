@@ -57,10 +57,10 @@ public class SignerTest {
             Security.insertProviderAt(new BouncyCastleProvider(),1);            
     
             
-            friends = new SK[]{SK.getInstanceDESWithECB()};
-            foes = new SK[]{SK.getInstanceDESWithECB()};
-            signerFriend = Signer.newInstanceDESwithMD5();
-            signerFoe = Signer.newInstanceDESwithMD5();
+            friends = new SK[]{EncryptorFactory.newDESWithECB()};
+            foes = new SK[]{EncryptorFactory.newDESWithECB()};
+            signerFriend= SignerFactory.newSignerDESwithMD5();
+            signerFoe = SignerFactory.newSignerDESwithMD5();
         } catch (CryptoException ex) {
             fail(ex.getMessage());
         }
@@ -79,7 +79,7 @@ public class SignerTest {
             verified = signerFoe.verify(data, signature);
             assertFalse(verified);
             
-        } catch (Exception ex) {
+        } catch (SignerException ex) {
             fail(ex.getMessage());
         }
     }

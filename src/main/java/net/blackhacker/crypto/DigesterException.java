@@ -28,51 +28,19 @@ package net.blackhacker.crypto;
  *
  * @author Benjamin King aka Blackhacker(bh@blackhacker.net)
  */
-public class CryptoException extends Exception {
-	private static final long serialVersionUID = 5053734212036543935L;
+public class DigesterException extends Exception {
+    
+    public DigesterException() {
+    }
 
-    /**
-     *
-     */
-    public CryptoException() {
-		super();
-	}
-
-    /**
-     *
-     * @param message
-     * @param cause
-     * @param enableSuppression
-     * @param writableStackTrace
-     */
-    public CryptoException(String message, Throwable cause,
-			boolean enableSuppression, boolean writableStackTrace) {
-		super(message, cause, enableSuppression, writableStackTrace);
-	}
-
-    /**
-     *
-     * @param message
-     * @param cause
-     */
-    public CryptoException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
-    /**
-     *
-     * @param message
-     */
-    public CryptoException(String message) {
-		super(message);
-	}
-
-    /**
-     *
-     * @param cause
-     */
-    public CryptoException(Throwable cause) {
-		super(cause);
-	}
-
+    public DigesterException(String message) {
+        super(message);
+    }
+    
+    public DigesterException(Throwable cause) {
+        super(cause);
+    }
+    public DigesterException(String message, Throwable cause) {
+        super(message, cause);
+    }    
 }

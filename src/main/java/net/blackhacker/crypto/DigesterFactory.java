@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2015 Benjamin King aka Blackhacker(bh@blackhacker.net)
+ * Copyright 2015 ben.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,48 +29,29 @@ import java.security.NoSuchAlgorithmException;
 
 /**
  *
- * @author ben
+ * @author Benjamin King aka Blackhacker(bh@blackhacker.net)
  */
-
-public class MD {
-    final private MessageDigest messageDigest;
-    
-    private MD(String algorithm) throws CryptoException {
-    	try {
-            messageDigest = MessageDigest.getInstance(algorithm);
-    	} catch(NoSuchAlgorithmException e) {
-            throw new CryptoException(e);
-    	}
-    }
+final public class DigesterFactory {
 
     /**
-     *
-     * @return
-     * @throws CryptoException
+     * Factory method that builds Digester object using the MD5 algorithm
+     * 
+     * @return Digester object
+     * @throws net.blackhacker.crypto.DigesterException
+     * @see Digester
      */
-    final static public MD getInstanceSHA256() throws CryptoException {
-        return new MD("SHA-256");
+    static public Digester newMD5() throws DigesterException {
+        return new DigesterBase("MD5");
     }
     
     /**
-     *
-     * @return
-     * @throws CryptoException
+     * Factory method that builds Digester object using the SHA-256 algorithm
+     * 
+     * @return Digester object
+     * @throws net.blackhacker.crypto.DigesterException
+     * @see Digester
      */
-    final static public MD getInstanceMD5() throws CryptoException {
-        return new MD("MD5");
-    }
-    
-    
-    public String getAlgorithm() {
-        return messageDigest.getAlgorithm();
-    }
-    
-    public byte[] digest(byte[] data) {
-        synchronized(messageDigest) {
-            byte[] digest =  messageDigest.digest(data);
-            messageDigest.reset();        	
-            return digest;
-        }
+    static public Digester newSHA256() throws DigesterException {
+        return new DigesterBase("SHA-256");
     }
 }
