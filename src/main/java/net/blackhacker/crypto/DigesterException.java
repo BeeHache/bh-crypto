@@ -25,7 +25,7 @@
 package net.blackhacker.crypto;
 
 /**
- *
+ * 
  * @author Benjamin King aka Blackhacker(bh@blackhacker.net)
  */
 public class DigesterException extends Exception {
