@@ -220,23 +220,24 @@ final public class EncryptorFactory {
     
     
     /**
-     * Algorithm : Triple DES
-     * Mode : ECB
+     * Factory method for building an SK object using Triple DES algorithm in ECB mode
      *
-     * @return
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newEncryptorDESedeWithECB() throws CryptoException {
         return new SK("DESede/ECB/PKCS5Padding", "DESede", null);
     }
 
     /**
-     * Algorithm : Triple DES
-     * Mode : ECB
+     * Factory method for building an SK object using Triple DES algorithm 
+     * from encoded key in ECB mode
      *
      * @param key
-     * @return
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newEncryptorDESedeWithECB(byte[] key) throws CryptoException {
         try {
@@ -247,23 +248,27 @@ final public class EncryptorFactory {
     }
     
     /**
-     * Algorithm : Triple DES
-     * Mode : CBC
+     * Factory method for building an SK object using Triple DES algorithm 
+     * in CBC mode with the given IV
      *
      * @param iv
-     * @return
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newEncryptorDESedeWithCBC(byte[] iv) throws CryptoException {
         return new SK("DESede/CBC/PKCS5Padding", "DESede", IV64_BIT_CHECK(iv));
     }
 
     /**
+     * Factory method for building an SK object using Triple DES algorithm 
+     * from encoded key in CBS mode with the given IV
      *
      * @param iv
      * @param key
-     * @return
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newEncryptorDESedeWithCBC(byte[] iv, byte[] key) throws CryptoException {
         try {
@@ -272,21 +277,26 @@ final public class EncryptorFactory {
             throw new CryptoException(ex);
         }
     }
-    
+
     /**
+     * Factory method for building an SK object using Triple DES algorithm 
      *
-     * @return
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newEncryptorDESedeWithCBC() throws CryptoException {
         return newEncryptorDESedeWithCBC(DEFAULT_IV64);
     }
     
     /**
+     * Factory method for building an SK object using Triple DES algorithm 
+     * in CFB mode with the given IV
      *
      * @param iv
-     * @return
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newEncryptorDESedeWithCFB(byte[] iv) throws CryptoException {
         return new SK("DESede/CFB/PKCS5Padding", "DESede", IV64_BIT_CHECK(iv)
@@ -294,11 +304,14 @@ final public class EncryptorFactory {
     }
 
     /**
+     * Factory method for building an SK object using Triple DES algorithm 
+     * from encoded key in CFB mode with the given IV
      *
      * @param iv
      * @param key
-     * @return
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newEncryptorDESedeWithCFB(byte[] iv, byte[] key) throws CryptoException {
         try {
@@ -309,30 +322,39 @@ final public class EncryptorFactory {
     }    
     
     /**
+     * Factory method for building an SK object using Triple DES algorithm 
+     * in CFB mode
      *
-     * @return
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newEncryptorDESedeWithCFB() throws CryptoException {
         return newEncryptorDESedeWithCFB(DEFAULT_IV64);
     }
     
     /**
+     * Factory method for building an SK object using Triple DES algorithm 
+     * in OFB mode with the given IV
      *
      * @param iv
-     * @return
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newEncryptorDESedeWithOFB(byte[] iv) throws CryptoException {
         return new SK("DESede/OFB/PKCS5Padding", "DESede", IV64_BIT_CHECK(iv));
     }
 
     /**
+     * Factory method for building an SK object using Triple DES algorithm 
+     * from encoded key in OFB mode with the given IV
      *
      * @param iv
      * @param key
-     * @return
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newEncryptorDESedeWithOFB(byte[] iv, byte[] key) throws CryptoException {
         try {
@@ -348,19 +370,25 @@ final public class EncryptorFactory {
     }    
     
     /**
+     * Factory method for building an SK object using Triple DES algorithm 
+     * in OFB mode
      *
-     * @return
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newEncryptorDESedeWithOFB() throws CryptoException {
         return newEncryptorDESedeWithOFB(DEFAULT_IV64);
     }
 
     /**
+     * Factory method for building an SK object using AES algorithm
+     * from encoded key in CFB mode
      *
      * @param key
-     * @return
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newEncryptorAES128WithECB(byte[] key) throws CryptoException {
         return new SK(
@@ -372,9 +400,11 @@ final public class EncryptorFactory {
     }
 
     /**
+     * Factory method for building an SK object using AES algorithm 
      *
-     * @return
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newEncryptorAES128WithECB() throws CryptoException {
         return newEncryptorAES128WithECB(RANDOM_BITS(128));
