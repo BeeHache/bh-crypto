@@ -412,30 +412,37 @@ final public class EncryptorFactory {
     
     
     /**
+     * Factory method for building an SK object using AES algorithm in CBC mode
      *
      * @param iv
-     * @return
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newEncryptorAES128WithCBC(byte[] iv) throws CryptoException {
         return new SK("AES/CBC/PKCS5Padding", "AES", IV128_BIT_CHECK(iv));
     }
 
     /**
+     * Factory method for building an SK object using AES algorithm in CBC mode
      *
-     * @return
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newEncryptorAES128WithCBC() throws CryptoException {
         return newEncryptorAES128WithCBC(DEFAULT_IV128);
     }
     
     /**
-     *
+     * Factory method for building an SK object using AES algorithm in CBC mode
+     * from encoded key with the given IV
+     * 
      * @param iv
      * @param key
-     * @return
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newEncryptorAES128WithCBC(byte[] iv, byte[] key) throws CryptoException {
         return new SK(
@@ -447,11 +454,14 @@ final public class EncryptorFactory {
     }
 
     /**
-     *
+     * Factory method for building an SK object using AES algorithm in CBC mode
+     * from encoded key with the given IV
+     * 
      * @param iv
      * @param key
-     * @return
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newEncryptorAES128WithCFB(final byte[] iv, final byte[] key) 
             throws CryptoException {
@@ -464,30 +474,38 @@ final public class EncryptorFactory {
     }
 
     /**
-     *
+     * Factory method for building an SK object using AES algorithm in CFB mode
+     * with the given IV
+     * 
      * @param iv
-     * @return
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newEncryptorAES128WithCFB(final byte[] iv) throws CryptoException {
         return newEncryptorAES128WithCFB(iv, RANDOM_128_BITS());
     }
     
     /**
-     *
-     * @return
+     * Factory method for building an SK object using AES algorithm in CBC mode
+     * 
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newEncryptorAES128WithCFB() throws CryptoException {
         return newEncryptorAES128WithCFB(DEFAULT_IV128, RANDOM_128_BITS());
     }
 
     /**
-     *
+     * Factory method for building an SK object using AES algorithm in OFB mode
+     * from encoded key with the given IV
+     * 
      * @param iv
      * @param key
-     * @return
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newEncryptorAES128WithOFB(byte[] iv, byte[] key) throws CryptoException {
         return new SK(
@@ -499,30 +517,38 @@ final public class EncryptorFactory {
     }
 
     /**
-     *
+     * Factory method for building an SK object using AES algorithm in OFB mode
+     * with the given IV
+     * 
      * @param iv
-     * @return
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newEncryptorAES128WithOFB(byte[] iv) throws CryptoException {
         return newEncryptorAES128WithOFB(iv, RANDOM_128_BITS());
     }
     
     /**
-     *
-     * @return
+     * Factory method for building an SK object using AES algorithm in OFB mode
+     * 
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newEncryptorAES128WithOFB() throws CryptoException {
         return newEncryptorAES128WithOFB(DEFAULT_IV128, RANDOM_128_BITS());
     }
     
     /**
-     *
+     * Factory method for building an SK object using AES algorithm in CTR mode
+     * from encoded key with the given IV
+     * 
      * @param iv
      * @param key
-     * @return
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newEncryptorAES128WithCTR(byte[] iv, byte[] key) throws CryptoException {
         return new SK(
@@ -534,31 +560,39 @@ final public class EncryptorFactory {
     }
 
     /**
-     *
+     * Factory method for building an SK object using AES algorithm in CTR mode
+     * from encoded key with the given IV
+     * 
      * @param iv
-     * @return
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newEncryptorAES128WithCTR(byte[] iv) throws CryptoException {
         return newEncryptorAES128WithCTR(iv, RANDOM_128_BITS());
     }
     
     /**
-     *
-     * @return
+     * Factory method for building an SK object using AES algorithm in CTR mode
+     * 
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newEncryptorAES128WithCTR() throws CryptoException {
         return newEncryptorAES128WithCTR(DEFAULT_IV128, RANDOM_128_BITS());
     }
     
 
-   /**
-     *
+    /**
+     * Factory method for building an SK object using AES algorithm in OCB mode
+     * from encoded key with the given IV
+     * 
      * @param iv
      * @param key
-     * @return
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newEncryptorAES128WithOCB(byte[] iv, byte[] key) throws CryptoException {
         return new SK(
@@ -570,59 +604,76 @@ final public class EncryptorFactory {
     }
 
     /**
-     *
+     * Factory method for building an SK object using AES algorithm in OCB mode
+     * from encoded key
+     * 
      * @param iv
-     * @return
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newEncryptorAES128WithOCB(byte[] iv) throws CryptoException {
         return newEncryptorAES128WithOCB(iv, RANDOM_128_BITS());
     }
     
     /**
-     *
-     * @return
+     * Factory method for building an SK object using AES algorithm in OCB mode
+     * 
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newEncryptorAES128WithOCB() throws CryptoException {
         return newEncryptorAES128WithOCB(DEFAULT_IV128, RANDOM_128_BITS());
     }
 
     /**
-     *
+     * Factory method for building an SK object using AES algorithm in ECB mode
+     * from encoded key
+     * 
      * @param key
-     * @return
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newEncryptorAES192WithECB(byte[] key) throws CryptoException {
         return new SK("AES/ECB/PKCS5Padding","AES",null,KEY192_BIT_CHECK(key, "AES"));
     }    
     
     /**
-     *
-     * @return
+     * Factory method for building an SK object using AES algorithm in ECB mode
+     * from encoded key with the given IV
+     * 
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newEncryptorAES192WithECB() throws CryptoException {
         return newEncryptorAES192WithECB(RANDOM_192_BITS());
     }
     
     /**
-     *
+     * Factory method for building an SK object using AES algorithm in CBC mode
+     *  with the given IV
+     * 
      * @param iv
-     * @return
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newARANDOM_BITS92WithCBC(byte[] iv) throws CryptoException {
         return newEncryptorAES192WithCBC(iv, RANDOM_192_BITS());
     }
 
     /**
-     *
+     * Factory method for building an SK object using AES algorithm in CBC mode
+     * from encoded key with the given IV
+     * 
      * @param iv
      * @param key
-     * @return
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newEncryptorAES192WithCBC(byte[] iv, byte[] key) throws CryptoException {
         return new SK(
@@ -634,9 +685,12 @@ final public class EncryptorFactory {
     }    
     
     /**
-     *
-     * @return
+     * Factory method for building an SK object using AES algorithm in CBC mode
+     * from encoded key with the given IV
+     * 
+     * @return SK Object
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newEncryptorAES192WithCBC() throws CryptoException {
         return newEncryptorAES192WithCBC(DEFAULT_IV128, RANDOM_192_BITS());
