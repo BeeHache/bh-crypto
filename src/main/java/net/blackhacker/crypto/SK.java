@@ -42,35 +42,60 @@ import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Factory for class for Symmetric or SecretKey algorithms.
- * 
+ *
  * @author Benjamin King aka Blackhacker(bh@blackhacker.net)
  */
 public class SK extends EncryptorBase {
     final private Key key;
 
-    protected SK(String cipherAlgorithm, String keyAlgorithm, int keySize) throws CryptoException {
-        super(cipherAlgorithm,null);
+    /**
+     *
+     * @param cipherAlgorithm
+     * @param keyAlgorithm
+     * @param keySize
+     * @throws CryptoException
+     */
+    protected SK(String cipherAlgorithm, String keyAlgorithm, int keySize)
+            throws CryptoException {
+        super(cipherAlgorithm, null);
         try {
             KeyGenerator kg = KeyGenerator.getInstance(keyAlgorithm);
             kg.init(keySize);
             key = kg.generateKey();
         } catch (NoSuchAlgorithmException e) {
-            throw new CryptoException("Couldn't create key factory",e);
+            throw new CryptoException("Couldn't create key factory", e);
         }
     }
     
-    protected SK(String cipherAlgorithm, String keyAlgorithm, AlgorithmParameterSpec algorithmParameterSpec) throws CryptoException {
-        super(cipherAlgorithm,algorithmParameterSpec);
+    /**
+     *
+     * @param cipherAlgorithm
+     * @param keyAlgorithm
+     * @param algorithmParameterSpec
+     * @throws CryptoException
+     */
+    protected SK(String cipherAlgorithm, String keyAlgorithm, AlgorithmParameterSpec algorithmParameterSpec)
+            throws CryptoException {
+        super(cipherAlgorithm, algorithmParameterSpec);
         try {
             KeyGenerator kg = KeyGenerator.getInstance(keyAlgorithm);
             kg.init(getSecureRandom());
             key = kg.generateKey();
         } catch (NoSuchAlgorithmException e) {
-            throw new CryptoException("Couldn't create key factory",e);
+            throw new CryptoException("Couldn't create key factory", e);
         }
     }
     
-    protected SK(String cipherAlgorithm, String keyAlgorithm, AlgorithmParameterSpec algorithmParameterSpec, KeySpec spec) throws CryptoException {
+    /**
+     *
+     * @param cipherAlgorithm
+     * @param keyAlgorithm
+     * @param algorithmParameterSpec
+     * @param spec
+     * @throws CryptoException
+     */
+    protected SK(String cipherAlgorithm, String keyAlgorithm, AlgorithmParameterSpec algorithmParameterSpec, KeySpec spec)
+            throws CryptoException {
         super(cipherAlgorithm, algorithmParameterSpec);
         try {
             if (spec instanceof SecretKeySpec) {
@@ -95,9 +120,9 @@ public class SK extends EncryptorBase {
         Cipher cipher = getCipher();
         SecureRandom secureRandom = getSecureRandom();
         
-        synchronized(this) {
+        synchronized (cipher) {
             try {
-                if (param !=null) {
+                if (param != null) {
                     cipher.init(Cipher.ENCRYPT_MODE, key, param, secureRandom);
                 } else {
                     cipher.init(Cipher.ENCRYPT_MODE, key, secureRandom);
@@ -121,7 +146,7 @@ public class SK extends EncryptorBase {
         AlgorithmParameterSpec param = getAlgorithmParameterSpec();
         Cipher cipher = getCipher();
         
-        synchronized(this) {
+        synchronized(cipher) {
             try {
                 if (param!=null) {
                     cipher.init(Cipher.DECRYPT_MODE, getKey(), param);

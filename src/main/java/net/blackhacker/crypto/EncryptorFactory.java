@@ -698,24 +698,42 @@ final public class EncryptorFactory {
         return newEncryptorAES192WithCBC(DEFAULT_IV128, RANDOM_192_BITS());
     }
 
+    /**
+     *
+     * @param password
+     * @return
+     * @throws CryptoException
+     */
     final static public SK newEncryptorPBEWithSHAAnd3KeyTripleDES(char[] password) throws CryptoException {
         return new SK(
                 "PBEWithSHAAnd3KeyTripleDES",
                 "PBEWithSHAAnd3KeyTripleDES",
-                null,
+                new PBEParameterSpec(DEFAULT_SALT, DEFAULT_COUNT),
                 new PBEKeySpec(password)
         );
-    }    
-    
+    }
+
+    /**
+     *
+     * @param password
+     * @return
+     * @throws CryptoException
+     */
     final static public SK newEncryptorPBEWithMD5AndTripleDES(char[] password) throws CryptoException {
         return new SK(
                 "PBEWithMD5AndTripleDES",
                 "PBEWithMD5AndTripleDES",
-                null,
+                new PBEParameterSpec(DEFAULT_SALT, DEFAULT_COUNT),
                 new PBEKeySpec(password)
         );
     }
     
+    /**
+     *
+     * @param password
+     * @return
+     * @throws CryptoException
+     */
     final static public SK newEncryptorPBEWithMD5AndDES(char[] password) throws CryptoException {
         return new SK(
                 "PBEWithMD5AndDES",
@@ -725,6 +743,12 @@ final public class EncryptorFactory {
         );
     }
 
+    /**
+     *
+     * @param password
+     * @return
+     * @throws CryptoException
+     */
     final static public SK newEncryptorPBEWithSHA256And256BitAES(char[] password) throws CryptoException {
         return new SK(
                 "PBEWithSHA256And256BitAES",
@@ -734,6 +758,12 @@ final public class EncryptorFactory {
         );
     }
     
+    /**
+     *
+     * @param password
+     * @return
+     * @throws CryptoException
+     */
     final static public SK newEncryptorPBEWithSHA1AndDESede(char[] password) throws CryptoException {
         return new SK(
                 "PBEWithSHA1AndDESede",
@@ -741,7 +771,7 @@ final public class EncryptorFactory {
                 new PBEParameterSpec(DEFAULT_SALT, DEFAULT_COUNT),
                 new PBEKeySpec(password)
         );
-    }     
+    }
     
     /**
      * Generates byte array containing 64 bits
