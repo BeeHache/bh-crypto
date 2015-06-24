@@ -82,6 +82,8 @@ public class EncryptorTest {
     public static Collection<Object[]> data() throws CryptoException {
         byte[] iv8 = new byte[8];
         byte[] iv16 = new byte[16];
+        char[] friendPassword = "The quick brown fox".toCharArray();
+        char[] foePassword = "jumped over the lazy dog".toCharArray();
         SecureRandom sr = new SecureRandom();
         sr.nextBytes(iv8);
         sr.nextBytes(iv16);
@@ -160,6 +162,21 @@ public class EncryptorTest {
                     EncryptorFactory.newEncryptorAES128WithCTR(iv16),
                     EncryptorFactory.newEncryptorAES128WithCTR(iv16,hold.getKeyEncoded())
                 },
+                
+                /* PBE */
+
+                /* 13 */ {
+                    EncryptorFactory.newEncryptorPBEWithMD5AndDES(friendPassword),
+                    EncryptorFactory.newEncryptorPBEWithMD5AndDES(foePassword),
+                    EncryptorFactory.newEncryptorPBEWithMD5AndDES(friendPassword)
+                },                      
+
+                /* 14 */ {
+                    EncryptorFactory.newEncryptorPBEWithSHA1AndDESede(friendPassword),
+                    EncryptorFactory.newEncryptorPBEWithSHA1AndDESede(foePassword),
+                    EncryptorFactory.newEncryptorPBEWithSHA1AndDESede(friendPassword)
+                },  
+                
             }));
         
         if (jce()) {
@@ -213,7 +230,26 @@ public class EncryptorTest {
                         EncryptorFactory.newAES255WithOCB(iv16,hold.getKeyEncoded())
                     },
                     */
-                })
+
+                    /* 14 */ {
+                        EncryptorFactory.newEncryptorPBEWithMD5AndTripleDES(friendPassword),
+                        EncryptorFactory.newEncryptorPBEWithMD5AndTripleDES(foePassword),
+                        EncryptorFactory.newEncryptorPBEWithMD5AndTripleDES(friendPassword)
+                    },
+
+                    /* 13 */ {
+                        EncryptorFactory.newEncryptorPBEWithSHAAnd3KeyTripleDES(friendPassword),
+                        EncryptorFactory.newEncryptorPBEWithSHAAnd3KeyTripleDES(foePassword),
+                        EncryptorFactory.newEncryptorPBEWithSHAAnd3KeyTripleDES(friendPassword)
+                    },                
+
+                    /* 14 */ {
+                        EncryptorFactory.newEncryptorPBEWithSHA256And256BitAES(friendPassword),
+                        EncryptorFactory.newEncryptorPBEWithSHA256And256BitAES(foePassword),
+                        EncryptorFactory.newEncryptorPBEWithSHA256And256BitAES(friendPassword)
+                    },                
+                
+                    })
             );
         }
         return l;

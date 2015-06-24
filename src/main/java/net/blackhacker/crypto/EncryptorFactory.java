@@ -29,6 +29,8 @@ import java.security.SecureRandom;
 import javax.crypto.spec.DESKeySpec;
 import javax.crypto.spec.DESedeKeySpec;
 import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.PBEParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
@@ -695,7 +697,51 @@ final public class EncryptorFactory {
     final static public SK newEncryptorAES192WithCBC() throws CryptoException {
         return newEncryptorAES192WithCBC(DEFAULT_IV128, RANDOM_192_BITS());
     }
+
+    final static public SK newEncryptorPBEWithSHAAnd3KeyTripleDES(char[] password) throws CryptoException {
+        return new SK(
+                "PBEWithSHAAnd3KeyTripleDES",
+                "PBEWithSHAAnd3KeyTripleDES",
+                null,
+                new PBEKeySpec(password)
+        );
+    }    
     
+    final static public SK newEncryptorPBEWithMD5AndTripleDES(char[] password) throws CryptoException {
+        return new SK(
+                "PBEWithMD5AndTripleDES",
+                "PBEWithMD5AndTripleDES",
+                null,
+                new PBEKeySpec(password)
+        );
+    }
+    
+    final static public SK newEncryptorPBEWithMD5AndDES(char[] password) throws CryptoException {
+        return new SK(
+                "PBEWithMD5AndDES",
+                "PBEWithMD5AndDES",
+                new PBEParameterSpec(DEFAULT_SALT, DEFAULT_COUNT),
+                new PBEKeySpec(password)
+        );
+    }
+
+    final static public SK newEncryptorPBEWithSHA256And256BitAES(char[] password) throws CryptoException {
+        return new SK(
+                "PBEWithSHA256And256BitAES",
+                "PBEWithSHA256And256BitAES",
+                new PBEParameterSpec(DEFAULT_SALT, DEFAULT_COUNT),
+                new PBEKeySpec(password)
+        );
+    }
+    
+    final static public SK newEncryptorPBEWithSHA1AndDESede(char[] password) throws CryptoException {
+        return new SK(
+                "PBEWithSHA1AndDESede",
+                "PBEWithSHA1AndDESede",
+                new PBEParameterSpec(DEFAULT_SALT, DEFAULT_COUNT),
+                new PBEKeySpec(password)
+        );
+    }     
     
     /**
      * Generates byte array containing 64 bits
@@ -900,6 +946,14 @@ final public class EncryptorFactory {
         (byte)0xc9, (byte)0x95, (byte)0x9b, (byte)0x10,
         (byte)0xf4, (byte)0xee, (byte)0x15, (byte)0xeb,
     };
+
+    static final private byte[] DEFAULT_SALT = {
+        (byte)0xc7, (byte)0x73, (byte)0x21, (byte)0x8c,
+        (byte)0x7e, (byte)0xc8, (byte)0xee, (byte)0x99
+    };
+
+    // Iteration count
+    static final private int DEFAULT_COUNT = 20;    
     
     /**
      * SecureRandom
