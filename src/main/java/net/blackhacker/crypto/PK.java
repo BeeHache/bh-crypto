@@ -48,7 +48,7 @@ import javax.crypto.IllegalBlockSizeException;
  * @see java.security.PrivateKey
  * @see java.security.PublicKey
  */
-public class PK extends EncryptorBase {
+public class PK extends Crypto implements Encryptor, Decryptor {
     final private PublicKey publicKey;
     final private PrivateKey privateKey;
     

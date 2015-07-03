@@ -37,15 +37,6 @@ public interface Encryptor {
      * @return -- cipher bytes
      * @throws CryptoException
      */
-     public byte[] encrypt(byte[] clearBytes) throws CryptoException;
-    
-    /**
-     * Must be implemented by subclass
-     * 
-     * @param cipherBytes -- bytes to be decrypted
-     * @return -- bytes in the clear
-     * @throws CryptoException 
-     */
-     public byte[] decrypt(byte[] cipherBytes) throws CryptoException;    
+     public byte[] encrypt(byte[] clearBytes) throws CryptoException;   
     
 }

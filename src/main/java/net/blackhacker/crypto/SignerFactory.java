@@ -37,7 +37,8 @@ public class SignerFactory {
      */
     static public Signer newSignerDESwithMD5() throws SignerException {
         try {
-            return new SignerBase(EncryptorFactory.newEncryptorDESWithECB(), DigesterFactory.newDigesterMD5());
+            SK sk = EncryptorFactory.newEncryptorDESWithECB();
+            return new SignerBase(sk, sk,DigesterFactory.newDigesterMD5());
         } catch(CryptoException | DigesterException e) {
             throw new SignerException("Coun't init DES Signer",e);
         }
@@ -70,7 +71,8 @@ public class SignerFactory {
     static public Signer newSignerRSAWithMD5() throws SignerException  {
         
         try {
-            return new SignerBase(EncryptorFactory.newEncryptorRSA(), DigesterFactory.newDigesterMD5());
+            PK pk = EncryptorFactory.newEncryptorRSA();
+            return new SignerBase(pk,pk, DigesterFactory.newDigesterMD5());
         } catch(CryptoException | DigesterException e) {
             throw new SignerException("Coun't init RSA Signer",e);
         }

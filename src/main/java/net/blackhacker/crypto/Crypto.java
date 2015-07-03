@@ -35,9 +35,8 @@ import javax.crypto.NoSuchPaddingException;
  *  Abstract base class for both symmetric and asymmetric encryption algorithms
  * 
  *  @author Benjamin King aka Blackhacker(bh@blackhacker.net)
- *  @see Encryptor
  */
-abstract public class EncryptorBase implements Encryptor {
+public class Crypto {
 
     
     /**
@@ -62,7 +61,7 @@ abstract public class EncryptorBase implements Encryptor {
      * @param algorithmParameterSpec
      * @throws CryptoException
      */
-    protected  EncryptorBase(String algorithm, AlgorithmParameterSpec algorithmParameterSpec) throws CryptoException {
+    protected  Crypto(String algorithm, AlgorithmParameterSpec algorithmParameterSpec) throws CryptoException {
     	try {
             cipher = Cipher.getInstance(algorithm);
             this.algorithmParameterSpec = algorithmParameterSpec;

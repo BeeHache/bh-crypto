@@ -24,56 +24,19 @@
 
 package net.blackhacker.crypto;
 
-import java.util.Arrays;
-
 /**
  *
  * @author Benjamin King aka Blackhacker(bh@blackhacker.net)
  */
-public class SignerBase implements Signer{
-    final private Encryptor encryptor;
-    final private Decryptor decryptor;
-    final private Digester md;
-    
-    protected SignerBase(Encryptor e, Decryptor d, Digester md) {
-        this.encryptor = e;
-        this.decryptor = d;
-        this.md = md;
-    }
+public interface Decryptor {
     
     /**
-     * signs an array of bytes
+     * Must be implemented by subclass
      * 
-     * @param data
-     * @return signature for given data
-     * @throws net.blackhacker.crypto.SignerException
+     * @param cipherBytes -- bytes to be decrypted
+     * @return -- bytes in the clear
+     * @throws CryptoException 
      */
-    @Override
-    public byte[] sign(byte[] data) throws SignerException {
-        try {
-            byte[] digest = md.digest(data);
-            return encryptor.encrypt(digest);
-        } catch (CryptoException ex) {
-            throw new SignerException("Couldn't sign data",ex);
-        }
-    }
+     public byte[] decrypt(byte[] cipherBytes) throws CryptoException;    
     
-    /**
-     * verifies signature for a given array of bytes
-     * 
-     * @param data
-     * @param signature
-     * @return true 
-     * @throws net.blackhacker.crypto.SignerException 
-     */
-    @Override
-    public boolean verify(byte[] data, byte[] signature) throws SignerException {
-        try {
-            byte[] d = md.digest(data);
-            byte[] c = decryptor.decrypt(signature);
-            return Arrays.equals(d, c);
-        } catch(CryptoException ex) {
-            return false;
-        }
-    }
 }
