@@ -54,7 +54,7 @@ public class SignerTest {
             passphrase = "The quickbown fox jumped over the lazy dog.";
             message = "A far far better thing I do than I have ever done before.";
             
-            Security.insertProviderAt(new BouncyCastleProvider(),1);            
+            Security.insertProviderAt(new BouncyCastleProvider(),1);
     
             
             friends = new SK[]{EncryptorFactory.newEncryptorDESWithECB()};

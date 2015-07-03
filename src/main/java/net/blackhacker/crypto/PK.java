@@ -42,13 +42,12 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 
 /**
- * Base class for all implementations of Asymetric (Public Key) Encryption
+ * Base class for all implementations of Asymmetric (Public Key) Encryption
  * 
  * @author Benjamin King aka Blackhacker(bh@blackhacker.net)
  * @see java.security.PrivateKey
  * @see java.security.PublicKey
  */
-
 public class PK extends EncryptorBase {
     final private PublicKey publicKey;
     final private PrivateKey privateKey;
@@ -117,8 +116,10 @@ public class PK extends EncryptorBase {
                     getCipher().init(Cipher.ENCRYPT_MODE, publicKey);
                 }
                 return getCipher().doFinal(clearBytes);
-            } catch (InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException ex) {
-            	throw new CryptoException("Could not encrypt data: " + ex.getLocalizedMessage(),ex);
+            } catch (InvalidKeyException | InvalidAlgorithmParameterException |
+                    IllegalBlockSizeException | BadPaddingException ex) {
+            	throw new CryptoException(
+                    "Could not encrypt data: " + ex.getLocalizedMessage(),ex);
             }
         }
     }
@@ -141,7 +142,8 @@ public class PK extends EncryptorBase {
                     getCipher().init(Cipher.DECRYPT_MODE, privateKey);
                 }
                 return getCipher().doFinal(cipherBytes);
-            } catch (InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException ex) {
+            } catch (InvalidKeyException | InvalidAlgorithmParameterException | 
+                    IllegalBlockSizeException | BadPaddingException ex) {
             	throw new CryptoException("Could not encrypt data: " + ex.getLocalizedMessage(),ex);
             }
         }

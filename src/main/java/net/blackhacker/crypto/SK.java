@@ -130,7 +130,9 @@ public class SK extends EncryptorBase {
                 
                 return cipher.doFinal(data);
             } catch (Exception ex) {
-            	throw new CryptoException("Could not encrypt data!", ex);
+            	throw new CryptoException(
+                    "Could not encrypt data:" + ex.getLocalizedMessage(),
+                    ex);
             }
         }
     }
