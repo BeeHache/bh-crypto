@@ -39,14 +39,4 @@ public interface Signer {
      */
     public byte[] sign(byte[] data) throws SignerException;
 
-    /**
-     * Verifies that the given signature of the given data was created by the
-     * internally stored key(s)
-     * 
-     * @param data
-     * @param signature
-     * @return true if the signature is valid
-     * @throws SignerException
-     */
-    public boolean verify(byte[] data, byte[] signature) throws SignerException;
 }

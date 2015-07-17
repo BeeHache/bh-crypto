@@ -36,7 +36,7 @@ import javax.crypto.NoSuchPaddingException;
  * 
  *  @author Benjamin King aka Blackhacker(bh@blackhacker.net)
  */
-public class Crypto {
+public abstract class Crypto implements Encryptor, Decryptor {
 
     
     /**
@@ -66,7 +66,9 @@ public class Crypto {
             cipher = Cipher.getInstance(algorithm);
             this.algorithmParameterSpec = algorithmParameterSpec;
         } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
-            throw new CryptoException("Could not initialize Crypto object: " + e.getLocalizedMessage(),e);
+            throw new CryptoException(
+                    "Could not initialize Crypto object: " + 
+                            e.getLocalizedMessage(),e);
         }
     }
     

@@ -45,7 +45,7 @@ import javax.crypto.spec.SecretKeySpec;
  *
  * @author Benjamin King aka Blackhacker(bh@blackhacker.net)
  */
-public class SK extends Crypto implements Encryptor, Decryptor {
+public class SK extends Crypto {
     final private Key key;
 
     /**

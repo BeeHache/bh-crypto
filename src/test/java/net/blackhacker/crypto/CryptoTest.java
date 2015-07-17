@@ -24,7 +24,6 @@
 
 package net.blackhacker.crypto;
 
-import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.Security;
@@ -33,40 +32,57 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
+//import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.spongycastle.jce.provider.BouncyCastleProvider;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.Rule;
 import org.junit.rules.ErrorCollector;
-
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+/**
+ *
+ * @author ben
+ */
 @RunWith(Parameterized.class)
-public class EncryptorTest {
+public class CryptoTest {
+    
+    static Digester sha256 = DigesterFactory.newDigesterSHA256();
     
     static private String passphrase;
-    static private String message;
+    static private byte[] message = new byte[245];  //245 is the largest data RSA encrypts
     static private AlgorithmParameterSpec pbeCipherParams;
     
     static private SecretKey key;
-    static private Signer signerFriend;
-    static private Signer signerFoe;
+    final private Signer signerFriend;
+    final private Signer signerFoe;
+    final private Verifier verifier;
     
-    private final SK friend;
-    private final SK foe;
-    private final SK me;
+    private final Crypto friend;
+    private final Crypto foe;
+    private final Crypto me;
 
-    public EncryptorTest(SK friend, SK foe, SK me) {
+    public CryptoTest(Crypto friend, Crypto foe, Crypto me) {
       this.friend = friend;
       this.foe = foe;
       this.me = me;
+      
+      signerFriend = CryptoFactory.newSigner(friend, sha256);
+      signerFoe = CryptoFactory.newSigner(foe, sha256);
+      verifier = CryptoFactory.newVerifier(me, sha256);
     }
 
     static boolean jce() {
@@ -79,7 +95,10 @@ public class EncryptorTest {
     
     // creates the test data
     @Parameters
-    public static Collection<Object[]> data() throws CryptoException {
+    public static Collection<Crypto[]> data() throws CryptoException {
+        
+        Security.insertProviderAt(new BouncyCastleProvider(),1);
+        
         byte[] iv8 = new byte[8];
         byte[] iv16 = new byte[16];
         char[] friendPassword = "The quick brown fox".toCharArray();
@@ -88,168 +107,177 @@ public class EncryptorTest {
         sr.nextBytes(iv8);
         sr.nextBytes(iv16);
         
-        SK hold;
+        SK skHold;
+        PK pkHold;
         
-        List<Object[]> l = new ArrayList<>(Arrays.asList(
-            new Object[][] {
+        List<Crypto[]> l = new ArrayList<>(Arrays.asList(
+            new Crypto[][] {
                 /* DES */
                 /* 0 */ {
-                    hold = EncryptorFactory.newEncryptorDESWithECB(), 
-                    EncryptorFactory.newEncryptorDESWithECB(), 
-                    EncryptorFactory.newEncryptorDESWithECB(hold.getKeyEncoded())
+                    skHold = CryptoFactory.newEncryptorDESWithECB(), 
+                    CryptoFactory.newEncryptorDESWithECB(), 
+                    CryptoFactory.newEncryptorDESWithECB(skHold.getKeyEncoded())
                 },
                 /* 1 */ {
-                    hold = EncryptorFactory.newEncryptorDESWithCBC(iv8), 
-                    EncryptorFactory.newEncryptorDESWithCBC(iv8), 
-                    EncryptorFactory.newEncryptorDESWithCBC(iv8,hold.getKeyEncoded())
+                    skHold = CryptoFactory.newEncryptorDESWithCBC(iv8), 
+                    CryptoFactory.newEncryptorDESWithCBC(iv8), 
+                    CryptoFactory.newEncryptorDESWithCBC(iv8,skHold.getKeyEncoded())
                 },
                 /* 2 */ {
-                    hold = EncryptorFactory.newEncryptorDESWithCFB(iv8),
-                    EncryptorFactory.newEncryptorDESWithCFB(iv8),
-                    EncryptorFactory.newEncryptorDESWithCFB(iv8,hold.getKeyEncoded())
+                    skHold = CryptoFactory.newEncryptorDESWithCFB(iv8),
+                    CryptoFactory.newEncryptorDESWithCFB(iv8),
+                    CryptoFactory.newEncryptorDESWithCFB(iv8,skHold.getKeyEncoded())
                 },
                 /* 3 */ {
-                    hold = EncryptorFactory.newEncryptorDESWithOFB(iv8),
-                    EncryptorFactory.newEncryptorDESWithOFB(iv8),
-                    EncryptorFactory.newEncryptorDESWithOFB(iv8,hold.getKeyEncoded())
+                    skHold = CryptoFactory.newEncryptorDESWithOFB(iv8),
+                    CryptoFactory.newEncryptorDESWithOFB(iv8),
+                    CryptoFactory.newEncryptorDESWithOFB(iv8,skHold.getKeyEncoded())
                 },
 
                 /* DESede */
                 /* 4 */ {
-                    hold = EncryptorFactory.newEncryptorDESedeWithECB(),
-                    EncryptorFactory.newEncryptorDESedeWithECB(),
-                    EncryptorFactory.newEncryptorDESedeWithECB(hold.getKeyEncoded())
+                    skHold = CryptoFactory.newEncryptorDESedeWithECB(),
+                    CryptoFactory.newEncryptorDESedeWithECB(),
+                    CryptoFactory.newEncryptorDESedeWithECB(skHold.getKeyEncoded())
                 },
                 /* 5 */ {
-                    hold = EncryptorFactory.newEncryptorDESedeWithCBC(iv8),
-                    EncryptorFactory.newEncryptorDESedeWithCBC(iv8),
-                    EncryptorFactory.newEncryptorDESedeWithCBC(iv8,hold.getKeyEncoded())
+                    skHold = CryptoFactory.newEncryptorDESedeWithCBC(iv8),
+                    CryptoFactory.newEncryptorDESedeWithCBC(iv8),
+                    CryptoFactory.newEncryptorDESedeWithCBC(iv8,skHold.getKeyEncoded())
                 },
                 /* 6 */ {
-                    hold = EncryptorFactory.newEncryptorDESedeWithCFB(iv8),
-                    EncryptorFactory.newEncryptorDESedeWithCFB(iv8),
-                    EncryptorFactory.newEncryptorDESedeWithCFB(iv8,hold.getKeyEncoded())
+                    skHold = CryptoFactory.newEncryptorDESedeWithCFB(iv8),
+                    CryptoFactory.newEncryptorDESedeWithCFB(iv8),
+                    CryptoFactory.newEncryptorDESedeWithCFB(iv8,skHold.getKeyEncoded())
                 },
                 /* 7 */ {
-                    hold = EncryptorFactory.newEncryptorDESedeWithOFB(iv8),
-                    EncryptorFactory.newEncryptorDESedeWithOFB(iv8),
-                    EncryptorFactory.newEncryptorDESedeWithOFB(iv8,hold.getKeyEncoded())
+                    skHold = CryptoFactory.newEncryptorDESedeWithOFB(iv8),
+                    CryptoFactory.newEncryptorDESedeWithOFB(iv8),
+                    CryptoFactory.newEncryptorDESedeWithOFB(iv8,skHold.getKeyEncoded())
                 },
                 
                 /* AES 128 */
                 /* 8 */ {
-                    hold = EncryptorFactory.newEncryptorAES128WithECB(),
-                    EncryptorFactory.newEncryptorAES128WithECB(),
-                    EncryptorFactory.newEncryptorAES128WithECB(hold.getKeyEncoded())
+                    skHold = CryptoFactory.newEncryptorAES128WithECB(),
+                    CryptoFactory.newEncryptorAES128WithECB(),
+                    CryptoFactory.newEncryptorAES128WithECB(skHold.getKeyEncoded())
                 },
                 /* 9 */ {
-                    hold = EncryptorFactory.newEncryptorAES128WithCBC(iv16),
-                    EncryptorFactory.newEncryptorAES128WithCBC(iv16),
-                    EncryptorFactory.newEncryptorAES128WithCBC(iv16, hold.getKeyEncoded())
+                    skHold = CryptoFactory.newEncryptorAES128WithCBC(iv16),
+                    CryptoFactory.newEncryptorAES128WithCBC(iv16),
+                    CryptoFactory.newEncryptorAES128WithCBC(iv16, skHold.getKeyEncoded())
                 },
                 /* 10 */ {
-                    hold = EncryptorFactory.newEncryptorAES128WithCFB(iv16), 
-                    EncryptorFactory.newEncryptorAES128WithCFB(iv16), 
-                    EncryptorFactory.newEncryptorAES128WithCFB(iv16,hold.getKeyEncoded())
+                    skHold = CryptoFactory.newEncryptorAES128WithCFB(iv16),
+                    CryptoFactory.newEncryptorAES128WithCFB(iv16),
+                    CryptoFactory.newEncryptorAES128WithCFB(iv16,skHold.getKeyEncoded())
                 },
                 /* 11 */ {
-                    hold = EncryptorFactory.newEncryptorAES128WithOFB(iv16),
-                    EncryptorFactory.newEncryptorAES128WithOFB(iv16),
-                    EncryptorFactory.newEncryptorAES128WithOFB(iv16,hold.getKeyEncoded())
+                    skHold = CryptoFactory.newEncryptorAES128WithOFB(iv16),
+                    CryptoFactory.newEncryptorAES128WithOFB(iv16),
+                    CryptoFactory.newEncryptorAES128WithOFB(iv16,skHold.getKeyEncoded())
                 },
                 /* 12 */ {
-                    hold = EncryptorFactory.newEncryptorAES128WithCTR(iv16),
-                    EncryptorFactory.newEncryptorAES128WithCTR(iv16),
-                    EncryptorFactory.newEncryptorAES128WithCTR(iv16,hold.getKeyEncoded())
+                    skHold = CryptoFactory.newEncryptorAES128WithCTR(iv16),
+                    CryptoFactory.newEncryptorAES128WithCTR(iv16),
+                    CryptoFactory.newEncryptorAES128WithCTR(iv16,skHold.getKeyEncoded())
                 },
                 
                 /* PBE */
 
                 /* 13 */ {
-                    EncryptorFactory.newEncryptorPBEWithMD5AndDES(friendPassword),
-                    EncryptorFactory.newEncryptorPBEWithMD5AndDES(foePassword),
-                    EncryptorFactory.newEncryptorPBEWithMD5AndDES(friendPassword)
+                    CryptoFactory.newEncryptorPBEWithMD5AndDES(friendPassword),
+                    CryptoFactory.newEncryptorPBEWithMD5AndDES(foePassword),
+                    CryptoFactory.newEncryptorPBEWithMD5AndDES(friendPassword)
                 },                      
 
                 /* 14 */ {
-                    EncryptorFactory.newEncryptorPBEWithSHA1AndDESede(friendPassword),
-                    EncryptorFactory.newEncryptorPBEWithSHA1AndDESede(foePassword),
-                    EncryptorFactory.newEncryptorPBEWithSHA1AndDESede(friendPassword)
+                    CryptoFactory.newEncryptorPBEWithSHA1AndDESede(friendPassword),
+                    CryptoFactory.newEncryptorPBEWithSHA1AndDESede(foePassword),
+                    CryptoFactory.newEncryptorPBEWithSHA1AndDESede(friendPassword)
                 },  
                 
+                /* RSA */
+                /* 15  */ {
+                    pkHold = CryptoFactory.newEncryptorRSAWithECB(),
+                    CryptoFactory.newEncryptorRSAWithECB(),
+                    CryptoFactory.newEncryptorRSAWithECB(
+                        pkHold.getPublicKeyEncoded(),
+                        pkHold.getPrivateKeyEncoded()
+                    )
+                },
             }));
         
         if (jce()) {
             l.addAll(
                 Arrays.asList(
-                    new Object[][] {
+                    new Crypto[][] {
                     /* AES 192 */
                      {
-                         hold = EncryptorFactory.newEncryptorAES192WithECB(),
-                         EncryptorFactory.newEncryptorAES192WithECB(),
-                         EncryptorFactory.newEncryptorAES192WithECB(hold.getKeyEncoded())
+                         skHold = CryptoFactory.newEncryptorAES192WithECB(),
+                         CryptoFactory.newEncryptorAES192WithECB(),
+                         CryptoFactory.newEncryptorAES192WithECB(skHold.getKeyEncoded())
                      },
                      /*
                      {
-                        hold = EncryptorFactory.newAES192WithCBC(iv16),
-                        EncryptorFactory.newAES192WithCBC(iv16), 
-                        EncryptorFactory.newAES192WithCBC(iv16,hold.getKeyEncoded())
+                        skHold = CryptoFactory.newAES192WithCBC(iv16),
+                        CryptoFactory.newAES192WithCBC(iv16), 
+                        CryptoFactory.newAES192WithCBC(iv16,skHold.getKeyEncoded())
                      },
                      {
-                        hold = EncryptorFactory.newAES192WithCFB(iv16),
-                        EncryptorFactory.newAES192WithCFB(iv16),
-                        EncryptorFactory.newAES192WithCFB(iv16,hold.getKeyEncoded())
+                        skHold = CryptoFactory.newAES192WithCFB(iv16),
+                        CryptoFactory.newAES192WithCFB(iv16),
+                        CryptoFactory.newAES192WithCFB(iv16,skHold.getKeyEncoded())
                      },
                      {
-                        hold = EncryptorFactory.newAES192WithOFB(iv16),
-                        EncryptorFactory.newAES192WithOFB(iv16),
-                        EncryptorFactory.newAES192WithOFB(iv16,hold.getKeyEncoded())
+                        skHold = CryptoFactory.newAES192WithOFB(iv16),
+                        CryptoFactory.newAES192WithOFB(iv16),
+                        CryptoFactory.newAES192WithOFB(iv16,skHold.getKeyEncoded())
                      },
                      {
-                        hold = EncryptorFactory.newAES192WithCTR(iv16), 
-                        EncryptorFactory.newAES192WithCTR(iv16), 
-                        EncryptorFactory.newAES192WithCTR(iv16,hold.getKeyEncoded())
+                        skHold = CryptoFactory.newAES192WithCTR(iv16), 
+                        CryptoFactory.newAES192WithCTR(iv16), 
+                        CryptoFactory.newAES192WithCTR(iv16,skHold.getKeyEncoded())
                      },
                      */
 
                     /* AES OCB */
                     {
-                        hold = EncryptorFactory.newEncryptorAES128WithOCB(iv16), 
-                        EncryptorFactory.newEncryptorAES128WithOCB(iv16), 
-                        EncryptorFactory.newEncryptorAES128WithOCB(iv16,hold.getKeyEncoded())
+                        skHold = CryptoFactory.newEncryptorAES128WithOCB(iv16), 
+                        CryptoFactory.newEncryptorAES128WithOCB(iv16), 
+                        CryptoFactory.newEncryptorAES128WithOCB(iv16,skHold.getKeyEncoded())
                     },
                     /*
                     {
-                        hold = EncryptorFactory.newAES192WithOCB(iv16), 
-                        EncryptorFactory.newAES192WithOCB(iv16), 
-                        EncryptorFactory.newAES192WithOCB(iv16,hold.getKeyEncoded())
+                        skHold = CryptoFactory.newAES192WithOCB(iv16), 
+                        CryptoFactory.newAES192WithOCB(iv16), 
+                        CryptoFactory.newAES192WithOCB(iv16,skHold.getKeyEncoded())
                     },
                     {
-                        hold = EncryptorFactory.newAES255WithOCB(iv16), 
-                        EncryptorFactory.newAES255WithOCB(iv16), 
-                        EncryptorFactory.newAES255WithOCB(iv16,hold.getKeyEncoded())
+                        skHold = CryptoFactory.newAES255WithOCB(iv16), 
+                        CryptoFactory.newAES255WithOCB(iv16), 
+                        CryptoFactory.newAES255WithOCB(iv16,skHold.getKeyEncoded())
                     },
                     */
 
                     /* 14 */ {
-                        EncryptorFactory.newEncryptorPBEWithMD5AndTripleDES(friendPassword),
-                        EncryptorFactory.newEncryptorPBEWithMD5AndTripleDES(foePassword),
-                        EncryptorFactory.newEncryptorPBEWithMD5AndTripleDES(friendPassword)
+                        CryptoFactory.newEncryptorPBEWithMD5AndTripleDES(friendPassword),
+                        CryptoFactory.newEncryptorPBEWithMD5AndTripleDES(foePassword),
+                        CryptoFactory.newEncryptorPBEWithMD5AndTripleDES(friendPassword)
                     },
 
                     /* 13 */ {
-                        EncryptorFactory.newEncryptorPBEWithSHAAnd3KeyTripleDES(friendPassword),
-                        EncryptorFactory.newEncryptorPBEWithSHAAnd3KeyTripleDES(foePassword),
-                        EncryptorFactory.newEncryptorPBEWithSHAAnd3KeyTripleDES(friendPassword)
+                        CryptoFactory.newEncryptorPBEWithSHAAnd3KeyTripleDES(friendPassword),
+                        CryptoFactory.newEncryptorPBEWithSHAAnd3KeyTripleDES(foePassword),
+                        CryptoFactory.newEncryptorPBEWithSHAAnd3KeyTripleDES(friendPassword)
                     },                
 
                     /* 14 */ {
-                        EncryptorFactory.newEncryptorPBEWithSHA256And256BitAES(friendPassword),
-                        EncryptorFactory.newEncryptorPBEWithSHA256And256BitAES(foePassword),
-                        EncryptorFactory.newEncryptorPBEWithSHA256And256BitAES(friendPassword)
-                    },                
-                
-                    })
+                        CryptoFactory.newEncryptorPBEWithSHA256And256BitAES(friendPassword),
+                        CryptoFactory.newEncryptorPBEWithSHA256And256BitAES(foePassword),
+                        CryptoFactory.newEncryptorPBEWithSHA256And256BitAES(friendPassword)
+                    },
+                })
             );
         }
         return l;
@@ -257,8 +285,10 @@ public class EncryptorTest {
     
     @BeforeClass
     static public void setup() throws CryptoException {
+        SecureRandom sr = new SecureRandom();
         passphrase = "The quickbown fox jumped over the lazy dog.";
-        message = "A far far better thing I do than I have ever done before.";
+        sr.nextBytes(message);
+        //message = "A far far better thing I do than I have ever done before.".getBytes(StandardCharsets.UTF_8);
         Security.insertProviderAt(new BouncyCastleProvider(),1);
     }
 
@@ -266,31 +296,61 @@ public class EncryptorTest {
     public ErrorCollector collector= new ErrorCollector();
     
     @Test
-    public void encryptionTest() throws CryptoException {
-        byte[] friendCipherBytes = friend.encrypt(message.getBytes(StandardCharsets.UTF_8));
-        assertNotNull("friend.encrypt: failed", friendCipherBytes);
-
-        byte[] foeCipherBytes = foe.encrypt(message.getBytes(StandardCharsets.UTF_8));
-        assertNotNull("foe.encrypt: failed",foeCipherBytes);
+    public void encryptDecryptTest() throws CryptoException {
+        String algorithm = me.getAlgorithm();
         
-        boolean friendIsFoe = Arrays.equals(friendCipherBytes, foeCipherBytes);
-        assertFalse("friend and foe have same key", friendIsFoe);
+        byte[] friendCipherBytes = friend.encrypt(message);
+        assertNotNull(algorithm + ":friend.encrypt: failed", friendCipherBytes);
+        
+        byte[] friendClearBytes = friend.decrypt(friendCipherBytes);
+        assertNotNull(algorithm + ":friend.decrypt: failed", friendClearBytes);
+        assertArrayEquals(algorithm + ":friend doesn't decrypt itself", 
+                message, friendClearBytes);
+        
 
-        byte[] clearbytes = friend.decrypt(friendCipherBytes);
-        assertNotNull("friend.decrypt: clearbytes null", clearbytes);
-        assertEquals("friend.decrypt: friend can't decrypt friendCipherBytes",
-                message, new String(clearbytes, StandardCharsets.UTF_8));
+        
+        byte[] meCipherBytes = me.encrypt(message);
+        assertNotNull(algorithm + ":me.encrypt: failed", meCipherBytes); 
+        
+        byte[] meClearBytes = me.decrypt(meCipherBytes);
+        assertNotNull(algorithm + ":me.encrypt: failed", meClearBytes);
+        assertArrayEquals(algorithm + ":me doesn't decrypt itself",
+                meClearBytes, message);
 
+
+        friendClearBytes = friend.decrypt(meCipherBytes);
+        assertNotNull(algorithm + ":friend.decrypt: failed", friendClearBytes);
+        assertArrayEquals(algorithm + ":friend doesn't decrypt me", 
+                message, friendClearBytes);
+        
+        meClearBytes = me.decrypt(friendCipherBytes);
+        assertNotNull(algorithm + ":me.decrypt: failed", meClearBytes);
+        assertArrayEquals(algorithm + ":me doesn't decrypt friend", 
+                message, friendClearBytes);
+        
         try {
             byte[] clearbytes2 = foe.decrypt(friendCipherBytes);
-            assertFalse("foe.decrypt: foe decrypted friend's message", Arrays.equals(clearbytes, clearbytes2));
-        } catch (CryptoException ex) { }
-        
-        byte[] friendKeyEncoded = friend.getKeyEncoded();
-        assertNotNull("friend.getKeyEncoded: null", friendKeyEncoded);
-        
-        byte[] clearbytes2 = me.decrypt(friendCipherBytes);
-        assertNotNull("me.decrypt: clearbytes null", clearbytes2);
-        assertTrue("me.decrypt: failed to decrypt correctly",Arrays.equals(clearbytes, clearbytes2));
+            assertFalse(
+                    algorithm + ":foe.decrypt: foe decrypted friend's message", 
+                    Arrays.equals(friendClearBytes, clearbytes2));
+        } catch (CryptoException ex) {
+            //
+        }
+
+        try {
+            byte[] clearbytes2 = foe.decrypt(meCipherBytes);
+            assertFalse(
+                    algorithm + ":foe.decrypt: foe decrypted me's message", 
+                    Arrays.equals(friendClearBytes, clearbytes2));
+        } catch (CryptoException ex) {
+            //
+        }
+        try {
+            byte[] signature = signerFriend.sign(message);
+            assertTrue("",
+                    CryptoFactory.newVerifier(friend, sha256).verify(message, signature));
+        } catch (SignerException ex) {
+            fail("Could not sign message: "+ex.getLocalizedMessage());
+        }
     }
 }

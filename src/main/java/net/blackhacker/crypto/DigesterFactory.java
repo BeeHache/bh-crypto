@@ -24,8 +24,8 @@
 
 package net.blackhacker.crypto;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -33,25 +33,34 @@ import java.security.NoSuchAlgorithmException;
  */
 final public class DigesterFactory {
 
+    static private Logger LOG = Logger.getLogger(DigesterFactory.class.getName());
     /**
      * Factory method that builds Digester object using the MD5 algorithm
      * 
      * @return Digester object
-     * @throws net.blackhacker.crypto.DigesterException
      * @see Digester
      */
-    static public Digester newDigesterMD5() throws DigesterException {
-        return new DigesterBase("MD5");
+    static public Digester newDigesterMD5() {
+        try {
+            return new DigesterBase("MD5");
+        } catch (DigesterException ex) {
+            LOG.log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
     
     /**
      * Factory method that builds Digester object using the SHA-256 algorithm
      * 
      * @return Digester object
-     * @throws net.blackhacker.crypto.DigesterException
      * @see Digester
      */
-    static public Digester newDigesterSHA256() throws DigesterException {
-        return new DigesterBase("SHA-256");
+    static public Digester newDigesterSHA256() {
+        try {
+            return new DigesterBase("SHA-256");
+        } catch (DigesterException ex) {
+            LOG.log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
 }

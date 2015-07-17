@@ -26,6 +26,9 @@ package net.blackhacker.crypto;
 
 import java.security.InvalidKeyException;
 import java.security.SecureRandom;
+import java.security.spec.AlgorithmParameterSpec;
+import java.security.spec.RSAKeyGenParameterSpec;
+import java.util.Arrays;
 import javax.crypto.spec.DESKeySpec;
 import javax.crypto.spec.DESedeKeySpec;
 import javax.crypto.spec.IvParameterSpec;
@@ -37,7 +40,10 @@ import javax.crypto.spec.SecretKeySpec;
  *
  * @author Benjamin King aka Blackhacker(bh@blackhacker.net)
  */
-final public class EncryptorFactory {
+final public class CryptoFactory {
+    
+    final static AlgorithmParameterSpec RSA_ALGOR_PARAM_SPEC = 
+        new RSAKeyGenParameterSpec(2048, RSAKeyGenParameterSpec.F4);
     
     /**
      * Factory method for generating PK object using RSA
@@ -46,8 +52,8 @@ final public class EncryptorFactory {
      * @throws CryptoException
      * @see PK
      */
-    static public PK newEncryptorRSA() throws CryptoException {
-        return new PK("RSA", null);
+    static public PK newEncryptorRSAWithECB() throws CryptoException {
+        return new PK("RSA/ECB/PKCS1Padding","RSA",null, RSA_ALGOR_PARAM_SPEC);
     }
     
     /**
@@ -59,10 +65,21 @@ final public class EncryptorFactory {
      * @throws CryptoException
      * @see PK
      */
-    static public PK newEncryptorRSA(final byte[] publicKeyEncoded, final byte[] privateKeyEncoded) 
+    static public PK newEncryptorRSAWithECB(final byte[] publicKeyEncoded, final byte[] privateKeyEncoded) 
             throws CryptoException {
-        return new PK("RSA", null, publicKeyEncoded, privateKeyEncoded);
+        return new PK("RSA/ECB/PKCS1Padding","RSA", null,publicKeyEncoded,privateKeyEncoded);
     }
+
+    /**
+     *
+     * @param publicKeyEncoded
+     * @return
+     * @throws CryptoException
+     */
+    static public PK newEncryptorRSAWithECB(final byte[] publicKeyEncoded) 
+            throws CryptoException {
+        return new PK("RSA/ECB/PKCS1Padding","RSA", null,publicKeyEncoded);
+    }  
 
     /**
      * Factory method for generating SK object using DES algorithm in ECB mode
@@ -771,6 +788,37 @@ final public class EncryptorFactory {
                 new PBEParameterSpec(DEFAULT_SALT, DEFAULT_COUNT),
                 new PBEKeySpec(password)
         );
+    }
+    
+    static Signer newSigner(final Encryptor encryptor, final Digester digester) {
+        return new Signer() {
+            
+            @Override
+            public byte[] sign(byte[] data) throws SignerException {
+                try {
+                    byte[] digest = digester.digest(data);
+                    return encryptor.encrypt(digest);
+                } catch (CryptoException ex) {
+                    throw new SignerException("Couldn't sign data",ex);
+                }                
+            }
+        };
+    }
+    
+    static Verifier newVerifier(final Decryptor decryptor,final Digester digester) {
+        return new Verifier() {
+
+            @Override
+            public boolean verify(byte[] data, byte[] signature) throws SignerException {
+                try {
+                    byte[] d = digester.digest(data);
+                    byte[] c = decryptor.decrypt(signature);
+                    return Arrays.equals(d, c);
+                } catch(CryptoException ex) {
+                    return false;
+                }                
+            }
+        };    
     }
     
     /**

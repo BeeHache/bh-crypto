@@ -33,7 +33,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.AlgorithmParameterSpec;
-import java.security.spec.EncodedKeySpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
@@ -48,30 +47,53 @@ import javax.crypto.IllegalBlockSizeException;
  * @see java.security.PrivateKey
  * @see java.security.PublicKey
  */
-public class PK extends Crypto implements Encryptor, Decryptor {
+public class PK extends Crypto {
     final private PublicKey publicKey;
     final private PrivateKey privateKey;
+    final String keyGeneratorAlgorithm;
+
+    /**
+     * Constructor that generates random key pair.
+     * 
+     * @param algorithm
+     * @param keyGenAlgor
+     * @param algorithmParameterSpec 
+     * @param keyGenAlgoParamSpec 
+     * @throws CryptoException
+     * @see AlgorithmParameterSpec
+     */
+    protected  PK(String algorithm, String keyGenAlgor, 
+            AlgorithmParameterSpec algorithmParameterSpec,
+            AlgorithmParameterSpec keyGenAlgoParamSpec) 
+            throws CryptoException {
+        super(algorithm, algorithmParameterSpec);
+        keyGeneratorAlgorithm = keyGenAlgor;
+        try {
+            KeyPairGenerator kpg = KeyPairGenerator.getInstance(keyGenAlgor);
+            kpg.initialize(keyGenAlgoParamSpec);
+            KeyPair kp = kpg.generateKeyPair();
+            publicKey = kp.getPublic();
+            privateKey = kp.getPrivate();
+            
+        } catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException e) {
+            throw new CryptoException(e);
+        }
+    }    
     
     /**
      * Constructor that generates random key pair.
      * 
      * @param algorithm
+     * @param keyGenAlgor
      * @param algorithmParameterSpec 
      * @throws CryptoException
      * @see AlgorithmParameterSpec
      */
-    protected  PK(String algorithm, AlgorithmParameterSpec algorithmParameterSpec) throws CryptoException {
-        super(algorithm, algorithmParameterSpec);
-        try {
-            KeyPairGenerator kpg = KeyPairGenerator.getInstance(algorithm);
-            kpg.initialize(2048);
-            KeyPair kp = kpg.generateKeyPair();        
-            publicKey = kp.getPublic();
-            privateKey = kp.getPrivate();
-            
-        } catch (NoSuchAlgorithmException e) {
-            throw new CryptoException(e);
-        }
+    protected  PK(String algorithm, String keyGenAlgor, 
+            AlgorithmParameterSpec algorithmParameterSpec) 
+            throws CryptoException {
+        this(algorithm, keyGenAlgor, algorithmParameterSpec, 
+                (AlgorithmParameterSpec)null);
     }
     
     /**
@@ -79,25 +101,62 @@ public class PK extends Crypto implements Encryptor, Decryptor {
      * encoded keys
      * 
      * @param algorithm
+     * @param keyGenAlgor
      * @param algorithmParameterSpec
      * @param publicKeyEncoded
      * @param privateKeyEncoded
      * @throws CryptoException
      * @see AlgorithmParameterSpec
      */
-    protected PK(String algorithm, AlgorithmParameterSpec algorithmParameterSpec, byte[] publicKeyEncoded, byte[] privateKeyEncoded) throws CryptoException {
+    protected PK(String algorithm, String keyGenAlgor,
+            AlgorithmParameterSpec algorithmParameterSpec, 
+            byte[] publicKeyEncoded, byte[] privateKeyEncoded)
+            throws CryptoException {
         super(algorithm, algorithmParameterSpec);
+        keyGeneratorAlgorithm = keyGenAlgor;
         try {
-            EncodedKeySpec pubSpec = new X509EncodedKeySpec(publicKeyEncoded);
-            EncodedKeySpec privSpec = new PKCS8EncodedKeySpec(privateKeyEncoded);
-            KeyFactory kf = KeyFactory.getInstance(getAlgorithm());
-            publicKey = kf.generatePublic(pubSpec);
-            privateKey = kf.generatePrivate(privSpec);
+            KeyFactory kf = KeyFactory.getInstance(keyGenAlgor);
+            
+            publicKey = kf.generatePublic(
+                    new X509EncodedKeySpec(publicKeyEncoded));
+            
+            privateKey = kf.generatePrivate(
+                    new PKCS8EncodedKeySpec(privateKeyEncoded));
         } catch(NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new CryptoException(e);
         }
     }
 
+    /**
+     * Constructor build public and private keys from the parameterSpec, and the
+     * encoded keys
+     * 
+     * @param algorithm
+     * @param keyGenAlgor
+     * @param algorithmParameterSpec
+     * @param publicKeyEncoded
+     * @throws CryptoException
+     * @see AlgorithmParameterSpec
+     */
+    protected PK(String algorithm, String keyGenAlgor,
+            AlgorithmParameterSpec algorithmParameterSpec, 
+            byte[] publicKeyEncoded)
+            throws CryptoException {
+        super(algorithm, algorithmParameterSpec);
+        keyGeneratorAlgorithm = keyGenAlgor;
+        try {
+            KeyFactory kf = KeyFactory.getInstance(keyGenAlgor);
+            
+            publicKey = kf.generatePublic(
+                    new X509EncodedKeySpec(publicKeyEncoded));
+            
+            privateKey = null;
+        } catch(NoSuchAlgorithmException | InvalidKeySpecException e) {
+            throw new CryptoException(e);
+        }
+    }
+    
+    
     /**
      * Encrypts array of bytes
      * 
@@ -125,6 +184,32 @@ public class PK extends Crypto implements Encryptor, Decryptor {
     }
     
     /**
+     *
+     * @param publicKey
+     * @param param
+     * @param clearBytes
+     * @return
+     * @throws CryptoException
+     */
+    public byte[] encrypt(PublicKey publicKey,AlgorithmParameterSpec param, byte[] clearBytes) 
+            throws CryptoException{
+        synchronized(getCipher()) {
+            try {
+                if (param !=null) {
+                    getCipher().init(Cipher.ENCRYPT_MODE, publicKey, param);
+                } else {
+                    getCipher().init(Cipher.ENCRYPT_MODE, publicKey);
+                }
+                return getCipher().doFinal(clearBytes);
+            } catch (InvalidKeyException | InvalidAlgorithmParameterException |
+                    IllegalBlockSizeException | BadPaddingException ex) {
+            	throw new CryptoException(
+                    "Could not encrypt data: " + ex.getLocalizedMessage(),ex);
+            }
+        }
+    }
+    
+    /**
      * Decrypts array of bytes
      * 
      * @param cipherBytes
@@ -133,6 +218,10 @@ public class PK extends Crypto implements Encryptor, Decryptor {
      */
     @Override
     public byte[] decrypt(byte[] cipherBytes) throws CryptoException {
+        if (privateKey==null){
+            throw new CryptoException("No PrivateKey defined");
+        }
+        
         AlgorithmParameterSpec param = getAlgorithmParameterSpec();
         synchronized(getCipher()) {
             try {
@@ -141,6 +230,7 @@ public class PK extends Crypto implements Encryptor, Decryptor {
                 } else {
                     getCipher().init(Cipher.DECRYPT_MODE, privateKey);
                 }
+                
                 return getCipher().doFinal(cipherBytes);
             } catch (InvalidKeyException | InvalidAlgorithmParameterException | 
                     IllegalBlockSizeException | BadPaddingException ex) {
@@ -167,5 +257,17 @@ public class PK extends Crypto implements Encryptor, Decryptor {
      */
     final public PrivateKey getPrivateKey() {
         return privateKey;
+    }
+    
+    final public byte[] getPublicKeyEncoded() {
+        return publicKey.getEncoded();
+    }
+    
+    final public byte[] getPrivateKeyEncoded() {
+        return privateKey == null ? null : privateKey.getEncoded();
+    }
+
+    final public String getKeyGeneratorAlgorithm() {
+        return keyGeneratorAlgorithm;
     }
 }
