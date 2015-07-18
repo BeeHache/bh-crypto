@@ -36,6 +36,7 @@ import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Arrays;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -222,7 +223,7 @@ public class PK extends Crypto {
             throw new CryptoException("No PrivateKey defined");
         }
         
-        AlgorithmParameterSpec param = getAlgorithmParameterSpec();
+        final AlgorithmParameterSpec param = getAlgorithmParameterSpec();
         synchronized(getCipher()) {
             try {
                 if (param!=null) {
@@ -238,6 +239,89 @@ public class PK extends Crypto {
             }
         }
     }
+    
+    /**
+     * 
+     * @return
+     */
+    public Verifier getVerifier() {
+        return getVerifier(null);
+    }
+
+    /**
+     *
+     * @param digester
+     * @return
+     */
+    public Verifier getVerifier(final Digester digester) {        
+        return new Verifier() {
+
+            @Override
+            public boolean verify(byte[] data, byte[] signature) throws SignerException {
+                final AlgorithmParameterSpec param = getAlgorithmParameterSpec();
+                synchronized(getCipher()) {
+                    byte[] digest = digester==null ? null : digester.digest(data);
+                    try {
+                        if (param!=null) {
+                            getCipher().init(Cipher.DECRYPT_MODE, publicKey, param);
+                        } else {
+                            getCipher().init(Cipher.DECRYPT_MODE, publicKey);
+                        }
+
+                        byte[]clearSig = getCipher().doFinal(signature);
+                        return Arrays.equals(clearSig, digest);
+                    } catch (InvalidKeyException | InvalidAlgorithmParameterException | 
+                            IllegalBlockSizeException | BadPaddingException ex) {
+                        return false;
+                    }
+                }                
+            }
+        };
+    }
+
+    /**
+     *
+     * @return
+     * @throws CryptoException
+     */
+    public Signer getSigner() throws CryptoException {
+        return getSigner(null);
+    }
+    
+    /**
+     *
+     * @param digester
+     * @return
+     * @throws CryptoException
+     */
+    public Signer getSigner(final Digester digester) throws CryptoException {
+        if (privateKey==null){
+            throw new CryptoException("No PrivateKey defined");
+        }
+       return new Signer() {
+            @Override
+            public byte[] sign(byte[] data) throws SignerException {
+                synchronized(getCipher()) {
+                    AlgorithmParameterSpec param = getAlgorithmParameterSpec();
+                    try {
+                        byte[] digest = digester.digest(data);
+                        
+                        if (param !=null) {
+                            getCipher().init(Cipher.ENCRYPT_MODE, privateKey, param);
+                        } else {
+                            getCipher().init(Cipher.ENCRYPT_MODE, privateKey);
+                        }
+                        return getCipher().doFinal(digest);
+                    } catch (InvalidKeyException | InvalidAlgorithmParameterException |
+                            IllegalBlockSizeException | BadPaddingException ex) {
+                        throw new SignerException(
+                            "Could not sign data: " + ex.getLocalizedMessage(),ex);
+                    }
+                }
+            }
+        };        
+    }
+    
 
     /**
      * Gets internal PubicKey object

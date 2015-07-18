@@ -38,5 +38,5 @@ public interface Decryptor {
      * @throws CryptoException 
      */
      public byte[] decrypt(byte[] cipherBytes) throws CryptoException;    
-    
+
 }

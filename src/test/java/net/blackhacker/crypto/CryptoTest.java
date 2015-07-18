@@ -67,9 +67,6 @@ public class CryptoTest {
     static private AlgorithmParameterSpec pbeCipherParams;
     
     static private SecretKey key;
-    final private Signer signerFriend;
-    final private Signer signerFoe;
-    final private Verifier verifier;
     
     private final Crypto friend;
     private final Crypto foe;
@@ -79,10 +76,6 @@ public class CryptoTest {
       this.friend = friend;
       this.foe = foe;
       this.me = me;
-      
-      signerFriend = CryptoFactory.newSigner(friend, sha256);
-      signerFoe = CryptoFactory.newSigner(foe, sha256);
-      verifier = CryptoFactory.newVerifier(me, sha256);
     }
 
     static boolean jce() {
@@ -345,12 +338,31 @@ public class CryptoTest {
         } catch (CryptoException ex) {
             //
         }
-        try {
-            byte[] signature = signerFriend.sign(message);
-            assertTrue("",
-                    CryptoFactory.newVerifier(friend, sha256).verify(message, signature));
-        } catch (SignerException ex) {
-            fail("Could not sign message: "+ex.getLocalizedMessage());
+        
+        if (me instanceof PK){
+            PK pk = (PK)me;
+            
+            try {
+                Signer meSigner = pk.getSigner(sha256);
+                Signer foeSigner = ((PK)foe).getSigner(sha256);
+                byte[] signature = meSigner.sign(message);
+                Verifier verifier = CryptoFactory
+                        .newEncryptorRSAWithECB(pk.getPublicKeyEncoded())
+                        .getVerifier(sha256);
+                
+                Verifier foeVerifier = CryptoFactory
+                        .newEncryptorRSAWithECB(((PK)foe).getPublicKeyEncoded())
+                        .getVerifier(sha256);
+                
+                assertTrue(algorithm + ":verifier.verify: Did not verify", 
+                        verifier.verify(message, signature));
+                
+                assertFalse(algorithm + ":verifier.verify: Did not verify", 
+                        foeVerifier.verify(message, signature));
+                
+            } catch (SignerException ex) {
+                fail(ex.getLocalizedMessage());
+            }
         }
     }
 }

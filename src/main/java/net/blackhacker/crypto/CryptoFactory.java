@@ -790,37 +790,6 @@ final public class CryptoFactory {
         );
     }
     
-    static Signer newSigner(final Encryptor encryptor, final Digester digester) {
-        return new Signer() {
-            
-            @Override
-            public byte[] sign(byte[] data) throws SignerException {
-                try {
-                    byte[] digest = digester.digest(data);
-                    return encryptor.encrypt(digest);
-                } catch (CryptoException ex) {
-                    throw new SignerException("Couldn't sign data",ex);
-                }                
-            }
-        };
-    }
-    
-    static Verifier newVerifier(final Decryptor decryptor,final Digester digester) {
-        return new Verifier() {
-
-            @Override
-            public boolean verify(byte[] data, byte[] signature) throws SignerException {
-                try {
-                    byte[] d = digester.digest(data);
-                    byte[] c = decryptor.decrypt(signature);
-                    return Arrays.equals(d, c);
-                } catch(CryptoException ex) {
-                    return false;
-                }                
-            }
-        };    
-    }
-    
     /**
      * Generates byte array containing 64 bits
      * @return byte array of random 8 bytes (64 bits) long

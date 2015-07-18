@@ -37,6 +37,6 @@ public interface Encryptor {
      * @return -- cipher bytes
      * @throws CryptoException
      */
-     public byte[] encrypt(byte[] clearBytes) throws CryptoException;   
+     public byte[] encrypt(byte[] clearBytes) throws CryptoException;
     
 }
