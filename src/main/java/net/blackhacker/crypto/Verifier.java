@@ -36,9 +36,8 @@ public interface Verifier {
      * 
      * @param data
      * @param signature
-     * @param decryptor
      * @return true if the signature is valid
      * @throws SignerException
      */
-    public boolean verify(byte[] data, byte[] signature) throws SignerException;
+    public boolean verify(final byte[] data, final byte[] signature) throws SignerException;
 }

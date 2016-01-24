@@ -37,6 +37,6 @@ public interface Signer {
      * @return signature
      * @throws SignerException
      */
-    public byte[] sign(byte[] data) throws SignerException;
+    public byte[] sign(final byte[] data) throws SignerException;
 
 }

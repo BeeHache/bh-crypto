@@ -55,7 +55,7 @@ public class SK extends Crypto {
      * @param keySize
      * @throws CryptoException
      */
-    protected SK(String cipherAlgorithm, String keyAlgorithm, int keySize)
+    protected SK(final String cipherAlgorithm, final String keyAlgorithm, int keySize)
             throws CryptoException {
         super(cipherAlgorithm, null);
         try {
@@ -74,7 +74,9 @@ public class SK extends Crypto {
      * @param algorithmParameterSpec
      * @throws CryptoException
      */
-    protected SK(String cipherAlgorithm, String keyAlgorithm, AlgorithmParameterSpec algorithmParameterSpec)
+    protected SK(final String cipherAlgorithm, 
+            final String keyAlgorithm, 
+            final AlgorithmParameterSpec algorithmParameterSpec)
             throws CryptoException {
         super(cipherAlgorithm, algorithmParameterSpec);
         try {

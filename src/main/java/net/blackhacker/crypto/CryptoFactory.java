@@ -28,7 +28,6 @@ import java.security.InvalidKeyException;
 import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.RSAKeyGenParameterSpec;
-import java.util.Arrays;
 import javax.crypto.spec.DESKeySpec;
 import javax.crypto.spec.DESedeKeySpec;
 import javax.crypto.spec.IvParameterSpec;
@@ -41,6 +40,8 @@ import javax.crypto.spec.SecretKeySpec;
  * @author Benjamin King aka Blackhacker(bh@blackhacker.net)
  */
 final public class CryptoFactory {
+    
+    static public int RSA_MAX_BYTES = 245;
     
     final static AlgorithmParameterSpec RSA_ALGOR_PARAM_SPEC = 
         new RSAKeyGenParameterSpec(2048, RSAKeyGenParameterSpec.F4);
@@ -57,7 +58,8 @@ final public class CryptoFactory {
     }
     
     /**
-     * Factory method for building PK object from public and private keys using RSA
+     * Factory method for building PK object from public and private keys using 
+     * RSA
      * 
      * @param publicKeyEncoded
      * @param privateKeyEncoded
@@ -65,7 +67,8 @@ final public class CryptoFactory {
      * @throws CryptoException
      * @see PK
      */
-    static public PK newEncryptorRSAWithECB(final byte[] publicKeyEncoded, final byte[] privateKeyEncoded) 
+    static public PK newEncryptorRSAWithECB(
+            final byte[] publicKeyEncoded, final byte[] privateKeyEncoded) 
             throws CryptoException {
         return new PK("RSA/ECB/PKCS1Padding","RSA", null,publicKeyEncoded,privateKeyEncoded);
     }
@@ -93,7 +96,8 @@ final public class CryptoFactory {
     }
 
     /**
-     * Factory method for building SK object from encoded key using DES algorithm in ECB mode
+     * Factory method for building SK object from encoded key using DES 
+     * algorithm in ECB mode
      * 
      * @param key
      * @return SK Object
@@ -109,8 +113,8 @@ final public class CryptoFactory {
     }    
     
     /**
-     * Factory method for generating a new SK object using DES algorithm in CBC mode
-     * with the given IV
+     * Factory method for generating a new SK object using DES algorithm in CBC 
+     * mode with the given IV
      * 
      * @param iv
      * @return SK Object
@@ -141,8 +145,8 @@ final public class CryptoFactory {
     }    
     
     /**
-     * Factory method for generating an SK object using DES algorithm in CBC mode
-     * with the given IV
+     * Factory method for generating an SK object using DES algorithm in CBC 
+     * mode with the given IV
      * 
      * @return SK Object
      * @throws CryptoException
@@ -153,8 +157,8 @@ final public class CryptoFactory {
     }
 
     /**
-     * Factory method for generating an SK object using DES algorithm in CFB mode
-     * with the given IV
+     * Factory method for generating an SK object using DES algorithm in CFB 
+     * mode with the given IV
      * 
      * @param iv
      * @return SK Object
@@ -680,7 +684,7 @@ final public class CryptoFactory {
      * @throws CryptoException
      * @see SK
      */
-    final static public SK newARANDOM_BITS92WithCBC(byte[] iv) throws CryptoException {
+    final static public SK newEncryptorAES192WithCBC(byte[] iv) throws CryptoException {
         return newEncryptorAES192WithCBC(iv, RANDOM_192_BITS());
     }
 

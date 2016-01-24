@@ -61,7 +61,7 @@ public abstract class Crypto implements Encryptor, Decryptor {
      * @param algorithmParameterSpec
      * @throws CryptoException
      */
-    protected  Crypto(String algorithm, AlgorithmParameterSpec algorithmParameterSpec) throws CryptoException {
+    protected  Crypto(final String algorithm, final AlgorithmParameterSpec algorithmParameterSpec) throws CryptoException {
     	try {
             cipher = Cipher.getInstance(algorithm);
             this.algorithmParameterSpec = algorithmParameterSpec;
