@@ -24,7 +24,6 @@
 
 package net.blackhacker.crypto;
 
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.Security;
 import java.security.spec.AlgorithmParameterSpec;
@@ -32,15 +31,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
+import static net.blackhacker.crypto.TestSuite.jce;
 //import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.spongycastle.jce.provider.BouncyCastleProvider;
 
 import org.junit.BeforeClass;
-import org.junit.Test;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertNotNull;
@@ -49,15 +45,12 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.Rule;
 import org.junit.rules.ErrorCollector;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
  *
  * @author ben
  */
-@RunWith(Parameterized.class)
 public class CryptoTest {
     
     static Digester sha256 = DigesterFactory.newDigesterSHA256();
@@ -77,14 +70,6 @@ public class CryptoTest {
       this.foe = foe;
       this.me = me;
     }
-
-    static boolean jce() {
-        try {
-            return Cipher.getMaxAllowedKeyLength("AES/ECB/PKCS5Padding") == Integer.MAX_VALUE;
-        } catch (NoSuchAlgorithmException ex) {
-            return false;
-        }
-    }    
     
     // creates the test data
     @Parameters
@@ -288,7 +273,6 @@ public class CryptoTest {
     @Rule
     public ErrorCollector collector= new ErrorCollector();
     
-    @Test
     public void encryptDecryptTest() throws CryptoException {
         String algorithm = me.getAlgorithm();
         

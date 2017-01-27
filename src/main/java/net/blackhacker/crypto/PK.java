@@ -24,6 +24,9 @@
 
 package net.blackhacker.crypto;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
@@ -32,6 +35,7 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -40,6 +44,7 @@ import java.util.Arrays;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.spec.IvParameterSpec;
 
 /**
  * Base class for all implementations of Asymmetric (Public Key) Encryption
@@ -51,26 +56,23 @@ import javax.crypto.IllegalBlockSizeException;
 public class PK extends Crypto {
     final private PublicKey publicKey;
     final private PrivateKey privateKey;
-    final String keyGeneratorAlgorithm;
 
     /**
      * Constructor that generates random key pair.
      * 
-     * @param algorithm
-     * @param keyGenAlgor
+     * @param transformation
      * @param algorithmParameterSpec 
      * @param keyGenAlgoParamSpec 
      * @throws CryptoException
      * @see AlgorithmParameterSpec
      */
-    protected  PK(String algorithm, String keyGenAlgor, 
+    protected  PK(Transformation transformation,
             AlgorithmParameterSpec algorithmParameterSpec,
             AlgorithmParameterSpec keyGenAlgoParamSpec) 
             throws CryptoException {
-        super(algorithm, algorithmParameterSpec);
-        keyGeneratorAlgorithm = keyGenAlgor;
+        super(transformation, algorithmParameterSpec);
         try {
-            KeyPairGenerator kpg = KeyPairGenerator.getInstance(keyGenAlgor);
+            KeyPairGenerator kpg = KeyPairGenerator.getInstance(getAlgorithmString());
             kpg.initialize(keyGenAlgoParamSpec);
             KeyPair kp = kpg.generateKeyPair();
             publicKey = kp.getPublic();
@@ -84,39 +86,35 @@ public class PK extends Crypto {
     /**
      * Constructor that generates random key pair.
      * 
-     * @param algorithm
-     * @param keyGenAlgor
+     * @param transformation
      * @param algorithmParameterSpec 
      * @throws CryptoException
      * @see AlgorithmParameterSpec
      */
-    protected  PK(String algorithm, String keyGenAlgor, 
+    protected  PK(Transformation transformation,
             AlgorithmParameterSpec algorithmParameterSpec) 
             throws CryptoException {
-        this(algorithm, keyGenAlgor, algorithmParameterSpec, 
-                (AlgorithmParameterSpec)null);
+        this(transformation, algorithmParameterSpec, (byte[])null);
     }
     
     /**
      * Constructor build public and private keys from the parameterSpec, and the
      * encoded keys
      * 
-     * @param algorithm
-     * @param keyGenAlgor
+     * @param transformation
      * @param algorithmParameterSpec
      * @param publicKeyEncoded
      * @param privateKeyEncoded
      * @throws CryptoException
      * @see AlgorithmParameterSpec
      */
-    protected PK(String algorithm, String keyGenAlgor,
-            AlgorithmParameterSpec algorithmParameterSpec, 
+    protected PK(Transformation transformation,
+            AlgorithmParameterSpec algorithmParameterSpec,
             byte[] publicKeyEncoded, byte[] privateKeyEncoded)
             throws CryptoException {
-        super(algorithm, algorithmParameterSpec);
-        keyGeneratorAlgorithm = keyGenAlgor;
+        super(transformation, algorithmParameterSpec);
         try {
-            KeyFactory kf = KeyFactory.getInstance(keyGenAlgor);
+            KeyFactory kf = KeyFactory.getInstance(getAlgorithmString());
             
             publicKey = kf.generatePublic(
                     new X509EncodedKeySpec(publicKeyEncoded));
@@ -132,21 +130,19 @@ public class PK extends Crypto {
      * Constructor build public and private keys from the parameterSpec, and the
      * encoded keys
      * 
-     * @param algorithm
-     * @param keyGenAlgor
+     * @param transformation
      * @param algorithmParameterSpec
      * @param publicKeyEncoded
      * @throws CryptoException
      * @see AlgorithmParameterSpec
      */
-    protected PK(String algorithm, String keyGenAlgor,
+    protected PK(Transformation transformation,
             AlgorithmParameterSpec algorithmParameterSpec, 
             byte[] publicKeyEncoded)
             throws CryptoException {
-        super(algorithm, algorithmParameterSpec);
-        keyGeneratorAlgorithm = keyGenAlgor;
+        super(transformation, algorithmParameterSpec);
         try {
-            KeyFactory kf = KeyFactory.getInstance(keyGenAlgor);
+            KeyFactory kf = KeyFactory.getInstance(transformation.toString());
             
             publicKey = kf.generatePublic(
                     new X509EncodedKeySpec(publicKeyEncoded));
@@ -155,6 +151,10 @@ public class PK extends Crypto {
         } catch(NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new CryptoException(e);
         }
+    }
+    
+        Transformation getTransormation() {
+        return (Transformation) getCipherAlgorithm();
     }
     
     
@@ -167,47 +167,28 @@ public class PK extends Crypto {
      */
     @Override
     public byte[] encrypt(byte[] clearBytes) throws CryptoException {
-        AlgorithmParameterSpec param = getAlgorithmParameterSpec();
-        synchronized(getCipher()) {
-            try {
-                if (param !=null) {
-                    getCipher().init(Cipher.ENCRYPT_MODE, publicKey, param);
-                } else {
-                    getCipher().init(Cipher.ENCRYPT_MODE, publicKey);
+        Cipher cipher = getCipher();
+        SecureRandom secureRandom = getSecureRandom();
+        final Transformation transformation = getTransormation(); 
+        
+            try(ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+                synchronized (cipher) {
+                    if (transformation.hasIV()) {
+                        byte[] iv = transformation.getIV(secureRandom);
+                        baos.write(iv);
+                        cipher.init(Cipher.ENCRYPT_MODE, publicKey, new IvParameterSpec(iv), secureRandom);
+                    } else {
+                        cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+                    }
+                    baos.write( cipher.doFinal(clearBytes));
                 }
-                return getCipher().doFinal(clearBytes);
-            } catch (InvalidKeyException | InvalidAlgorithmParameterException |
-                    IllegalBlockSizeException | BadPaddingException ex) {
+                return baos.toByteArray();
+            } catch (InvalidKeyException | IllegalBlockSizeException | 
+                    InvalidAlgorithmParameterException |
+                    BadPaddingException | IOException ex) {
             	throw new CryptoException(
                     "Could not encrypt data: " + ex.getLocalizedMessage(),ex);
             }
-        }
-    }
-    
-    /**
-     *
-     * @param publicKey
-     * @param param
-     * @param clearBytes
-     * @return
-     * @throws CryptoException
-     */
-    public byte[] encrypt(PublicKey publicKey,AlgorithmParameterSpec param, byte[] clearBytes) 
-            throws CryptoException{
-        synchronized(getCipher()) {
-            try {
-                if (param !=null) {
-                    getCipher().init(Cipher.ENCRYPT_MODE, publicKey, param);
-                } else {
-                    getCipher().init(Cipher.ENCRYPT_MODE, publicKey);
-                }
-                return getCipher().doFinal(clearBytes);
-            } catch (InvalidKeyException | InvalidAlgorithmParameterException |
-                    IllegalBlockSizeException | BadPaddingException ex) {
-            	throw new CryptoException(
-                    "Could not encrypt data: " + ex.getLocalizedMessage(),ex);
-            }
-        }
     }
     
     /**
@@ -223,20 +204,26 @@ public class PK extends Crypto {
             throw new CryptoException("No PrivateKey defined");
         }
         
-        final AlgorithmParameterSpec param = getAlgorithmParameterSpec();
-        synchronized(getCipher()) {
-            try {
-                if (param!=null) {
-                    getCipher().init(Cipher.DECRYPT_MODE, privateKey, param);
+        Cipher cipher = getCipher();
+        SecureRandom secureRandom = getSecureRandom();
+        
+        final Transformation transformation = getTransormation();
+        try(ByteArrayInputStream bais = new ByteArrayInputStream(cipherBytes)) {
+            synchronized(cipher) {
+                int ivSize = 0;
+                if (transformation.hasIV()) {
+                    byte[] iv = transformation.readIV(bais);
+                    cipher.init(Cipher.DECRYPT_MODE, privateKey, new IvParameterSpec(iv));
                 } else {
-                    getCipher().init(Cipher.DECRYPT_MODE, privateKey);
+                    cipher.init(Cipher.DECRYPT_MODE, privateKey);
                 }
-                
-                return getCipher().doFinal(cipherBytes);
-            } catch (InvalidKeyException | InvalidAlgorithmParameterException | 
-                    IllegalBlockSizeException | BadPaddingException ex) {
-            	throw new CryptoException("Could not encrypt data: " + ex.getLocalizedMessage(),ex);
+
+                return cipher.doFinal(cipherBytes, ivSize, cipherBytes.length);
             }
+        } catch (InvalidKeyException | InvalidAlgorithmParameterException | 
+                IllegalBlockSizeException | BadPaddingException | 
+                IOException ex) {
+            throw new CryptoException("Could not encrypt data: " + ex.getLocalizedMessage(),ex);
         }
     }
     
@@ -253,25 +240,28 @@ public class PK extends Crypto {
      * @param digester
      * @return
      */
-    public Verifier getVerifier(final Digester digester) {        
+    public Verifier getVerifier(final Digester digester) {
+        final Cipher cipher = getCipher();
+        final Transformation transformation = getTransormation();
         return new Verifier() {
 
             @Override
             public boolean verify(byte[] data, byte[] signature) throws SignerException {
-                final AlgorithmParameterSpec param = getAlgorithmParameterSpec();
-                synchronized(getCipher()) {
+                synchronized(cipher) {
+                    int ivSize = 0;
                     byte[] digest = digester==null ? null : digester.digest(data);
-                    try {
-                        if (param!=null) {
-                            getCipher().init(Cipher.DECRYPT_MODE, publicKey, param);
+                    try(ByteArrayInputStream bais = new ByteArrayInputStream(data)) {
+                        if (transformation.hasIV()) {
+                            byte[] iv = transformation.readIV(bais);
+                            cipher.init(Cipher.DECRYPT_MODE, publicKey, new IvParameterSpec(iv));
                         } else {
-                            getCipher().init(Cipher.DECRYPT_MODE, publicKey);
+                            cipher.init(Cipher.DECRYPT_MODE, publicKey);
                         }
 
-                        byte[]clearSig = getCipher().doFinal(signature);
+                        byte[]clearSig = cipher.doFinal(signature, transformation.getBlockSizeBytes(), signature.length);
                         return Arrays.equals(clearSig, digest);
                     } catch (InvalidKeyException | InvalidAlgorithmParameterException | 
-                            IllegalBlockSizeException | BadPaddingException ex) {
+                            IllegalBlockSizeException | BadPaddingException | IOException ex) {
                         return false;
                     }
                 }                
@@ -298,22 +288,30 @@ public class PK extends Crypto {
         if (privateKey==null){
             throw new CryptoException("No PrivateKey defined");
         }
-       return new Signer() {
+        
+        final Cipher cipher = getCipher();
+        final Transformation transformation = getTransormation();
+        final SecureRandom secureRandom = getSecureRandom();
+        
+        return new Signer() {
             @Override
             public byte[] sign(byte[] data) throws SignerException {
                 synchronized(getCipher()) {
-                    AlgorithmParameterSpec param = getAlgorithmParameterSpec();
-                    try {
+                    try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
                         byte[] digest = digester.digest(data);
                         
-                        if (param !=null) {
-                            getCipher().init(Cipher.ENCRYPT_MODE, privateKey, param);
+                        if (transformation.hasIV()) {
+                            byte[] iv = transformation.getIV(secureRandom);
+                            baos.write(iv);
+                            cipher.init(Cipher.ENCRYPT_MODE, privateKey, new IvParameterSpec(iv));
                         } else {
-                            getCipher().init(Cipher.ENCRYPT_MODE, privateKey);
+                            cipher.init(Cipher.ENCRYPT_MODE, privateKey);
                         }
-                        return getCipher().doFinal(digest);
+                        baos.write(cipher.doFinal(digest));
+                        return baos.toByteArray();
                     } catch (InvalidKeyException | InvalidAlgorithmParameterException |
-                            IllegalBlockSizeException | BadPaddingException ex) {
+                            IllegalBlockSizeException | BadPaddingException | 
+                            IOException ex) {
                         throw new SignerException(
                             "Could not sign data: " + ex.getLocalizedMessage(),ex);
                     }
@@ -349,9 +347,5 @@ public class PK extends Crypto {
     
     final public byte[] getPrivateKeyEncoded() {
         return privateKey == null ? null : privateKey.getEncoded();
-    }
-
-    final public String getKeyGeneratorAlgorithm() {
-        return keyGeneratorAlgorithm;
     }
 }

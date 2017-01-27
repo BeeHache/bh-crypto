@@ -32,12 +32,14 @@ import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
+import java.util.Arrays;
 import javax.crypto.BadPaddingException;
 
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
@@ -50,16 +52,15 @@ public class SK extends Crypto {
 
     /**
      *
-     * @param cipherAlgorithm
-     * @param keyAlgorithm
+     * @param transformation
      * @param keySize
      * @throws CryptoException
      */
-    protected SK(final String cipherAlgorithm, final String keyAlgorithm, int keySize)
+    protected SK(final Transformation transformation, int keySize)
             throws CryptoException {
-        super(cipherAlgorithm, null);
+        super(transformation, null);
         try {
-            KeyGenerator kg = KeyGenerator.getInstance(keyAlgorithm);
+            KeyGenerator kg = KeyGenerator.getInstance(getAlgorithmString());
             kg.init(keySize);
             key = kg.generateKey();
         } catch (NoSuchAlgorithmException e) {
@@ -69,18 +70,16 @@ public class SK extends Crypto {
     
     /**
      *
-     * @param cipherAlgorithm
-     * @param keyAlgorithm
+     * @param transformation
      * @param algorithmParameterSpec
      * @throws CryptoException
      */
-    protected SK(final String cipherAlgorithm, 
-            final String keyAlgorithm, 
+    protected SK(final Transformation transformation,
             final AlgorithmParameterSpec algorithmParameterSpec)
             throws CryptoException {
-        super(cipherAlgorithm, algorithmParameterSpec);
+        super(transformation, algorithmParameterSpec);
         try {
-            KeyGenerator kg = KeyGenerator.getInstance(keyAlgorithm);
+            KeyGenerator kg = KeyGenerator.getInstance(getAlgorithmString());
             kg.init(getSecureRandom());
             key = kg.generateKey();
         } catch (NoSuchAlgorithmException e) {
@@ -91,23 +90,28 @@ public class SK extends Crypto {
     /**
      *
      * @param cipherAlgorithm
-     * @param keyAlgorithm
      * @param algorithmParameterSpec
      * @param spec
      * @throws CryptoException
      */
-    protected SK(String cipherAlgorithm, String keyAlgorithm, AlgorithmParameterSpec algorithmParameterSpec, KeySpec spec)
+    protected SK(final CipherAlgorithm cipherAlgorithm, 
+            final AlgorithmParameterSpec algorithmParameterSpec, 
+            final KeySpec spec)
             throws CryptoException {
         super(cipherAlgorithm, algorithmParameterSpec);
         try {
             if (spec instanceof SecretKeySpec) {
                 key = (Key) spec;
             } else {
-                key = SecretKeyFactory.getInstance(keyAlgorithm).generateSecret(spec);
+                key = SecretKeyFactory.getInstance(getAlgorithmString()).generateSecret(spec);
             }
         } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
             throw new CryptoException("Couldn't create key factory: " + ex.getLocalizedMessage(),ex);
         }
+    }
+    
+    Transformation getTransormation() {
+        return (Transformation) getCipherAlgorithm();
     }
     
     /**
@@ -118,24 +122,32 @@ public class SK extends Crypto {
      */
     @Override
     public byte[] encrypt(byte[] data) throws CryptoException {
-        AlgorithmParameterSpec param = getAlgorithmParameterSpec();
         Cipher cipher = getCipher();
         SecureRandom secureRandom = getSecureRandom();
         
-        synchronized (cipher) {
-            try {
-                if (param != null) {
-                    cipher.init(Cipher.ENCRYPT_MODE, key, param, secureRandom);
+        final Transformation transformation = getTransormation(); 
+
+        try {
+            synchronized(cipher) {
+                byte[] iv = null;
+                
+                if (transformation.hasIV()) {
+                    iv = new byte[transformation.getBlockSizeBytes()];
+                    secureRandom.nextBytes(iv);
+                    cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(iv), secureRandom);                    
                 } else {
                     cipher.init(Cipher.ENCRYPT_MODE, key, secureRandom);
                 }
                 
-                return cipher.doFinal(data);
-            } catch (Exception ex) {
-            	throw new CryptoException(
-                    "Could not encrypt data:" + ex.getLocalizedMessage(),
-                    ex);
+                byte[] cipherBytes = cipher.doFinal(data);
+
+                return joinArrays(iv, cipherBytes);
             }
+        } catch (InvalidKeyException | InvalidAlgorithmParameterException | 
+                IllegalBlockSizeException | BadPaddingException  ex) {
+            throw new CryptoException(
+                "Could not encrypt data:" + ex.getLocalizedMessage(),
+                ex);
         }
     }
     
@@ -147,24 +159,29 @@ public class SK extends Crypto {
      */
     @Override
     public byte[] decrypt(byte[] data) throws CryptoException {
-        AlgorithmParameterSpec param = getAlgorithmParameterSpec();
         Cipher cipher = getCipher();
+
+        final Transformation transformation = getTransormation();
         
-        synchronized(cipher) {
-            try {
-                if (param!=null) {
-                    cipher.init(Cipher.DECRYPT_MODE, getKey(), param);
+        try {
+            synchronized(cipher) {
+                int ivSize = 0;
+                if (transformation.hasIV()) {
+                    ivSize = transformation.getBlockSizeBytes();
+                    byte[] iv = Arrays.copyOf(data, ivSize);
+                    cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(iv));
                 } else {
-                    cipher.init(Cipher.DECRYPT_MODE, getKey());
+                    cipher.init(Cipher.DECRYPT_MODE, key);
                 }
-                return cipher.doFinal(data);
-            } catch (CryptoException | InvalidKeyException | InvalidAlgorithmParameterException |
-                    IllegalBlockSizeException | BadPaddingException ex) {
-            	throw new CryptoException(
-                        "Could not decrypt data: " +
-                        getAlgorithm() + ":" +
-                        ex.getLocalizedMessage(),ex);
+                
+                return cipher.doFinal(data, ivSize, data.length - ivSize);
             }
+        } catch (InvalidKeyException | InvalidAlgorithmParameterException |
+                IllegalBlockSizeException | BadPaddingException  ex) {
+            throw new CryptoException(
+                    "Could not decrypt data: " +
+                    getAlgorithm() + ":" +
+                    ex.getLocalizedMessage(),ex);
         }
     }
     
