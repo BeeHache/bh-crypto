@@ -81,6 +81,12 @@ public class SKTest {
                 { new Transformation(Algorithm.DESede, Mode.CBC) },
                 { new Transformation(Algorithm.DESede, Mode.CFB) },
                 { new Transformation(Algorithm.DESede, Mode.OFB) },
+                
+                { new Transformation(Algorithm.AES, Mode.ECB) },
+                { new Transformation(Algorithm.AES, Mode.CBC) },
+                { new Transformation(Algorithm.AES, Mode.CFB) },
+                { new Transformation(Algorithm.AES, Mode.OFB) },
+                { new Transformation(Algorithm.AES, Mode.CTR) },
             }
         ));
         
@@ -104,8 +110,7 @@ public class SKTest {
     public void setup() throws CryptoException, InvalidKeyException {
         friend = new SK(transformation, null);
         foe = new SK(transformation, null);
-        me = new SK(transformation, null, 
-                transformation.getAlgorithm().wrapKey(friend.getKeyEncoded()));
+        me = new SK(transformation, null, friend.getKeyEncoded());
     }
     
     @Test

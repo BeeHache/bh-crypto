@@ -79,8 +79,8 @@ public class CryptoTest {
         
         byte[] iv8 = new byte[8];
         byte[] iv16 = new byte[16];
-        char[] friendPassword = "The quick brown fox".toCharArray();
-        char[] foePassword = "jumped over the lazy dog".toCharArray();
+        String friendPassword = "The quick brown fox";
+        String foePassword = "jumped over the lazy dog";
         SecureRandom sr = new SecureRandom();
         sr.nextBytes(iv8);
         sr.nextBytes(iv16);

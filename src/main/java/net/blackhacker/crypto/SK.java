@@ -40,6 +40,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
@@ -91,15 +92,17 @@ public class SK extends Crypto {
      *
      * @param cipherAlgorithm
      * @param algorithmParameterSpec
-     * @param spec
+     * @param encodedKeySpec
      * @throws CryptoException
      */
     protected SK(final CipherAlgorithm cipherAlgorithm, 
             final AlgorithmParameterSpec algorithmParameterSpec, 
-            final KeySpec spec)
+            final byte[] encodedKeySpec)
             throws CryptoException {
         super(cipherAlgorithm, algorithmParameterSpec);
         try {
+            KeySpec spec = getTransormation().getAlgorithm().makeKeySpec(encodedKeySpec);
+            
             if (spec instanceof SecretKeySpec) {
                 key = (Key) spec;
             } else {
@@ -109,8 +112,29 @@ public class SK extends Crypto {
             throw new CryptoException("Couldn't create key factory: " + ex.getLocalizedMessage(),ex);
         }
     }
+
+   /**
+     *
+     * @param cipherAlgorithm
+     * @param algorithmParameterSpec
+     * @param password
+     * @throws CryptoException
+     */
+    protected SK(final CipherAlgorithm cipherAlgorithm, 
+            final AlgorithmParameterSpec algorithmParameterSpec, 
+            final String password)
+            throws CryptoException {
+        super(cipherAlgorithm, algorithmParameterSpec);
+        try {
+            key = SecretKeyFactory
+                .getInstance(getAlgorithmString())
+                .generateSecret(new PBEKeySpec(password.toCharArray()));
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
+            throw new CryptoException("Couldn't create key factory: " + ex.getLocalizedMessage(),ex);
+        }
+    }
     
-    Transformation getTransormation() {
+    final protected Transformation getTransormation() {
         return (Transformation) getCipherAlgorithm();
     }
     

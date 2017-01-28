@@ -116,13 +116,7 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorDESWithECB(byte[] key) throws CryptoException {
-        try {
-            return new SK(
-                    new Transformation(Algorithm.DES, Mode.ECB, Padding.PKCS5Padding), 
-                    null, new DESKeySpec(key));
-        } catch (InvalidKeyException ex) {
-            throw new CryptoException(ex);
-        }
+        return new SK(new Transformation(Algorithm.DES, Mode.ECB), null, key);
     }    
     
     /**
@@ -135,9 +129,7 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorDESWithCBC(byte[] iv) throws CryptoException {
-        return new SK(
-                new Transformation(Algorithm.DES, Mode.CBC, Padding.PKCS5Padding), 
-                IV64_BIT_CHECK(iv));
+        return new SK(new Transformation(Algorithm.DES, Mode.CBC), IV64_BIT_CHECK(iv));
     }
 
     /**
@@ -151,14 +143,7 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorDESWithCBC(byte[] iv, byte[] key) throws CryptoException {
-        try {
-            return new SK(
-                    new Transformation(Algorithm.DES, Mode.CBC, Padding.PKCS5Padding),
-                    IV64_BIT_CHECK(iv), new DESKeySpec(key)
-            );
-        } catch (InvalidKeyException ex) {
-            throw new CryptoException(ex);
-        }
+        return new SK(new Transformation(Algorithm.DES, Mode.CBC), IV64_BIT_CHECK(iv), key);
     }    
     
     /**
@@ -199,14 +184,9 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorDESWithCFB(byte[] iv, byte[] key) throws CryptoException {
-        try {
-            return new SK(
-                    new Transformation(Algorithm.DES, Mode.CFB, Padding.PKCS5Padding),
-                    IV64_BIT_CHECK(iv), new DESKeySpec(key)
-            );
-        } catch (InvalidKeyException ex) {
-            throw new CryptoException(ex);
-        }
+        return new SK(
+                new Transformation(Algorithm.DES, Mode.CFB, Padding.PKCS5Padding),
+                IV64_BIT_CHECK(iv), key);
     }    
     
     /**
@@ -246,13 +226,9 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorDESWithOFB(byte[] iv, byte[] key) throws CryptoException {
-        try {
-            return new SK(
-                    new Transformation(Algorithm.DES, Mode.OFB, Padding.PKCS5Padding),
-                    IV64_BIT_CHECK(iv), new DESKeySpec(key));
-        } catch (InvalidKeyException ex) {
-            throw new CryptoException(ex);
-        }
+        return new SK(
+                new Transformation(Algorithm.DES, Mode.OFB, Padding.PKCS5Padding),
+                IV64_BIT_CHECK(iv), key);
     }
     
     /**
@@ -290,13 +266,9 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorDESedeWithECB(byte[] key) throws CryptoException {
-        try {
-            return new SK(
-                    new Transformation(Algorithm.DESede, Mode.ECB, Padding.PKCS5Padding),
-                    null, new DESedeKeySpec(key));
-        } catch (InvalidKeyException ex) {
-            throw new CryptoException(ex);
-        }
+        return new SK(
+            new Transformation(Algorithm.DESede, Mode.ECB, Padding.PKCS5Padding),
+            null, key);
     }
     
     /**
@@ -325,13 +297,9 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorDESedeWithCBC(byte[] iv, byte[] key) throws CryptoException {
-        try {
-            return new SK(
-                    new Transformation(Algorithm.DESede, Mode.CBC, Padding.PKCS5Padding),
-                    IV64_BIT_CHECK(iv), new DESedeKeySpec(key));
-        } catch (InvalidKeyException ex) {
-            throw new CryptoException(ex);
-        }
+        return new SK(
+            new Transformation(Algorithm.DESede, Mode.CBC, Padding.PKCS5Padding),
+            IV64_BIT_CHECK(iv), key);
     }
 
     /**
@@ -372,13 +340,9 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorDESedeWithCFB(byte[] iv, byte[] key) throws CryptoException {
-        try {
-            return new SK(
-                    new Transformation(Algorithm.DESede, Mode.CFB, Padding.PKCS5Padding),
-                    IV64_BIT_CHECK(iv), new DESedeKeySpec(key));
-        } catch (InvalidKeyException ex) {
-            throw new CryptoException(ex);
-        }
+        return new SK(
+            new Transformation(Algorithm.DESede, Mode.CFB, Padding.PKCS5Padding),
+            IV64_BIT_CHECK(iv), key);
     }    
     
     /**
@@ -419,15 +383,9 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorDESedeWithOFB(byte[] iv, byte[] key) throws CryptoException {
-        try {
-            return new SK(
-                    new Transformation(Algorithm.DESede, Mode.OFB, Padding.PKCS5Padding),
-                    IV64_BIT_CHECK(iv),
-                    new DESedeKeySpec(key)
-            );
-        } catch (InvalidKeyException ex) {
-            throw new CryptoException(ex);
-        }
+        return new SK(
+            new Transformation(Algorithm.DESede, Mode.OFB, Padding.PKCS5Padding),
+            IV64_BIT_CHECK(iv), key);
     }    
     
     /**
@@ -453,10 +411,7 @@ final public class CryptoFactory {
      */
     final static public SK newEncryptorAES128WithECB(byte[] key) throws CryptoException {
         return new SK(
-                new Transformation(Algorithm.AES, Mode.ECB, Padding.PKCS5Padding),
-                null,
-                KEY128_BIT_CHECK(key, Algorithm.AES)
-        );
+            new Transformation(Algorithm.AES, Mode.ECB, Padding.PKCS5Padding), null,key);
     }
 
     /**
@@ -508,10 +463,8 @@ final public class CryptoFactory {
      */
     final static public SK newEncryptorAES128WithCBC(byte[] iv, byte[] key) throws CryptoException {
         return new SK(
-                new Transformation(Algorithm.AES, Mode.CBC, Padding.PKCS5Padding),
-                IV128_BIT_CHECK(iv),
-                KEY128_BIT_CHECK(key, Algorithm.AES)
-        );
+            new Transformation(Algorithm.AES, Mode.CBC, Padding.PKCS5Padding),
+            IV128_BIT_CHECK(iv), key);
     }
 
     /**
@@ -527,9 +480,8 @@ final public class CryptoFactory {
     final static public SK newEncryptorAES128WithCFB(final byte[] iv, final byte[] key) 
             throws CryptoException {
         return new SK(
-                new Transformation(Algorithm.AES, Mode.CFB, Padding.PKCS5Padding),
-                IV128_BIT_CHECK(iv),
-                KEY128_BIT_CHECK(key, Algorithm.AES)
+            new Transformation(Algorithm.AES, Mode.CFB, Padding.PKCS5Padding),
+            IV128_BIT_CHECK(iv), key
         );
     }
 
@@ -569,9 +521,8 @@ final public class CryptoFactory {
      */
     final static public SK newEncryptorAES128WithOFB(byte[] iv, byte[] key) throws CryptoException {
         return new SK(
-                new Transformation(Algorithm.AES, Mode.OFB, Padding.PKCS5Padding),
-                IV128_BIT_CHECK(iv),
-                KEY128_BIT_CHECK(key, Algorithm.AES)
+            new Transformation(Algorithm.AES, Mode.OFB, Padding.PKCS5Padding),
+            IV128_BIT_CHECK(iv), key
         );
     }
 
@@ -611,9 +562,8 @@ final public class CryptoFactory {
      */
     final static public SK newEncryptorAES128WithCTR(byte[] iv, byte[] key) throws CryptoException {
         return new SK(
-                new Transformation(Algorithm.AES, Mode.CTR, Padding.PKCS5Padding),
-                IV128_BIT_CHECK(iv),
-                KEY128_BIT_CHECK(key, Algorithm.AES)
+            new Transformation(Algorithm.AES, Mode.CTR, Padding.PKCS5Padding),
+            IV128_BIT_CHECK(iv), key
         );
     }
 
@@ -654,9 +604,8 @@ final public class CryptoFactory {
      */
     final static public SK newEncryptorAES128WithOCB(byte[] iv, byte[] key) throws CryptoException {
         return new SK(
-                new Transformation(Algorithm.AES, Mode.OCB, Padding.PKCS5Padding),
-                IV128_BIT_CHECK(iv),
-                KEY128_BIT_CHECK(key, Algorithm.AES)
+            new Transformation(Algorithm.AES, Mode.OCB, Padding.PKCS5Padding),
+            IV128_BIT_CHECK(iv), key
         );
     }
 
@@ -695,9 +644,8 @@ final public class CryptoFactory {
      */
     final static public SK newEncryptorAES192WithECB(byte[] key) throws CryptoException {
         return new SK(
-                new Transformation(Algorithm.AES, Mode.ECB, Padding.PKCS5Padding),
-                null,
-                KEY192_BIT_CHECK(key, Algorithm.AES));
+            new Transformation(Algorithm.AES, Mode.ECB, Padding.PKCS5Padding),
+            null, key);
     }    
     
     /**
@@ -737,9 +685,8 @@ final public class CryptoFactory {
      */
     final static public SK newEncryptorAES192WithCBC(byte[] iv, byte[] key) throws CryptoException {
         return new SK(
-                new Transformation(Algorithm.AES, Mode.CBC, Padding.PKCS5Padding),
-                IV192_BIT_CHECK(iv),
-                KEY192_BIT_CHECK(key, Algorithm.AES)
+            new Transformation(Algorithm.AES, Mode.CBC, Padding.PKCS5Padding),
+            IV192_BIT_CHECK(iv), key
         );
     }    
     
@@ -761,11 +708,11 @@ final public class CryptoFactory {
      * @return
      * @throws CryptoException
      */
-    final static public SK newEncryptorPBEWithSHAAnd3KeyTripleDES(char[] password) throws CryptoException {
+    final static public SK newEncryptorPBEWithSHAAnd3KeyTripleDES(String password) throws CryptoException {
         return new SK(
                 new PBEAlgorithm(Algorithm.SHA1, Algorithm.DESede),
                 new PBEParameterSpec(DEFAULT_SALT, DEFAULT_COUNT),
-                new PBEKeySpec(password)
+                password
         );
     }
 
@@ -775,11 +722,10 @@ final public class CryptoFactory {
      * @return
      * @throws CryptoException
      */
-    final static public SK newEncryptorPBEWithMD5AndTripleDES(char[] password) throws CryptoException {
+    final static public SK newEncryptorPBEWithMD5AndTripleDES(String password) throws CryptoException {
         return new SK(
-                new PBEAlgorithm(Algorithm.MD5, Algorithm.DESede),
-                new PBEParameterSpec(DEFAULT_SALT, DEFAULT_COUNT),
-                new PBEKeySpec(password)
+            new PBEAlgorithm(Algorithm.MD5, Algorithm.DESede),
+            new PBEParameterSpec(DEFAULT_SALT, DEFAULT_COUNT), password
         );
     }
     
@@ -789,11 +735,10 @@ final public class CryptoFactory {
      * @return
      * @throws CryptoException
      */
-    final static public SK newEncryptorPBEWithMD5AndDES(char[] password) throws CryptoException {
+    final static public SK newEncryptorPBEWithMD5AndDES(String password) throws CryptoException {
         return new SK(
                 new PBEAlgorithm(Algorithm.MD5, Algorithm.DES),
-                new PBEParameterSpec(DEFAULT_SALT, DEFAULT_COUNT),
-                new PBEKeySpec(password)
+                new PBEParameterSpec(DEFAULT_SALT, DEFAULT_COUNT), password
         );
     }
 
@@ -803,11 +748,10 @@ final public class CryptoFactory {
      * @return
      * @throws CryptoException
      */
-    final static public SK newEncryptorPBEWithSHA256And256BitAES(char[] password) throws CryptoException {
+    final static public SK newEncryptorPBEWithSHA256And256BitAES(String password) throws CryptoException {
         return new SK(
-                new PBEAlgorithm(Algorithm.SHA256, Algorithm.AES, 256),
-                new PBEParameterSpec(DEFAULT_SALT, DEFAULT_COUNT),
-                new PBEKeySpec(password)
+            new PBEAlgorithm(Algorithm.SHA256, Algorithm.AES, 256),
+            new PBEParameterSpec(DEFAULT_SALT, DEFAULT_COUNT), password
         );
     }
     
@@ -817,11 +761,10 @@ final public class CryptoFactory {
      * @return
      * @throws CryptoException
      */
-    final static public SK newEncryptorPBEWithSHA1AndDESede(char[] password) throws CryptoException {
+    final static public SK newEncryptorPBEWithSHA1AndDESede(String password) throws CryptoException {
         return new SK(
-                new PBEAlgorithm(Algorithm.SHA1, Algorithm.DESede),
-                new PBEParameterSpec(DEFAULT_SALT, DEFAULT_COUNT),
-                new PBEKeySpec(password)
+            new PBEAlgorithm(Algorithm.SHA1, Algorithm.DESede),
+            new PBEParameterSpec(DEFAULT_SALT, DEFAULT_COUNT), password
         );
     }
     

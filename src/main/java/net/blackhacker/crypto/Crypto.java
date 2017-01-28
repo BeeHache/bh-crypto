@@ -24,7 +24,7 @@
 
 package net.blackhacker.crypto;
 
-import java.security.InvalidKeyException;
+import java.lang.reflect.InvocationTargetException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
@@ -34,6 +34,7 @@ import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.DESKeySpec;
 import javax.crypto.spec.DESedeKeySpec;
+import javax.crypto.spec.SecretKeySpec;
 
 /**
  *  Abstract base class for both symmetric and asymmetric encryption algorithms
@@ -44,57 +45,61 @@ public abstract class Crypto implements Encryptor, Decryptor {
 
     public enum Algorithm {
         /* Cipher*/
-        AES(128, null), 
+        AES(128, SecretKeySpec.class),
         AESWrap(128, null), 
-        ARCFOUR(null), 
-        Blowfish(null), 
-        CCM(null), 
-        DES(new KeySpecWrapper() {
-            @Override
-            public KeySpec wrap(byte[] keyEncoded) throws InvalidKeyException{
-                return new DESKeySpec(keyEncoded);
-            }
-        }), 
-        DESede(new KeySpecWrapper() {
-            @Override
-            public KeySpec wrap(byte[] keyEncoded) throws InvalidKeyException{
-                return new DESedeKeySpec(keyEncoded);
-            }
-        }),
-        DESedeWrap(null), 
-        ECIES(null), 
-        GCM(null), 
-        RC2(null), 
-        RC4(null), 
-        RC5(null), 
-        RSA(null),
+        ARCFOUR, 
+        Blowfish,
+        CCM,
+        DES(DESKeySpec.class), 
+        DESede(DESedeKeySpec.class),
+        DESedeWrap,
+        ECIES,
+        GCM, 
+        RC2, 
+        RC4, 
+        RC5,
+        RSA,
         
         /* Digest */
         MD2(null), MD5(null), SHA1(null), SHA256(null), SHA384(null), SHA512(null);
         
-        Algorithm(KeySpecWrapper keySpecWrapper){
-            this.blockSize = 64;
-            this.keySpecWrapper = keySpecWrapper;
+        Algorithm(){
+            this(null);
+        }
+        
+        Algorithm(Class <? extends KeySpec> keySpecClass){
+            this(64, keySpecClass);
         }
 
-        Algorithm(int s, KeySpecWrapper keySpecWrapper){
+        Algorithm(int s, Class <? extends KeySpec> keySpecClass){
             this.blockSize = s;
-            this.keySpecWrapper = keySpecWrapper;
+            this.keySpecClass = keySpecClass;
         }
         
         public int blockSize() {
             return blockSize;
         }
         
-        public KeySpec wrapKey(byte[] keyEncoded) throws InvalidKeyException {
-            if (keySpecWrapper != null)
-                return keySpecWrapper.wrap(keyEncoded);
-            
-            return null;
+        
+        public KeySpec makeKeySpec(byte[] key) throws CryptoException {
+            try {
+                if (keySpecClass.equals(SecretKeySpec.class))
+                    return keySpecClass
+                            .getConstructor(byte[].class, String.class)
+                            .newInstance(key, name());
+                else
+                    return keySpecClass
+                            .getConstructor(byte[].class)
+                            .newInstance(key);
+            } catch (NoSuchMethodException | SecurityException | 
+                    InstantiationException | IllegalAccessException | 
+                    IllegalArgumentException | InvocationTargetException ex) {
+                throw new CryptoException("Couldn't make keyspec", ex);
+            }
         }
         
         final int blockSize;
-        final KeySpecWrapper keySpecWrapper;
+        final Class <? extends KeySpec> keySpecClass;
     }
     
     public enum Mode {
@@ -198,37 +203,4 @@ public abstract class Crypto implements Encryptor, Decryptor {
         }
     }
     
-    
-    /**
-     * Generates byte array containing 64 bits
-     * 
-     * @param size size of array in bits, should be multiple of 8
-     * @return A random array of bytes
-     */
-    final protected byte[] getRandomBits(int size) {
-        int sizeInBytes = (int) Math.ceil(((double)size) / 8.0);
-        byte[] array = new byte[sizeInBytes];
-        secureRandom.nextBytes(array);
-        return array;
-    }
-    
-    
-    final protected byte[] joinArrays(byte[] ...arrays){
-        int sum=0;
-        for (byte[] array : arrays) {
-            if (array!=null)
-                sum += array.length;
-        }
-        
-        byte[] retval = new byte [ sum ];
-        int r = 0;
-        for (byte[] array : arrays) {
-            if (array!=null) {
-                for (byte b : array) {
-                    retval[r++] = b;
-                }
-            }
-        }
-        return retval;
-    }
 }
