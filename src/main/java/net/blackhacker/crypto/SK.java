@@ -141,7 +141,7 @@ public class SK extends Crypto {
                 
                 byte[] cipherBytes = cipher.doFinal(data);
 
-                return joinArrays(iv, cipherBytes);
+                return Utils.joinArrays(iv, cipherBytes);
             }
         } catch (InvalidKeyException | InvalidAlgorithmParameterException | 
                 IllegalBlockSizeException | BadPaddingException  ex) {
