@@ -21,33 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.blackhacker.crypto;
-
-import net.blackhacker.crypto.Crypto.Algorithm;
+package net.blackhacker.crypto.algorithm;
 
 /**
  *
  * @author ben
  */
-public class PBEAlgorithm implements CipherAlgorithm {
-    final Algorithm digest;
-    final Algorithm encryption;
-    final int size;
-    
-    PBEAlgorithm(Algorithm digest, Algorithm encryption, int size) {
-        this.digest = digest;
-        this.encryption = encryption;
-        this.size = size;
-    }
-    
-    PBEAlgorithm(Algorithm digest, Algorithm encryption) {
-        this(digest, encryption, -1);
+public enum Mode {
+    /* Cipher */
+    NONE(false), CBC(true), CFB(true), CTR(true), CTS(true), ECB(false),
+    OFB(true), PCBC(true), OCB(true);
+
+    Mode(boolean s) {
+        this.hasIV = s;
     }
 
-    
-    
-    @Override
-    public String toString() {
-        return String.format("PBEWith%sAnd%s", digest.name(), encryption.name());
+    public boolean hasIV() {
+        return hasIV;
     }
+
+    final boolean hasIV;
 }

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2017 ben.
+ * Copyright 2017 Benjamin King aka Blackhacker<bh@blackhacker.net>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,15 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.blackhacker.crypto;
-
-import java.security.InvalidKeyException;
-import java.security.spec.KeySpec;
+package net.blackhacker.crypto.algorithm;
 
 /**
  *
- * @author ben
+ * @author Benjamin King aka Blackhacker<bh@blackhacker.net>
  */
-public interface KeySpecWrapper {
-    KeySpec wrap(byte[] ketEncoded) throws InvalidKeyException;
+public enum DigestAlgorithm {
+        MD2, MD5, SHA1, SHA256, SHA384, SHA512;
 }

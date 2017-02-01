@@ -24,19 +24,15 @@
 
 package net.blackhacker.crypto;
 
-import java.security.InvalidKeyException;
+import net.blackhacker.crypto.algorithm.SymetricAlgorithm;
+import net.blackhacker.crypto.algorithm.Mode;
+import net.blackhacker.crypto.algorithm.DigestAlgorithm;
 import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.RSAKeyGenParameterSpec;
-import javax.crypto.spec.DESKeySpec;
-import javax.crypto.spec.DESedeKeySpec;
 import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.spec.PBEParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import net.blackhacker.crypto.Crypto.Algorithm;
-import net.blackhacker.crypto.Crypto.Mode;
-import net.blackhacker.crypto.Crypto.Padding;
+import net.blackhacker.crypto.algorithm.AsymetricAlgorithm;
 
 /**
  *
@@ -58,8 +54,7 @@ final public class CryptoFactory {
      */
     static public PK newEncryptorRSAWithECB() throws CryptoException {
         return new PK(
-                new Transformation(Algorithm.RSA, Mode.ECB, Padding.PKCS1Padding),
-                null, RSA_ALGOR_PARAM_SPEC);
+                new Transformation(AsymetricAlgorithm.RSA, Mode.ECB));
     }
     
     /**
@@ -76,8 +71,8 @@ final public class CryptoFactory {
             final byte[] publicKeyEncoded, final byte[] privateKeyEncoded) 
             throws CryptoException {
         return new PK(
-                new Transformation(Algorithm.RSA, Mode.ECB, Padding.PKCS1Padding)
-                , null,publicKeyEncoded,privateKeyEncoded);
+                new Transformation(AsymetricAlgorithm.RSA, Mode.ECB)
+                ,publicKeyEncoded,privateKeyEncoded);
     }
 
     /**
@@ -89,8 +84,8 @@ final public class CryptoFactory {
     static public PK newEncryptorRSAWithECB(final byte[] publicKeyEncoded) 
             throws CryptoException {
         return new PK(
-                new Transformation(Algorithm.RSA, Mode.ECB, Padding.PKCS1Padding)
-                , null,publicKeyEncoded);
+                new Transformation(AsymetricAlgorithm.RSA, Mode.ECB)
+                ,publicKeyEncoded);
     }  
 
     /**
@@ -101,9 +96,7 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorDESWithECB() throws CryptoException {
-        return new SK(
-                new Transformation(Algorithm.DES, Mode.ECB, Padding.PKCS1Padding),
-                null);
+        return new SK(new Transformation(SymetricAlgorithm.DES, Mode.ECB));
     }
 
     /**
@@ -116,35 +109,8 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorDESWithECB(byte[] key) throws CryptoException {
-        return new SK(new Transformation(Algorithm.DES, Mode.ECB), null, key);
-    }    
-    
-    /**
-     * Factory method for generating a new SK object using DES algorithm in CBC 
-     * mode with the given IV
-     * 
-     * @param iv
-     * @return SK Object
-     * @throws CryptoException
-     * @see SK
-     */
-    final static public SK newEncryptorDESWithCBC(byte[] iv) throws CryptoException {
-        return new SK(new Transformation(Algorithm.DES, Mode.CBC), IV64_BIT_CHECK(iv));
+        return new SK(new Transformation(SymetricAlgorithm.DES, Mode.ECB), key);
     }
-
-    /**
-     * Factory method for building an SK object from the encoded key using DES
-     * algorithm in CBC mode with the given IV
-     * 
-     * @param iv
-     * @param key
-     * @return SK Object
-     * @throws CryptoException
-     * @see SK
-     */
-    final static public SK newEncryptorDESWithCBC(byte[] iv, byte[] key) throws CryptoException {
-        return new SK(new Transformation(Algorithm.DES, Mode.CBC), IV64_BIT_CHECK(iv), key);
-    }    
     
     /**
      * Factory method for generating an SK object using DES algorithm in CBC 
@@ -155,39 +121,21 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorDESWithCBC() throws CryptoException {
-        return newEncryptorDESWithCBC(DEFAULT_IV64);
-    }
+        return new SK(new Transformation(SymetricAlgorithm.DES, Mode.CBC));
+    } 
 
     /**
-     * Factory method for generating an SK object using DES algorithm in CFB 
+     * Factory method for generating an SK object using DES algorithm in CBC 
      * mode with the given IV
      * 
-     * @param iv
-     * @return SK Object
-     * @throws CryptoException
-     * @see SK
-     */
-    final static public SK newEncryptorDESWithCFB(byte[] iv) throws CryptoException {
-        return new SK(
-                new Transformation(Algorithm.DES, Mode.CFB, Padding.PKCS5Padding),
-                IV64_BIT_CHECK(iv));
-    }
-
-    /**
-     * Factory method for building an SK object from the encoded key using DES
-     * algorithm in CFB mode with the given IV
-     * 
-     * @param iv
      * @param key
      * @return SK Object
      * @throws CryptoException
      * @see SK
      */
-    final static public SK newEncryptorDESWithCFB(byte[] iv, byte[] key) throws CryptoException {
-        return new SK(
-                new Transformation(Algorithm.DES, Mode.CFB, Padding.PKCS5Padding),
-                IV64_BIT_CHECK(iv), key);
-    }    
+    final static public SK newEncryptorDESWithCBC(final byte[] key) throws CryptoException {
+        return new SK(new Transformation(SymetricAlgorithm.DES, Mode.CBC), key);
+    } 
     
     /**
      * Factory method for generating an SK object using DES algorithm in CFB mode
@@ -197,38 +145,19 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorDESWithCFB() throws CryptoException {
-        return newEncryptorDESWithOFB(DEFAULT_IV64);
-    }    
-
-    /**
-     * Factory method for building an SK object using DES algorithm in OFB mode
-     * with the given IV
-     * 
-     * @param iv
-     * @return SK Object
-     * @throws CryptoException
-     * @see SK
-     */
-    final static public SK newEncryptorDESWithOFB(byte[] iv) throws CryptoException {
-        return new SK(
-                new Transformation(Algorithm.DES, Mode.OFB, Padding.PKCS5Padding),
-                IV64_BIT_CHECK(iv));
+        return new SK(new Transformation(SymetricAlgorithm.DES, Mode.CFB));
     }
 
     /**
-     * Factory method for building an SK object from the encoded key using DES
-     * algorithm in OFB mode with the given IV
+     * Factory method for generating an SK object using DES algorithm in CFB mode
      * 
-     * @param iv
      * @param key
      * @return SK Object
      * @throws CryptoException
      * @see SK
      */
-    final static public SK newEncryptorDESWithOFB(byte[] iv, byte[] key) throws CryptoException {
-        return new SK(
-                new Transformation(Algorithm.DES, Mode.OFB, Padding.PKCS5Padding),
-                IV64_BIT_CHECK(iv), key);
+    final static public SK newEncryptorDESWithCFB(final byte[] key) throws CryptoException {
+        return new SK(new Transformation(SymetricAlgorithm.DES, Mode.CFB), key);
     }
     
     /**
@@ -239,7 +168,19 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorDESWithOFB() throws CryptoException {
-        return newEncryptorDESWithOFB(DEFAULT_IV64);
+        return new SK(new Transformation(SymetricAlgorithm.DES, Mode.OFB));
+    }
+
+    /**
+     * Factory method for building an SK object using DES algorithm in OFB mode
+     * 
+     * @param key
+     * @return SK Object
+     * @throws CryptoException
+     * @see SK
+     */
+    final static public SK newEncryptorDESWithOFB(final byte[] key) throws CryptoException {
+        return new SK(new Transformation(SymetricAlgorithm.DES, Mode.OFB), key);
     }
     
     
@@ -251,9 +192,7 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorDESedeWithECB() throws CryptoException {
-        return new SK(
-                new Transformation(Algorithm.DESede, Mode.ECB, Padding.PKCS5Padding),
-                null);
+        return new SK(new Transformation(SymetricAlgorithm.DESede, Mode.ECB));
     }
 
     /**
@@ -266,138 +205,85 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorDESedeWithECB(byte[] key) throws CryptoException {
-        return new SK(
-            new Transformation(Algorithm.DESede, Mode.ECB, Padding.PKCS5Padding),
-            null, key);
+        return new SK(new Transformation(SymetricAlgorithm.DESede, Mode.ECB), key);
     }
     
     /**
      * Factory method for building an SK object using Triple DES algorithm 
      * in CBC mode with the given IV
      *
-     * @param iv
      * @return SK Object
      * @throws CryptoException
      * @see SK
      */
-    final static public SK newEncryptorDESedeWithCBC(byte[] iv) throws CryptoException {
-        return new SK(
-                new Transformation(Algorithm.DESede, Mode.CBC, Padding.PKCS5Padding),
-                IV64_BIT_CHECK(iv));
+    final static public SK newEncryptorDESedeWithCBC() throws CryptoException {
+        return new SK(new Transformation(SymetricAlgorithm.DESede, Mode.CBC));
     }
 
     /**
      * Factory method for building an SK object using Triple DES algorithm 
      * from encoded key in CBS mode with the given IV
      *
-     * @param iv
      * @param key
      * @return SK Object
      * @throws CryptoException
      * @see SK
      */
-    final static public SK newEncryptorDESedeWithCBC(byte[] iv, byte[] key) throws CryptoException {
-        return new SK(
-            new Transformation(Algorithm.DESede, Mode.CBC, Padding.PKCS5Padding),
-            IV64_BIT_CHECK(iv), key);
-    }
-
-    /**
-     * Factory method for building an SK object using Triple DES algorithm 
-     *
-     * @return SK Object
-     * @throws CryptoException
-     * @see SK
-     */
-    final static public SK newEncryptorDESedeWithCBC() throws CryptoException {
-        return newEncryptorDESedeWithCBC(DEFAULT_IV64);
+    final static public SK newEncryptorDESedeWithCBC(byte[] key) throws CryptoException {
+        return new SK(new Transformation(SymetricAlgorithm.DESede, Mode.CBC), key);
     }
     
     /**
      * Factory method for building an SK object using Triple DES algorithm 
      * in CFB mode with the given IV
      *
-     * @param iv
      * @return SK Object
      * @throws CryptoException
      * @see SK
      */
-    final static public SK newEncryptorDESedeWithCFB(byte[] iv) throws CryptoException {
-        return new SK(
-                new Transformation(Algorithm.DESede, Mode.CFB, Padding.PKCS5Padding),
-                IV64_BIT_CHECK(iv)
-        );
+    final static public SK newEncryptorDESedeWithCFB() throws CryptoException {
+        return new SK(new Transformation(SymetricAlgorithm.DESede, Mode.CFB));
     }
 
     /**
      * Factory method for building an SK object using Triple DES algorithm 
      * from encoded key in CFB mode with the given IV
      *
-     * @param iv
      * @param key
      * @return SK Object
      * @throws CryptoException
      * @see SK
      */
-    final static public SK newEncryptorDESedeWithCFB(byte[] iv, byte[] key) throws CryptoException {
+    final static public SK newEncryptorDESedeWithCFB(byte[] key) throws CryptoException {
         return new SK(
-            new Transformation(Algorithm.DESede, Mode.CFB, Padding.PKCS5Padding),
-            IV64_BIT_CHECK(iv), key);
-    }    
-    
-    /**
-     * Factory method for building an SK object using Triple DES algorithm 
-     * in CFB mode
-     *
-     * @return SK Object
-     * @throws CryptoException
-     * @see SK
-     */
-    final static public SK newEncryptorDESedeWithCFB() throws CryptoException {
-        return newEncryptorDESedeWithCFB(DEFAULT_IV64);
+            new Transformation(SymetricAlgorithm.DESede, Mode.CFB), key);
     }
     
     /**
      * Factory method for building an SK object using Triple DES algorithm 
      * in OFB mode with the given IV
      *
-     * @param iv
      * @return SK Object
      * @throws CryptoException
      * @see SK
      */
-    final static public SK newEncryptorDESedeWithOFB(byte[] iv) throws CryptoException {
+    final static public SK newEncryptorDESedeWithOFB() throws CryptoException {
         return new SK(
-                new Transformation(Algorithm.DESede, Mode.OFB, Padding.PKCS5Padding),
-                IV64_BIT_CHECK(iv));
+                new Transformation(SymetricAlgorithm.DESede, Mode.OFB));
     }
 
     /**
      * Factory method for building an SK object using Triple DES algorithm 
      * from encoded key in OFB mode with the given IV
      *
-     * @param iv
      * @param key
      * @return SK Object
      * @throws CryptoException
      * @see SK
      */
-    final static public SK newEncryptorDESedeWithOFB(byte[] iv, byte[] key) throws CryptoException {
+    final static public SK newEncryptorDESedeWithOFB(byte[] key) throws CryptoException {
         return new SK(
-            new Transformation(Algorithm.DESede, Mode.OFB, Padding.PKCS5Padding),
-            IV64_BIT_CHECK(iv), key);
-    }    
-    
-    /**
-     * Factory method for building an SK object using Triple DES algorithm 
-     * in OFB mode
-     *
-     * @return SK Object
-     * @throws CryptoException
-     * @see SK
-     */
-    final static public SK newEncryptorDESedeWithOFB() throws CryptoException {
-        return newEncryptorDESedeWithOFB(DEFAULT_IV64);
+            new Transformation(SymetricAlgorithm.DESede, Mode.OFB), key);
     }
 
     /**
@@ -411,7 +297,7 @@ final public class CryptoFactory {
      */
     final static public SK newEncryptorAES128WithECB(byte[] key) throws CryptoException {
         return new SK(
-            new Transformation(Algorithm.AES, Mode.ECB, Padding.PKCS5Padding), null,key);
+            new Transformation(SymetricAlgorithm.AES, Mode.ECB),key);
     }
 
     /**
@@ -429,59 +315,40 @@ final public class CryptoFactory {
     /**
      * Factory method for building an SK object using AES algorithm in CBC mode
      *
-     * @param iv
-     * @return SK Object
-     * @throws CryptoException
-     * @see SK
-     */
-    final static public SK newEncryptorAES128WithCBC(byte[] iv) throws CryptoException {
-        return new SK(
-                new Transformation(Algorithm.DESede, Mode.CBC, Padding.PKCS5Padding),
-                IV128_BIT_CHECK(iv));
-    }
-
-    /**
-     * Factory method for building an SK object using AES algorithm in CBC mode
-     *
      * @return SK Object
      * @throws CryptoException
      * @see SK
      */
     final static public SK newEncryptorAES128WithCBC() throws CryptoException {
-        return newEncryptorAES128WithCBC(DEFAULT_IV128);
+        return new SK(new Transformation(SymetricAlgorithm.DESede, Mode.CBC));
     }
     
     /**
      * Factory method for building an SK object using AES algorithm in CBC mode
      * from encoded key with the given IV
      * 
-     * @param iv
      * @param key
      * @return SK Object
      * @throws CryptoException
      * @see SK
      */
-    final static public SK newEncryptorAES128WithCBC(byte[] iv, byte[] key) throws CryptoException {
-        return new SK(
-            new Transformation(Algorithm.AES, Mode.CBC, Padding.PKCS5Padding),
-            IV128_BIT_CHECK(iv), key);
+    final static public SK newEncryptorAES128WithCBC(byte[] key) throws CryptoException {
+        return new SK(new Transformation(SymetricAlgorithm.AES, Mode.CBC), key);
     }
 
     /**
      * Factory method for building an SK object using AES algorithm in CBC mode
      * from encoded key with the given IV
      * 
-     * @param iv
      * @param key
      * @return SK Object
      * @throws CryptoException
      * @see SK
      */
-    final static public SK newEncryptorAES128WithCFB(final byte[] iv, final byte[] key) 
+    final static public SK newEncryptorAES128WithCFB(final byte[] key) 
             throws CryptoException {
         return new SK(
-            new Transformation(Algorithm.AES, Mode.CFB, Padding.PKCS5Padding),
-            IV128_BIT_CHECK(iv), key
+            new Transformation(SymetricAlgorithm.AES, Mode.CFB), key
         );
     }
 
@@ -489,54 +356,26 @@ final public class CryptoFactory {
      * Factory method for building an SK object using AES algorithm in CFB mode
      * with the given IV
      * 
-     * @param iv
-     * @return SK Object
-     * @throws CryptoException
-     * @see SK
-     */
-    final static public SK newEncryptorAES128WithCFB(final byte[] iv) throws CryptoException {
-        return newEncryptorAES128WithCFB(iv, RANDOM_128_BITS());
-    }
-    
-    /**
-     * Factory method for building an SK object using AES algorithm in CBC mode
-     * 
      * @return SK Object
      * @throws CryptoException
      * @see SK
      */
     final static public SK newEncryptorAES128WithCFB() throws CryptoException {
-        return newEncryptorAES128WithCFB(DEFAULT_IV128, RANDOM_128_BITS());
+        return new SK(
+            new Transformation(SymetricAlgorithm.AES, Mode.CFB));
     }
 
     /**
      * Factory method for building an SK object using AES algorithm in OFB mode
      * from encoded key with the given IV
      * 
-     * @param iv
      * @param key
      * @return SK Object
      * @throws CryptoException
      * @see SK
      */
-    final static public SK newEncryptorAES128WithOFB(byte[] iv, byte[] key) throws CryptoException {
-        return new SK(
-            new Transformation(Algorithm.AES, Mode.OFB, Padding.PKCS5Padding),
-            IV128_BIT_CHECK(iv), key
-        );
-    }
-
-    /**
-     * Factory method for building an SK object using AES algorithm in OFB mode
-     * with the given IV
-     * 
-     * @param iv
-     * @return SK Object
-     * @throws CryptoException
-     * @see SK
-     */
-    final static public SK newEncryptorAES128WithOFB(byte[] iv) throws CryptoException {
-        return newEncryptorAES128WithOFB(iv, RANDOM_128_BITS());
+    final static public SK newEncryptorAES128WithOFB(byte[] key) throws CryptoException {
+        return new SK( new Transformation(SymetricAlgorithm.AES, Mode.OFB), key);
     }
     
     /**
@@ -547,90 +386,61 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorAES128WithOFB() throws CryptoException {
-        return newEncryptorAES128WithOFB(DEFAULT_IV128, RANDOM_128_BITS());
+        return new SK( new Transformation(SymetricAlgorithm.AES, Mode.OFB));
     }
     
     /**
      * Factory method for building an SK object using AES algorithm in CTR mode
      * from encoded key with the given IV
      * 
-     * @param iv
      * @param key
      * @return SK Object
      * @throws CryptoException
      * @see SK
      */
-    final static public SK newEncryptorAES128WithCTR(byte[] iv, byte[] key) throws CryptoException {
+    final static public SK newEncryptorAES128WithCTR(byte[] key) throws CryptoException {
         return new SK(
-            new Transformation(Algorithm.AES, Mode.CTR, Padding.PKCS5Padding),
-            IV128_BIT_CHECK(iv), key
-        );
+            new Transformation(SymetricAlgorithm.AES, Mode.CTR),key);
     }
 
     /**
      * Factory method for building an SK object using AES algorithm in CTR mode
      * from encoded key with the given IV
-     * 
-     * @param iv
-     * @return SK Object
-     * @throws CryptoException
-     * @see SK
-     */
-    final static public SK newEncryptorAES128WithCTR(byte[] iv) throws CryptoException {
-        return newEncryptorAES128WithCTR(iv, RANDOM_128_BITS());
-    }
-    
-    /**
-     * Factory method for building an SK object using AES algorithm in CTR mode
      * 
      * @return SK Object
      * @throws CryptoException
      * @see SK
      */
     final static public SK newEncryptorAES128WithCTR() throws CryptoException {
-        return newEncryptorAES128WithCTR(DEFAULT_IV128, RANDOM_128_BITS());
-    }
-    
+        return new SK(
+            new Transformation(SymetricAlgorithm.AES, Mode.CTR));
+    }    
 
     /**
      * Factory method for building an SK object using AES algorithm in OCB mode
      * from encoded key with the given IV
      * 
-     * @param iv
      * @param key
      * @return SK Object
      * @throws CryptoException
      * @see SK
      */
-    final static public SK newEncryptorAES128WithOCB(byte[] iv, byte[] key) throws CryptoException {
+    final static public SK newEncryptorAES128WithOCB(byte[] key) throws CryptoException {
         return new SK(
-            new Transformation(Algorithm.AES, Mode.OCB, Padding.PKCS5Padding),
-            IV128_BIT_CHECK(iv), key
-        );
+            new Transformation(SymetricAlgorithm.AES, Mode.OCB), key);
     }
 
     /**
      * Factory method for building an SK object using AES algorithm in OCB mode
      * from encoded key
      * 
-     * @param iv
-     * @return SK Object
-     * @throws CryptoException
-     * @see SK
-     */
-    final static public SK newEncryptorAES128WithOCB(byte[] iv) throws CryptoException {
-        return newEncryptorAES128WithOCB(iv, RANDOM_128_BITS());
-    }
-    
-    /**
-     * Factory method for building an SK object using AES algorithm in OCB mode
-     * 
      * @return SK Object
      * @throws CryptoException
      * @see SK
      */
     final static public SK newEncryptorAES128WithOCB() throws CryptoException {
-        return newEncryptorAES128WithOCB(DEFAULT_IV128, RANDOM_128_BITS());
+        return new SK(
+            new Transformation(SymetricAlgorithm.AES, Mode.OCB));
     }
 
     /**
@@ -644,8 +454,7 @@ final public class CryptoFactory {
      */
     final static public SK newEncryptorAES192WithECB(byte[] key) throws CryptoException {
         return new SK(
-            new Transformation(Algorithm.AES, Mode.ECB, Padding.PKCS5Padding),
-            null, key);
+            new Transformation(SymetricAlgorithm.AES192, Mode.ECB), key);
     }    
     
     /**
@@ -657,50 +466,38 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorAES192WithECB() throws CryptoException {
-        return newEncryptorAES192WithECB(RANDOM_192_BITS());
+        return new SK(
+            new Transformation(SymetricAlgorithm.AES192, Mode.ECB));
     }
     
     /**
      * Factory method for building an SK object using AES algorithm in CBC mode
      *  with the given IV
      * 
-     * @param iv
      * @return SK Object
      * @throws CryptoException
      * @see SK
      */
-    final static public SK newEncryptorAES192WithCBC(byte[] iv) throws CryptoException {
-        return newEncryptorAES192WithCBC(iv, RANDOM_192_BITS());
+    final static public SK newEncryptorAES192WithCBC() throws CryptoException {
+        return new SK(
+            new Transformation(SymetricAlgorithm.AES192, Mode.ECB));
     }
 
     /**
      * Factory method for building an SK object using AES algorithm in CBC mode
      * from encoded key with the given IV
      * 
-     * @param iv
      * @param key
      * @return SK Object
      * @throws CryptoException
      * @see SK
      */
-    final static public SK newEncryptorAES192WithCBC(byte[] iv, byte[] key) throws CryptoException {
+    final static public SK newEncryptorAES192WithCBC(byte[] key) throws CryptoException {
         return new SK(
-            new Transformation(Algorithm.AES, Mode.CBC, Padding.PKCS5Padding),
-            IV192_BIT_CHECK(iv), key
-        );
-    }    
-    
-    /**
-     * Factory method for building an SK object using AES algorithm in CBC mode
-     * from encoded key with the given IV
-     * 
-     * @return SK Object
-     * @throws CryptoException
-     * @see SK
-     */
-    final static public SK newEncryptorAES192WithCBC() throws CryptoException {
-        return newEncryptorAES192WithCBC(DEFAULT_IV128, RANDOM_192_BITS());
+            new Transformation(SymetricAlgorithm.AES192, Mode.CBC), key);
     }
+    
+    
 
     /**
      *
@@ -710,9 +507,8 @@ final public class CryptoFactory {
      */
     final static public SK newEncryptorPBEWithSHAAnd3KeyTripleDES(String password) throws CryptoException {
         return new SK(
-                new PBEAlgorithm(Algorithm.SHA1, Algorithm.DESede),
-                new PBEParameterSpec(DEFAULT_SALT, DEFAULT_COUNT),
-                password
+            new Transformation(DigestAlgorithm.SHA1, SymetricAlgorithm.DESede),
+            password.toCharArray()
         );
     }
 
@@ -724,8 +520,8 @@ final public class CryptoFactory {
      */
     final static public SK newEncryptorPBEWithMD5AndTripleDES(String password) throws CryptoException {
         return new SK(
-            new PBEAlgorithm(Algorithm.MD5, Algorithm.DESede),
-            new PBEParameterSpec(DEFAULT_SALT, DEFAULT_COUNT), password
+            new Transformation(DigestAlgorithm.MD5, SymetricAlgorithm.DESede),
+            password.toCharArray()
         );
     }
     
@@ -737,8 +533,8 @@ final public class CryptoFactory {
      */
     final static public SK newEncryptorPBEWithMD5AndDES(String password) throws CryptoException {
         return new SK(
-                new PBEAlgorithm(Algorithm.MD5, Algorithm.DES),
-                new PBEParameterSpec(DEFAULT_SALT, DEFAULT_COUNT), password
+            new Transformation(DigestAlgorithm.MD5, SymetricAlgorithm.DES),
+            password.toCharArray()
         );
     }
 
@@ -750,8 +546,8 @@ final public class CryptoFactory {
      */
     final static public SK newEncryptorPBEWithSHA256And256BitAES(String password) throws CryptoException {
         return new SK(
-            new PBEAlgorithm(Algorithm.SHA256, Algorithm.AES, 256),
-            new PBEParameterSpec(DEFAULT_SALT, DEFAULT_COUNT), password
+            new Transformation(DigestAlgorithm.SHA256, SymetricAlgorithm.AES),
+            password.toCharArray()
         );
     }
     
@@ -763,8 +559,8 @@ final public class CryptoFactory {
      */
     final static public SK newEncryptorPBEWithSHA1AndDESede(String password) throws CryptoException {
         return new SK(
-            new PBEAlgorithm(Algorithm.SHA1, Algorithm.DESede),
-            new PBEParameterSpec(DEFAULT_SALT, DEFAULT_COUNT), password
+            new Transformation(DigestAlgorithm.SHA1, SymetricAlgorithm.DESede),
+            password.toCharArray()
         );
     }
     
@@ -823,14 +619,14 @@ final public class CryptoFactory {
      * from key and algorithm
      * 
      * @param key encoded bytes of secret key. If null then a random key is generated.
-     * @param algorithm Algorithm name
+     * @param algorithm SymetricAlgorithm name
      * @param size size of key in bits. It should be (64, 128, 192 or 256) if key
      * is null
      * @return SecretKeySpec object
      * @throws CryptoException when key is the incorrect size for the given size
      * @see javax.crypto.spec.SecretKeySpec
      */
-    static private SecretKeySpec KEY_BIT_CHECK(final byte[] key, final Algorithm algorithm, final int size) 
+    static private SecretKeySpec KEY_BIT_CHECK(final byte[] key, final SymetricAlgorithm algorithm, final int size) 
             throws CryptoException {
         
         if (key==null){
@@ -937,7 +733,7 @@ final public class CryptoFactory {
      * @throws CryptoException
      * @see javax.crypto.spec.SecretKeySpec
      */
-    static private SecretKeySpec KEY128_BIT_CHECK(byte[] key, Algorithm algorithm) throws CryptoException {
+    static private SecretKeySpec KEY128_BIT_CHECK(byte[] key, SymetricAlgorithm algorithm) throws CryptoException {
         return KEY_BIT_CHECK(key, algorithm, 128);
     }
     
@@ -950,7 +746,7 @@ final public class CryptoFactory {
      * @throws CryptoException
      * @see javax.crypto.spec.SecretKeySpec
      */
-    static private SecretKeySpec KEY192_BIT_CHECK(byte[] key, Algorithm algorithm) throws CryptoException {
+    static private SecretKeySpec KEY192_BIT_CHECK(byte[] key, SymetricAlgorithm algorithm) throws CryptoException {
         return KEY_BIT_CHECK(key, algorithm, 192);
     }
 
@@ -963,7 +759,7 @@ final public class CryptoFactory {
      * @throws CryptoException
      * @see SecretKeySpec
      */
-    static private SecretKeySpec KEY256_BIT_CHECK(byte[] key, Algorithm algorithm) throws CryptoException {
+    static private SecretKeySpec KEY256_BIT_CHECK(byte[] key, SymetricAlgorithm algorithm) throws CryptoException {
         return KEY_BIT_CHECK(key,algorithm, 256);
     }
 

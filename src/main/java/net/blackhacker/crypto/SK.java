@@ -29,7 +29,6 @@ import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.Arrays;
@@ -41,6 +40,7 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.PBEParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
@@ -50,92 +50,73 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class SK extends Crypto {
     final private Key key;
+    
 
     /**
      *
      * @param transformation
-     * @param keySize
      * @throws CryptoException
      */
-    protected SK(final Transformation transformation, int keySize)
-            throws CryptoException {
-        super(transformation, null);
-        try {
-            KeyGenerator kg = KeyGenerator.getInstance(getAlgorithmString());
-            kg.init(keySize);
-            key = kg.generateKey();
-        } catch (NoSuchAlgorithmException e) {
-            throw new CryptoException("Couldn't create key factory", e);
-        }
-    }
-    
-    /**
-     *
-     * @param transformation
-     * @param algorithmParameterSpec
-     * @throws CryptoException
-     */
-    protected SK(final Transformation transformation,
-            final AlgorithmParameterSpec algorithmParameterSpec)
-            throws CryptoException {
-        super(transformation, algorithmParameterSpec);
+    protected SK(final Transformation transformation) throws CryptoException {
+        super(transformation);
         try {
             KeyGenerator kg = KeyGenerator.getInstance(getAlgorithmString());
             kg.init(getSecureRandom());
             key = kg.generateKey();
         } catch (NoSuchAlgorithmException e) {
-            throw new CryptoException("Couldn't create key factory", e);
+            throw new CryptoException(
+                String.format(
+                    "Couldn't generate key for %s : %s", 
+                    getAlgorithmString(), e.getLocalizedMessage()), 
+                e);
         }
     }
     
     /**
      *
-     * @param cipherAlgorithm
-     * @param algorithmParameterSpec
+     * @param transformation
      * @param encodedKeySpec
      * @throws CryptoException
      */
-    protected SK(final CipherAlgorithm cipherAlgorithm, 
-            final AlgorithmParameterSpec algorithmParameterSpec, 
+    protected SK(final Transformation transformation,
             final byte[] encodedKeySpec)
             throws CryptoException {
-        super(cipherAlgorithm, algorithmParameterSpec);
+        super(transformation);
         try {
-            KeySpec spec = getTransormation().getAlgorithm().makeKeySpec(encodedKeySpec);
+            KeySpec spec = transformation
+                .getSymetricAlgorithm()
+                .makeKeySpec(encodedKeySpec);
             
             if (spec instanceof SecretKeySpec) {
                 key = (Key) spec;
             } else {
-                key = SecretKeyFactory.getInstance(getAlgorithmString()).generateSecret(spec);
+                key = SecretKeyFactory
+                    .getInstance(getAlgorithmString())
+                    .generateSecret(spec);
             }
         } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
             throw new CryptoException("Couldn't create key factory: " + ex.getLocalizedMessage(),ex);
         }
     }
 
-   /**
+    /**
      *
-     * @param cipherAlgorithm
-     * @param algorithmParameterSpec
+     * @param transformation
      * @param password
      * @throws CryptoException
      */
-    protected SK(final CipherAlgorithm cipherAlgorithm, 
-            final AlgorithmParameterSpec algorithmParameterSpec, 
-            final String password)
+    protected SK(final Transformation transformation,
+            final char[] password)
             throws CryptoException {
-        super(cipherAlgorithm, algorithmParameterSpec);
+        super(transformation);
         try {
-            key = SecretKeyFactory
-                .getInstance(getAlgorithmString())
-                .generateSecret(new PBEKeySpec(password.toCharArray()));
+            KeySpec spec = new PBEKeySpec(password);
+                key = SecretKeyFactory
+                    .getInstance(getAlgorithmString())
+                    .generateSecret(spec);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
             throw new CryptoException("Couldn't create key factory: " + ex.getLocalizedMessage(),ex);
         }
-    }
-    
-    final protected Transformation getTransormation() {
-        return (Transformation) getCipherAlgorithm();
     }
     
     /**
@@ -148,17 +129,18 @@ public class SK extends Crypto {
     public byte[] encrypt(byte[] data) throws CryptoException {
         Cipher cipher = getCipher();
         SecureRandom secureRandom = getSecureRandom();
-        
-        final Transformation transformation = getTransormation(); 
 
         try {
             synchronized(cipher) {
-                byte[] iv = null;
-                
-                if (transformation.hasIV()) {
-                    iv = new byte[transformation.getBlockSizeBytes()];
-                    secureRandom.nextBytes(iv);
-                    cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(iv), secureRandom);                    
+                byte[] iv  = null;
+                if (transformation.isPBE()) {
+                    iv = transformation.getIV(secureRandom);
+                    cipher.init(Cipher.ENCRYPT_MODE, key, new PBEParameterSpec(iv, 100));
+                    
+                } else if (transformation.hasIV()) {
+                    iv = transformation.getIV(secureRandom);
+                    cipher.init(Cipher.ENCRYPT_MODE, key, transformation.makeParameterSpec(iv));
+                    
                 } else {
                     cipher.init(Cipher.ENCRYPT_MODE, key, secureRandom);
                 }
@@ -184,16 +166,20 @@ public class SK extends Crypto {
     @Override
     public byte[] decrypt(byte[] data) throws CryptoException {
         Cipher cipher = getCipher();
-
-        final Transformation transformation = getTransormation();
         
         try {
             synchronized(cipher) {
                 int ivSize = 0;
-                if (transformation.hasIV()) {
+                if (transformation.isPBE()) {
                     ivSize = transformation.getBlockSizeBytes();
                     byte[] iv = Arrays.copyOf(data, ivSize);
-                    cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(iv));
+                    cipher.init(Cipher.ENCRYPT_MODE, key, new PBEParameterSpec(iv, 100));
+                    
+                } else if (transformation.hasIV()) {
+                    ivSize = transformation.getBlockSizeBytes();
+                    byte[] iv = Arrays.copyOf(data, ivSize);
+                    cipher.init(Cipher.DECRYPT_MODE, key, transformation.makeParameterSpec(iv));
+                    
                 } else {
                     cipher.init(Cipher.DECRYPT_MODE, key);
                 }

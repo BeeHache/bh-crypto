@@ -97,19 +97,19 @@ public class CryptoTest {
                     CryptoFactory.newEncryptorDESWithECB(skHold.getKeyEncoded())
                 },
                 /* 1 */ {
-                    skHold = CryptoFactory.newEncryptorDESWithCBC(iv8), 
-                    CryptoFactory.newEncryptorDESWithCBC(iv8), 
-                    CryptoFactory.newEncryptorDESWithCBC(iv8,skHold.getKeyEncoded())
+                    skHold = CryptoFactory.newEncryptorDESWithCBC(), 
+                    CryptoFactory.newEncryptorDESWithCBC(), 
+                    CryptoFactory.newEncryptorDESWithCBC(skHold.getKeyEncoded())
                 },
                 /* 2 */ {
-                    skHold = CryptoFactory.newEncryptorDESWithCFB(iv8),
-                    CryptoFactory.newEncryptorDESWithCFB(iv8),
-                    CryptoFactory.newEncryptorDESWithCFB(iv8,skHold.getKeyEncoded())
+                    skHold = CryptoFactory.newEncryptorDESWithCFB(),
+                    CryptoFactory.newEncryptorDESWithCFB(),
+                    CryptoFactory.newEncryptorDESWithCFB(skHold.getKeyEncoded())
                 },
                 /* 3 */ {
-                    skHold = CryptoFactory.newEncryptorDESWithOFB(iv8),
-                    CryptoFactory.newEncryptorDESWithOFB(iv8),
-                    CryptoFactory.newEncryptorDESWithOFB(iv8,skHold.getKeyEncoded())
+                    skHold = CryptoFactory.newEncryptorDESWithOFB(),
+                    CryptoFactory.newEncryptorDESWithOFB(),
+                    CryptoFactory.newEncryptorDESWithOFB(skHold.getKeyEncoded())
                 },
 
                 /* DESede */
@@ -119,19 +119,19 @@ public class CryptoTest {
                     CryptoFactory.newEncryptorDESedeWithECB(skHold.getKeyEncoded())
                 },
                 /* 5 */ {
-                    skHold = CryptoFactory.newEncryptorDESedeWithCBC(iv8),
-                    CryptoFactory.newEncryptorDESedeWithCBC(iv8),
-                    CryptoFactory.newEncryptorDESedeWithCBC(iv8,skHold.getKeyEncoded())
+                    skHold = CryptoFactory.newEncryptorDESedeWithCBC(),
+                    CryptoFactory.newEncryptorDESedeWithCBC(),
+                    CryptoFactory.newEncryptorDESedeWithCBC(skHold.getKeyEncoded())
                 },
                 /* 6 */ {
-                    skHold = CryptoFactory.newEncryptorDESedeWithCFB(iv8),
-                    CryptoFactory.newEncryptorDESedeWithCFB(iv8),
-                    CryptoFactory.newEncryptorDESedeWithCFB(iv8,skHold.getKeyEncoded())
+                    skHold = CryptoFactory.newEncryptorDESedeWithCFB(),
+                    CryptoFactory.newEncryptorDESedeWithCFB(),
+                    CryptoFactory.newEncryptorDESedeWithCFB(skHold.getKeyEncoded())
                 },
                 /* 7 */ {
-                    skHold = CryptoFactory.newEncryptorDESedeWithOFB(iv8),
-                    CryptoFactory.newEncryptorDESedeWithOFB(iv8),
-                    CryptoFactory.newEncryptorDESedeWithOFB(iv8,skHold.getKeyEncoded())
+                    skHold = CryptoFactory.newEncryptorDESedeWithOFB(),
+                    CryptoFactory.newEncryptorDESedeWithOFB(),
+                    CryptoFactory.newEncryptorDESedeWithOFB(skHold.getKeyEncoded())
                 },
                 
                 /* AES 128 */
@@ -141,24 +141,24 @@ public class CryptoTest {
                     CryptoFactory.newEncryptorAES128WithECB(skHold.getKeyEncoded())
                 },
                 /* 9 */ {
-                    skHold = CryptoFactory.newEncryptorAES128WithCBC(iv16),
-                    CryptoFactory.newEncryptorAES128WithCBC(iv16),
-                    CryptoFactory.newEncryptorAES128WithCBC(iv16, skHold.getKeyEncoded())
+                    skHold = CryptoFactory.newEncryptorAES128WithCBC(),
+                    CryptoFactory.newEncryptorAES128WithCBC(),
+                    CryptoFactory.newEncryptorAES128WithCBC(skHold.getKeyEncoded())
                 },
                 /* 10 */ {
-                    skHold = CryptoFactory.newEncryptorAES128WithCFB(iv16),
-                    CryptoFactory.newEncryptorAES128WithCFB(iv16),
-                    CryptoFactory.newEncryptorAES128WithCFB(iv16,skHold.getKeyEncoded())
+                    skHold = CryptoFactory.newEncryptorAES128WithCFB(),
+                    CryptoFactory.newEncryptorAES128WithCFB(),
+                    CryptoFactory.newEncryptorAES128WithCFB(skHold.getKeyEncoded())
                 },
                 /* 11 */ {
-                    skHold = CryptoFactory.newEncryptorAES128WithOFB(iv16),
-                    CryptoFactory.newEncryptorAES128WithOFB(iv16),
-                    CryptoFactory.newEncryptorAES128WithOFB(iv16,skHold.getKeyEncoded())
+                    skHold = CryptoFactory.newEncryptorAES128WithOFB(),
+                    CryptoFactory.newEncryptorAES128WithOFB(),
+                    CryptoFactory.newEncryptorAES128WithOFB(skHold.getKeyEncoded())
                 },
                 /* 12 */ {
-                    skHold = CryptoFactory.newEncryptorAES128WithCTR(iv16),
-                    CryptoFactory.newEncryptorAES128WithCTR(iv16),
-                    CryptoFactory.newEncryptorAES128WithCTR(iv16,skHold.getKeyEncoded())
+                    skHold = CryptoFactory.newEncryptorAES128WithCTR(),
+                    CryptoFactory.newEncryptorAES128WithCTR(),
+                    CryptoFactory.newEncryptorAES128WithCTR(skHold.getKeyEncoded())
                 },
                 
                 /* PBE */
@@ -221,9 +221,9 @@ public class CryptoTest {
 
                     /* AES OCB */
                     {
-                        skHold = CryptoFactory.newEncryptorAES128WithOCB(iv16), 
-                        CryptoFactory.newEncryptorAES128WithOCB(iv16), 
-                        CryptoFactory.newEncryptorAES128WithOCB(iv16,skHold.getKeyEncoded())
+                        skHold = CryptoFactory.newEncryptorAES128WithOCB(), 
+                        CryptoFactory.newEncryptorAES128WithOCB(), 
+                        CryptoFactory.newEncryptorAES128WithOCB(skHold.getKeyEncoded())
                     },
                     /*
                     {

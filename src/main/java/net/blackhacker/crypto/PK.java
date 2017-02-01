@@ -56,63 +56,21 @@ import javax.crypto.spec.IvParameterSpec;
 public class PK extends Crypto {
     final private PublicKey publicKey;
     final private PrivateKey privateKey;
-
-    /**
-     * Constructor that generates random key pair.
-     * 
-     * @param transformation
-     * @param algorithmParameterSpec 
-     * @param keyGenAlgoParamSpec 
-     * @throws CryptoException
-     * @see AlgorithmParameterSpec
-     */
-    protected  PK(Transformation transformation,
-            AlgorithmParameterSpec algorithmParameterSpec,
-            AlgorithmParameterSpec keyGenAlgoParamSpec) 
-            throws CryptoException {
-        super(transformation, algorithmParameterSpec);
-        try {
-            KeyPairGenerator kpg = KeyPairGenerator.getInstance(getAlgorithmString());
-            kpg.initialize(keyGenAlgoParamSpec);
-            KeyPair kp = kpg.generateKeyPair();
-            publicKey = kp.getPublic();
-            privateKey = kp.getPrivate();
-            
-        } catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException e) {
-            throw new CryptoException(e);
-        }
-    }    
-    
-    /**
-     * Constructor that generates random key pair.
-     * 
-     * @param transformation
-     * @param algorithmParameterSpec 
-     * @throws CryptoException
-     * @see AlgorithmParameterSpec
-     */
-    protected  PK(Transformation transformation,
-            AlgorithmParameterSpec algorithmParameterSpec) 
-            throws CryptoException {
-        this(transformation, algorithmParameterSpec, (byte[])null);
-    }
     
     /**
      * Constructor build public and private keys from the parameterSpec, and the
      * encoded keys
      * 
      * @param transformation
-     * @param algorithmParameterSpec
      * @param publicKeyEncoded
      * @param privateKeyEncoded
      * @throws CryptoException
      * @see AlgorithmParameterSpec
      */
     protected PK(Transformation transformation,
-            AlgorithmParameterSpec algorithmParameterSpec,
             byte[] publicKeyEncoded, byte[] privateKeyEncoded)
             throws CryptoException {
-        super(transformation, algorithmParameterSpec);
+        super(transformation);
         try {
             KeyFactory kf = KeyFactory.getInstance(getAlgorithmString());
             
@@ -131,16 +89,13 @@ public class PK extends Crypto {
      * encoded keys
      * 
      * @param transformation
-     * @param algorithmParameterSpec
      * @param publicKeyEncoded
      * @throws CryptoException
      * @see AlgorithmParameterSpec
      */
-    protected PK(Transformation transformation,
-            AlgorithmParameterSpec algorithmParameterSpec, 
-            byte[] publicKeyEncoded)
+    protected PK(Transformation transformation, byte[] publicKeyEncoded)
             throws CryptoException {
-        super(transformation, algorithmParameterSpec);
+        super(transformation);
         try {
             KeyFactory kf = KeyFactory.getInstance(transformation.toString());
             
@@ -153,10 +108,26 @@ public class PK extends Crypto {
         }
     }
     
-        Transformation getTransormation() {
-        return (Transformation) getCipherAlgorithm();
+    /**
+     * Constructor build public and private keys from the parameterSpec, and the
+     * encoded keys
+     * 
+     * @param transformation
+     * @throws CryptoException
+     * @see AlgorithmParameterSpec
+     */
+    protected PK(Transformation transformation) throws CryptoException {
+        super(transformation);
+        try {
+            KeyPairGenerator kpg = KeyPairGenerator.getInstance(transformation.toString());
+            KeyPair kp = kpg.generateKeyPair();
+            publicKey = kp.getPublic();
+            privateKey = kp.getPrivate();
+        } catch(NoSuchAlgorithmException e) {
+            throw new CryptoException(e);
+        }
     }
-    
+
     
     /**
      * Encrypts array of bytes
@@ -169,11 +140,10 @@ public class PK extends Crypto {
     public byte[] encrypt(byte[] clearBytes) throws CryptoException {
         Cipher cipher = getCipher();
         SecureRandom secureRandom = getSecureRandom();
-        final Transformation transformation = getTransormation(); 
         
             try(ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
                 synchronized (cipher) {
-                    if (transformation.hasIV()) {
+                    if (getTransformation().hasIV()) {
                         byte[] iv = transformation.getIV(secureRandom);
                         baos.write(iv);
                         cipher.init(Cipher.ENCRYPT_MODE, publicKey, new IvParameterSpec(iv), secureRandom);
@@ -207,12 +177,11 @@ public class PK extends Crypto {
         Cipher cipher = getCipher();
         SecureRandom secureRandom = getSecureRandom();
         
-        final Transformation transformation = getTransormation();
         try(ByteArrayInputStream bais = new ByteArrayInputStream(cipherBytes)) {
             synchronized(cipher) {
                 int ivSize = 0;
                 if (transformation.hasIV()) {
-                    byte[] iv = transformation.readIV(bais);
+                    byte[] iv = getTransformation().readIV(bais);
                     cipher.init(Cipher.DECRYPT_MODE, privateKey, new IvParameterSpec(iv));
                 } else {
                     cipher.init(Cipher.DECRYPT_MODE, privateKey);
@@ -242,7 +211,6 @@ public class PK extends Crypto {
      */
     public Verifier getVerifier(final Digester digester) {
         final Cipher cipher = getCipher();
-        final Transformation transformation = getTransormation();
         return new Verifier() {
 
             @Override
@@ -251,7 +219,7 @@ public class PK extends Crypto {
                     int ivSize = 0;
                     byte[] digest = digester==null ? null : digester.digest(data);
                     try(ByteArrayInputStream bais = new ByteArrayInputStream(data)) {
-                        if (transformation.hasIV()) {
+                        if (getTransformation().hasIV()) {
                             byte[] iv = transformation.readIV(bais);
                             cipher.init(Cipher.DECRYPT_MODE, publicKey, new IvParameterSpec(iv));
                         } else {
@@ -290,7 +258,6 @@ public class PK extends Crypto {
         }
         
         final Cipher cipher = getCipher();
-        final Transformation transformation = getTransormation();
         final SecureRandom secureRandom = getSecureRandom();
         
         return new Signer() {
@@ -300,7 +267,7 @@ public class PK extends Crypto {
                     try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
                         byte[] digest = digester.digest(data);
                         
-                        if (transformation.hasIV()) {
+                        if (getTransformation().hasIV()) {
                             byte[] iv = transformation.getIV(secureRandom);
                             baos.write(iv);
                             cipher.init(Cipher.ENCRYPT_MODE, privateKey, new IvParameterSpec(iv));

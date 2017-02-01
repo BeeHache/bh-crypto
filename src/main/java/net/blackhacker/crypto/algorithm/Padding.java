@@ -21,11 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.blackhacker.crypto;
+package net.blackhacker.crypto.algorithm;
 
 /**
  *
  * @author ben
  */
-public interface CipherAlgorithm {
+public enum Padding {
+    /* Cipher */
+    NOpADDING, ISO10126Padding, OAEPPadding, PKCS1Padding, PKCS5Padding, 
+    SSL3Padding
 }

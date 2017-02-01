@@ -23,33 +23,67 @@
  */
 package net.blackhacker.crypto;
 
+import net.blackhacker.crypto.algorithm.Padding;
+import net.blackhacker.crypto.algorithm.SymetricAlgorithm;
+import net.blackhacker.crypto.algorithm.Mode;
+import net.blackhacker.crypto.algorithm.DigestAlgorithm;
+import net.blackhacker.crypto.algorithm.AsymetricAlgorithm;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.SecureRandom;
+import java.security.spec.AlgorithmParameterSpec;
+import java.security.spec.KeySpec;
+import javax.crypto.spec.PBEParameterSpec;
 
 /**
  *
  * @author ben
  */
-    public class Transformation implements CipherAlgorithm {
-        final Crypto.Algorithm algorithm;
-        final Crypto.Mode mode;
-        final Crypto.Padding padding;
+    public class Transformation {
         
-        Transformation(Crypto.Algorithm algorithm, Crypto.Mode mode, Crypto.Padding padding) {
-            this.algorithm = algorithm;
+        final private SymetricAlgorithm symetricAlgorithm;
+        final private AsymetricAlgorithm asymetricAlgorithm;
+        final private DigestAlgorithm digestAlgorithm;
+        final private Mode mode;
+        final private Padding padding;
+        final private boolean isPBE;
+        final private boolean isAsymetric;
+        
+        private Transformation(
+                DigestAlgorithm digestAlgorithm,
+                SymetricAlgorithm symetricAlgorithm,
+                AsymetricAlgorithm asymetricAlgorithm,
+                Mode mode, 
+                Padding padding, 
+                boolean isPBE,
+                boolean isAsymetric) {
+            this.digestAlgorithm = digestAlgorithm;
+            this.symetricAlgorithm = symetricAlgorithm;
+            this.asymetricAlgorithm = asymetricAlgorithm;
             this.mode = mode;
             this.padding = padding;
+            this.isPBE = isPBE;
+            this.isAsymetric = isAsymetric;
         }
 
-        Transformation(Crypto.Algorithm algorithm, Crypto.Mode mode) {
-            this.algorithm = algorithm;
-            this.mode = mode;
-            this.padding = Crypto.Padding.PKCS5Padding;
+        public Transformation(SymetricAlgorithm encryptionAlgorithm, Mode mode, Padding padding) {
+            this(null, encryptionAlgorithm, null, mode, padding, false, false);
+        }
+        
+        public Transformation(SymetricAlgorithm encryptionAlgorithm, Mode mode) {
+            this(null, encryptionAlgorithm, null, mode, Padding.PKCS5Padding, false, false);
+        }
+        
+        public Transformation(DigestAlgorithm digestAlgorithm, SymetricAlgorithm symetricAlgorithm) {
+            this(digestAlgorithm, symetricAlgorithm, null, null, null, true, false);
+        }
+        
+        public Transformation(AsymetricAlgorithm asymetricAlgorithm, Mode mode) {
+            this(null, null, asymetricAlgorithm, mode, null, false, true);
         }
         
         public int getBlockSize() {
-            return algorithm.blockSize();
+            return symetricAlgorithm.blockSize();
         }
         
         public int getBlockSizeBytes() {
@@ -58,6 +92,10 @@ import java.security.SecureRandom;
 
         public boolean hasIV() {
             return mode.hasIV();
+        }
+        
+        public boolean isPBE() {
+            return isPBE;
         }
         
         public byte[] readIV(InputStream is ) throws IOException {
@@ -72,15 +110,32 @@ import java.security.SecureRandom;
             return array;            
         }
         
-        public Crypto.Algorithm getAlgorithm() {
-            return algorithm;
+        final public SymetricAlgorithm getSymetricAlgorithm() {
+            return symetricAlgorithm;
+        }
+        
+        final public DigestAlgorithm getDigestAlgorithm() {
+            return digestAlgorithm;
+        }
+
+        public KeySpec makeKeySpec(byte[] key) throws CryptoException {
+            return symetricAlgorithm.makeKeySpec(key);
+        }
+        
+        public AlgorithmParameterSpec makeParameterSpec(byte[] iv) throws CryptoException {
+            return symetricAlgorithm.makeParameterSpec(iv);
         }
         
         @Override
         public String toString() {
-            return new StringBuilder()
-                .append(algorithm).append("/")
-                .append(mode).append("/")
-                .append(padding).toString();
+            if(isPBE)
+                return String.format("PBEWith%sAnd%s", 
+                        digestAlgorithm.name(), 
+                        symetricAlgorithm.name());
+            else
+                return String.format("%s/%s/%s", 
+                        symetricAlgorithm, 
+                        mode, 
+                        padding);
         }
     }

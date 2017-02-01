@@ -23,16 +23,14 @@
  */
 package net.blackhacker.crypto;
 
-import java.security.InvalidKeyException;
+import net.blackhacker.crypto.algorithm.SymetricAlgorithm;
+import net.blackhacker.crypto.algorithm.Mode;
 import java.security.SecureRandom;
 import java.security.Security;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-
-import net.blackhacker.crypto.Crypto.Algorithm;
-import net.blackhacker.crypto.Crypto.Mode;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertNotNull;
@@ -56,8 +54,8 @@ public class SKTest {
     
     final Transformation transformation;
     
-    private SK me;
     private SK friend;
+    private SK me;
     private SK foe;
     
     static private String passphrase;
@@ -72,21 +70,21 @@ public class SKTest {
         
         List<Transformation[]> l = new ArrayList<>(Arrays.asList(
             new Transformation[][] {
-                { new Transformation(Algorithm.DES, Mode.ECB) },
-                { new Transformation(Algorithm.DES, Mode.CBC) },
-                { new Transformation(Algorithm.DES, Mode.CFB) },
-                { new Transformation(Algorithm.DES, Mode.OFB) },
+                { new Transformation(SymetricAlgorithm.DES, Mode.ECB) },
+                { new Transformation(SymetricAlgorithm.DES, Mode.CBC) },
+                { new Transformation(SymetricAlgorithm.DES, Mode.CFB) },
+                { new Transformation(SymetricAlgorithm.DES, Mode.OFB) },
                 
-                { new Transformation(Algorithm.DESede, Mode.ECB) },
-                { new Transformation(Algorithm.DESede, Mode.CBC) },
-                { new Transformation(Algorithm.DESede, Mode.CFB) },
-                { new Transformation(Algorithm.DESede, Mode.OFB) },
+                { new Transformation(SymetricAlgorithm.DESede, Mode.ECB) },
+                { new Transformation(SymetricAlgorithm.DESede, Mode.CBC) },
+                { new Transformation(SymetricAlgorithm.DESede, Mode.CFB) },
+                { new Transformation(SymetricAlgorithm.DESede, Mode.OFB) },
                 
-                { new Transformation(Algorithm.AES, Mode.ECB) },
-                { new Transformation(Algorithm.AES, Mode.CBC) },
-                { new Transformation(Algorithm.AES, Mode.CFB) },
-                { new Transformation(Algorithm.AES, Mode.OFB) },
-                { new Transformation(Algorithm.AES, Mode.CTR) },
+                { new Transformation(SymetricAlgorithm.AES, Mode.ECB) },
+                { new Transformation(SymetricAlgorithm.AES, Mode.CBC) },
+                { new Transformation(SymetricAlgorithm.AES, Mode.CFB) },
+                { new Transformation(SymetricAlgorithm.AES, Mode.OFB) },
+                { new Transformation(SymetricAlgorithm.AES, Mode.CTR) },
             }
         ));
         
@@ -104,17 +102,17 @@ public class SKTest {
         //message = "A far far better thing I do than I have ever done before.".getBytes(StandardCharsets.UTF_8);
         Security.insertProviderAt(new BouncyCastleProvider(),1);
     }
-
     
     @Before
-    public void setup() throws CryptoException, InvalidKeyException {
-        friend = new SK(transformation, null);
-        foe = new SK(transformation, null);
-        me = new SK(transformation, null, friend.getKeyEncoded());
+    public void setupTest() throws CryptoException {
+        friend = new SK(transformation);
+        me = new SK(transformation, friend.getKeyEncoded());
+        foe = new SK(transformation);
     }
     
     @Test
     public void encryptDecryptTest() throws CryptoException {
+
         String algorithm = me.getAlgorithm();
         
         byte[] friendCipherBytes = friend.encrypt(message);
