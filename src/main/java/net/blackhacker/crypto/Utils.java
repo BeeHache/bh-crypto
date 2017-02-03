@@ -23,6 +23,8 @@
  */
 package net.blackhacker.crypto;
 
+import java.util.Arrays;
+
 /**
  * Utility class
  * 
@@ -35,12 +37,10 @@ final public class Utils {
      * @param arrays
      * @return single array containing contents of all arrays
      */
-    static public byte[] joinArrays(byte[] ...arrays){
-        int sum=0;
-        for (byte[] array : arrays) {
-            if (array!=null)
-                sum += array.length;
-        }
+    
+    static public byte[] joinArrays(final byte[] ...arrays){
+        Validator.notNull(arrays, "arrays");
+        int sum=Arrays.asList(arrays).stream().mapToInt( n -> n!=null ? n.length : 0).sum();
         
         byte[] retval = new byte [ sum ];
         int r = 0;

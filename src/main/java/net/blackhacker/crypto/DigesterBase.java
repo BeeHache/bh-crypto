@@ -26,6 +26,7 @@ package net.blackhacker.crypto;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import net.blackhacker.crypto.algorithm.DigestAlgorithm;
 
 /**
  *
@@ -37,12 +38,12 @@ public class DigesterBase implements Digester {
     /**
      * Constructor
      * 
-     * @param algorithm
+     * @param digestAlgorithm
      * @throws net.blackhacker.crypto.DigesterException
      */
-    protected DigesterBase(String algorithm) throws DigesterException {
+    protected DigesterBase(final DigestAlgorithm digestAlgorithm) throws DigesterException {
     	try {
-            messageDigest = MessageDigest.getInstance(algorithm);
+            messageDigest = MessageDigest.getInstance(digestAlgorithm.name());
     	} catch(NoSuchAlgorithmException e) {
             throw new DigesterException(e);
     	}
@@ -54,10 +55,8 @@ public class DigesterBase implements Digester {
      * @param messageDigest
      * @see MessageDigest
      */
-    protected DigesterBase(MessageDigest messageDigest){
-        if (messageDigest==null)
-            throw new NullPointerException();
-        
+    protected DigesterBase(final MessageDigest messageDigest){
+        Validator.notNull(messageDigest, "messageDigest");        
         this.messageDigest = messageDigest;
     }
 
@@ -75,7 +74,8 @@ public class DigesterBase implements Digester {
      * @return digest of data
      */
     @Override
-    public byte[] digest(byte[] data) {
+    public byte[] digest(final byte[] data) {
+        Validator.notNull(data, "data");
         synchronized(messageDigest) {
             byte[] digest =  messageDigest.digest(data);
             messageDigest.reset();        	

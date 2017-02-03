@@ -36,5 +36,5 @@ public interface Digester {
      * @param data
      * @return digest of data
      */
-    public byte[] digest(byte[] data);
+    public byte[] digest(final byte[] data);
 }

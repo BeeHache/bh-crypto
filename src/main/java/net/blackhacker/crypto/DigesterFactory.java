@@ -26,6 +26,7 @@ package net.blackhacker.crypto;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import net.blackhacker.crypto.algorithm.DigestAlgorithm;
 
 /**
  *
@@ -42,7 +43,7 @@ final public class DigesterFactory {
      */
     static public Digester newDigesterMD5() {
         try {
-            return new DigesterBase("MD5");
+            return new DigesterBase(DigestAlgorithm.MD5);
         } catch (DigesterException ex) {
             LOG.log(Level.SEVERE, null, ex);
             return null;
@@ -57,7 +58,7 @@ final public class DigesterFactory {
      */
     static public Digester newDigesterSHA256() {
         try {
-            return new DigesterBase("SHA-256");
+            return new DigesterBase(DigestAlgorithm.SHA256);
         } catch (DigesterException ex) {
             LOG.log(Level.SEVERE, null, ex);
             return null;

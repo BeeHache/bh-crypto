@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2015 Benjamin King aka Blackhacker(bh@blackhacker.net)
+ * Copyright 2017 Benjamin King aka Blackhacker<bh@blackhacker.net>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,22 +21,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 package net.blackhacker.crypto;
+
+//import java.util.Arrays;
+import java.util.Random;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  *
- * @author Benjamin King aka Blackhacker(bh@blackhacker.net)
+ * @author Benjamin King aka Blackhacker<bh@blackhacker.net>
  */
-public interface Decryptor {
+public class UtilsTest {
     
-    /**
-     * Must be implemented by subclass
-     * 
-     * @param cipherBytes -- bytes to be decrypted
-     * @return -- bytes in the clear
-     * @throws CryptoException 
-     */
-     public byte[] decrypt(final byte[] cipherBytes) throws CryptoException;    
-
+    @Test
+    public void joinArrays_null_items_Test() {
+        byte[] a = null;
+        byte[] b = null;
+        byte[] c = Utils.joinArrays(a, b);
+        Assert.assertNotNull(c);
+    }
+    
+    @Test
+    public void joinArraysTest() {
+        Random r = new Random();
+        byte[] a1 = new byte[r.nextInt(100)];
+        byte[] a2 = new byte[r.nextInt(100)];
+        int s1 = 0, s2 = 0, s3 = 0;
+        
+        for (int i = 0; i < a1.length; i++) {
+            a1[i] = (byte)i;
+            s1 += i;
+        }
+        
+        for (int i = 0; i < a2.length; i++) {
+            a2[i] = (byte)i;
+            s2 += i;
+        }
+        
+        byte[] a3 = Utils.joinArrays(a1, a2);
+        for (int i = 0; i < a3.length; i++){
+            s3 += (int)a3[i];
+        }
+        
+        Assert.assertEquals(s1 + s2, s3);
+    }
+    
+    
 }

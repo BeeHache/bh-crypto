@@ -33,7 +33,7 @@ import org.junit.runners.Suite;
  * @author ben
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({SKTest.class})
+@Suite.SuiteClasses({UtilsTest.class, SKTest.class, PKTest.class})
 final public class TestSuite {
     static boolean jce() {
         try {

@@ -56,6 +56,7 @@ public abstract class Crypto implements Encryptor, Decryptor {
      * @throws CryptoException
      */
     public  Crypto(final Transformation transformation) throws CryptoException {
+        Validator.notNull(transformation, "transformation");
         this.transformation = transformation;
         try {
             cipher = Cipher.getInstance(transformation.toString());

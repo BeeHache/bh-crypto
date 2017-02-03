@@ -59,6 +59,7 @@ public class SK extends Crypto {
      */
     protected SK(final Transformation transformation) throws CryptoException {
         super(transformation);
+        Validator.notNull(transformation, "transformation");
         try {
             KeyGenerator kg = KeyGenerator.getInstance(getAlgorithmString());
             kg.init(getSecureRandom());
@@ -79,9 +80,11 @@ public class SK extends Crypto {
      * @throws CryptoException
      */
     protected SK(final Transformation transformation,
-            final byte[] encodedKeySpec)
+                 final byte[] encodedKeySpec)
             throws CryptoException {
         super(transformation);
+        Validator.notNull(transformation, "transformation");
+        Validator.notNull(encodedKeySpec, "encodedKeySpec");
         try {
             KeySpec spec = transformation
                 .getSymetricAlgorithm()
@@ -105,10 +108,11 @@ public class SK extends Crypto {
      * @param password
      * @throws CryptoException
      */
-    protected SK(final Transformation transformation,
-            final char[] password)
+    protected SK(final Transformation transformation, final char[] password)
             throws CryptoException {
         super(transformation);
+        Validator.notNull(transformation, "transformation");
+        Validator.notNull(password, "password");
         try {
             KeySpec spec = new PBEKeySpec(password);
                 key = SecretKeyFactory
@@ -126,10 +130,10 @@ public class SK extends Crypto {
      * @throws CryptoException
      */
     @Override
-    public byte[] encrypt(byte[] data) throws CryptoException {
+    public byte[] encrypt(final byte[] data) throws CryptoException {
+        Validator.notNull(data, "data");
         Cipher cipher = getCipher();
         SecureRandom secureRandom = getSecureRandom();
-
         try {
             synchronized(cipher) {
                 byte[] iv  = null;
@@ -164,7 +168,8 @@ public class SK extends Crypto {
      * @throws CryptoException 
      */
     @Override
-    public byte[] decrypt(byte[] data) throws CryptoException {
+    public byte[] decrypt(final byte[] data) throws CryptoException {
+        Validator.notNull(data, "data");
         Cipher cipher = getCipher();
         
         try {

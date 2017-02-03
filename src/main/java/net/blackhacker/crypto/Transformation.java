@@ -66,19 +66,19 @@ import javax.crypto.spec.PBEParameterSpec;
             this.isAsymetric = isAsymetric;
         }
 
-        public Transformation(SymetricAlgorithm encryptionAlgorithm, Mode mode, Padding padding) {
+        public Transformation(final SymetricAlgorithm encryptionAlgorithm, final Mode mode, final Padding padding) {
             this(null, encryptionAlgorithm, null, mode, padding, false, false);
         }
         
-        public Transformation(SymetricAlgorithm encryptionAlgorithm, Mode mode) {
+        public Transformation(final SymetricAlgorithm encryptionAlgorithm, final Mode mode) {
             this(null, encryptionAlgorithm, null, mode, Padding.PKCS5Padding, false, false);
         }
         
-        public Transformation(DigestAlgorithm digestAlgorithm, SymetricAlgorithm symetricAlgorithm) {
+        public Transformation(final DigestAlgorithm digestAlgorithm, final SymetricAlgorithm symetricAlgorithm) {
             this(digestAlgorithm, symetricAlgorithm, null, null, null, true, false);
         }
         
-        public Transformation(AsymetricAlgorithm asymetricAlgorithm, Mode mode) {
+        public Transformation(final AsymetricAlgorithm asymetricAlgorithm, final Mode mode) {
             this(null, null, asymetricAlgorithm, mode, null, false, true);
         }
         
@@ -99,13 +99,13 @@ import javax.crypto.spec.PBEParameterSpec;
         }
         
         public byte[] readIV(InputStream is ) throws IOException {
-            byte[] iv = new byte[getBlockSizeBytes()];
+            final byte[] iv = new byte[getBlockSizeBytes()];
             is.read(iv);
             return iv;
         }
         
         public byte[] getIV(SecureRandom secureRandom) {
-            byte[] array = new byte[ getBlockSizeBytes()];
+            final byte[] array = new byte[ getBlockSizeBytes()];
             secureRandom.nextBytes(array);
             return array;            
         }

@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2015 Benjamin King aka Blackhacker(bh@blackhacker.net)
+ * Copyright 2017 Benjamin King aka Blackhacker<bh@blackhacker.net>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,22 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 package net.blackhacker.crypto;
 
 /**
  *
- * @author Benjamin King aka Blackhacker(bh@blackhacker.net)
+ * 
+ *
+ * @author Benjamin King aka Blackhacker<bh@blackhacker.net>
  */
-public interface Decryptor {
-    
-    /**
-     * Must be implemented by subclass
-     * 
-     * @param cipherBytes -- bytes to be decrypted
-     * @return -- bytes in the clear
-     * @throws CryptoException 
-     */
-     public byte[] decrypt(final byte[] cipherBytes) throws CryptoException;    
-
+final public class Strings {
+    final static public String NOT_NULL_MSG = "%s can't be null";
 }
