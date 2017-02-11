@@ -44,7 +44,7 @@ import net.blackhacker.crypto.Strings;
 public enum AsymetricAlgorithm {
     /* Cipher*/
     RSA1024(1024, 936, RSAPublicKeySpec.class, RSAPrivateKeySpec.class, null, "RSA"),
-    RSA2048(2048, 936, RSAPublicKeySpec.class, RSAPrivateKeySpec.class, null, "RSA"),
+    RSA2048(2048, 1712, RSAPublicKeySpec.class, RSAPrivateKeySpec.class, null, "RSA"),
     DiffieHellman(1024, 0, DHPublicKeySpec.class, DHPrivateKeySpec.class, null, "DH"),
     DSA(1024, 0, DSAPublicKeySpec.class, DSAPrivateKeySpec.class, null, null),
     EC(1024, 0, ECPublicKeySpec.class, ECPrivateKeySpec.class, null, null);
