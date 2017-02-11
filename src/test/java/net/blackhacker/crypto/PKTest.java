@@ -23,8 +23,24 @@
  */
 package net.blackhacker.crypto;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+import net.blackhacker.crypto.algorithm.AsymetricAlgorithm;
+import net.blackhacker.crypto.algorithm.Mode;
+import net.blackhacker.crypto.algorithm.Padding;
+
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ErrorCollector;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -36,12 +52,12 @@ import org.junit.runners.Parameterized;
 public class PKTest {
     final Transformation transformation;
     
-    private SK me;
-    private SK friend;
-    private SK foe;
+    private PK me;
+    private PK friend;
+    private PK foe;
+    private byte[] message;
     
-    static private String passphrase;
-    static private byte[] message = new byte[245];  //245 is the largest data RSA encrypts
+    static private SecureRandom secureRandom;
     
     public PKTest(Transformation t) {
         transformation = t;
@@ -49,6 +65,76 @@ public class PKTest {
     
     @Parameterized.Parameters
     public static Collection<Transformation[]> data() throws CryptoException {
-        return new ArrayList<>();
+        List<Transformation[]> l = new ArrayList<>(Arrays.asList(
+            new Transformation[][] {
+                { new Transformation(AsymetricAlgorithm.RSA, Mode.ECB, Padding.PKCS1Padding) },
+                
+            }));
+        return l;
+    }
+
+    @Rule
+    public ErrorCollector collector= new ErrorCollector();
+
+    @BeforeClass
+    static public void setupClass() throws CryptoException {
+        secureRandom = new SecureRandom();
+    }
+    
+    @Before
+    public void setupTest() throws CryptoException {
+        friend = new PK(transformation);
+        me = new PK(transformation, friend.getPublicKeyEncoded());
+        foe = new PK(transformation);
+        message = new byte[transformation.getBlockSizeBytes()];
+        secureRandom.nextBytes(message);
+    }
+
+    @Test
+    public void encryptDecryptTest() throws CryptoException {
+        byte[] iv = null;
+        byte[] clearbytes2;
+        String algorithm = me.getTransformation().toString();
+        boolean hasIV = me.hasIV();
+        Object[] params = null;
+        
+        byte[] friendCipherBytes = friend.encrypt(message);
+        assertNotNull(algorithm + ":friend.encrypt: failed", friendCipherBytes);
+        
+        if (hasIV) {
+            iv = friend.getIV();
+            params = new Object[] { iv };
+        }
+        
+        byte[] friendClearBytes = friend.decrypt(friendCipherBytes, params);
+        assertNotNull(algorithm + ":friend.decrypt: failed", friendClearBytes);
+        assertArrayEquals(algorithm + ":friend doesn't decrypt itself", 
+                message, friendClearBytes);
+        
+        byte[] meCipherBytes = me.encrypt(message, params);
+        assertNotNull(algorithm + ":me.encrypt: failed", meCipherBytes);
+
+        friendClearBytes = friend.decrypt(meCipherBytes, params);
+        assertNotNull(algorithm + ":friend.decrypt: failed", friendClearBytes);
+        assertArrayEquals(algorithm + ":friend doesn't decrypt me", 
+                message, friendClearBytes);
+        
+        try {
+            clearbytes2 = foe.decrypt(friendCipherBytes, params);
+            assertFalse(
+                algorithm + ":foe.decrypt: foe decrypted friend's message", 
+                Arrays.equals(friendClearBytes, clearbytes2));
+        } catch(CryptoException e) {
+            // this is good. foes shouldn't be able to decrypt friend bytes
+        }
+        
+        try {
+            clearbytes2 = foe.decrypt(meCipherBytes, params);
+            assertFalse(
+                algorithm + ":foe.decrypt: foe decrypted me's message", 
+                Arrays.equals(friendClearBytes, clearbytes2));
+        } catch (CryptoException e) {
+            // 
+        }
     }
 }

@@ -75,7 +75,7 @@ public class PK extends Crypto {
         Validator.notNull(publicKeyEncoded, "publicKeyEncoded");
         Validator.notNull(privateKeyEncoded, "privateKeyEncoded");
         try {
-            KeyFactory kf = KeyFactory.getInstance(getAlgorithmString());
+            KeyFactory kf = KeyFactory.getInstance(transformation.getAlgorithmString());
             
             publicKey = kf.generatePublic(
                     new X509EncodedKeySpec(publicKeyEncoded));
@@ -99,10 +99,9 @@ public class PK extends Crypto {
     public PK(final Transformation transformation, final byte[] publicKeyEncoded)
             throws CryptoException {
         super(transformation);
-        Validator.notNull(transformation, "transformation");
         Validator.notNull(publicKeyEncoded, "publicKeyEncoded");
         try {
-            KeyFactory kf = KeyFactory.getInstance(transformation.toString());
+            KeyFactory kf = KeyFactory.getInstance(transformation.getAlgorithmString());
             
             publicKey = kf.generatePublic(
                     new X509EncodedKeySpec(publicKeyEncoded));
@@ -123,9 +122,11 @@ public class PK extends Crypto {
      */
     public PK(final Transformation transformation) throws CryptoException {
         super(transformation);
-        Validator.notNull(transformation, "transformation");
+        
         try {
-            KeyPairGenerator kpg = KeyPairGenerator.getInstance(transformation.toString());
+            KeyPairGenerator kpg = KeyPairGenerator
+                    .getInstance(transformation.getAlgorithmString());
+            kpg.initialize(transformation.getKeySize(), getSecureRandom());
             KeyPair kp = kpg.generateKeyPair();
             publicKey = kp.getPublic();
             privateKey = kp.getPrivate();
@@ -139,67 +140,68 @@ public class PK extends Crypto {
      * Encrypts array of bytes
      * 
      * @param clearBytes
+     * @param parameters
      * @return encrypted version of clearBytes
      * @throws CryptoException
      */
     @Override
-    public byte[] encrypt(final byte[] clearBytes) throws CryptoException {
+    public byte[] encrypt(final byte[] clearBytes, Object... parameters) throws CryptoException {
         Validator.notNull(clearBytes, "clearBytes");
         Cipher cipher = getCipher();
         SecureRandom secureRandom = getSecureRandom();
-        
-            try(ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-                synchronized (cipher) {
-                    if (getTransformation().hasIV()) {
-                        byte[] iv = transformation.getIV(secureRandom);
-                        baos.write(iv);
-                        cipher.init(Cipher.ENCRYPT_MODE, publicKey, new IvParameterSpec(iv), secureRandom);
-                    } else {
-                        cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-                    }
-                    baos.write( cipher.doFinal(clearBytes));
+        AlgorithmParameterSpec aps = processParameters(parameters);
+        try {
+            synchronized (cipher) {
+                if (aps!=null) {
+                    cipher.init(Cipher.ENCRYPT_MODE, publicKey, aps, secureRandom);
+                } else {
+                    cipher.init(Cipher.ENCRYPT_MODE, publicKey, secureRandom);
                 }
-                return baos.toByteArray();
-            } catch (InvalidKeyException | IllegalBlockSizeException | 
-                    InvalidAlgorithmParameterException |
-                    BadPaddingException | IOException ex) {
-            	throw new CryptoException(
-                    "Could not encrypt data: " + ex.getLocalizedMessage(),ex);
             }
+            return cipher.doFinal(clearBytes);
+        } catch (InvalidKeyException | IllegalBlockSizeException | 
+                InvalidAlgorithmParameterException |
+                BadPaddingException ex) {
+            throw new CryptoException(
+                    String.format(Strings.COULDNT_ENCRYPT_MSG, 
+                            getTransformation(),
+                            ex.getLocalizedMessage()) ,ex);
+        }
     }
     
     /**
      * Decrypts array of bytes
      * 
      * @param cipherBytes
+     * @param parameters
      * @return clear version of cipherBytes
      * @throws CryptoException 
      */
     @Override
-    public byte[] decrypt(final byte[] cipherBytes) throws CryptoException {
+    public byte[] decrypt(final byte[] cipherBytes, Object... parameters) throws CryptoException {
         Validator.notNull(cipherBytes, "cipherBytes");
         if (privateKey==null){
             throw new CryptoException("No PrivateKey defined");
         }
         
+        Transformation transformation = getTransformation();
+        
         Cipher cipher = getCipher();
         SecureRandom secureRandom = getSecureRandom();
+        AlgorithmParameterSpec aps = processParameters(parameters);
         
-        try(ByteArrayInputStream bais = new ByteArrayInputStream(cipherBytes)) {
+        try {
             synchronized(cipher) {
-                int ivSize = 0;
-                if (transformation.hasIV()) {
-                    byte[] iv = getTransformation().readIV(bais);
-                    cipher.init(Cipher.DECRYPT_MODE, privateKey, new IvParameterSpec(iv));
+                if (aps!=null) {
+                    cipher.init(Cipher.DECRYPT_MODE, privateKey, aps, secureRandom);
                 } else {
-                    cipher.init(Cipher.DECRYPT_MODE, privateKey);
+                    cipher.init(Cipher.DECRYPT_MODE, privateKey, secureRandom);
                 }
 
-                return cipher.doFinal(cipherBytes, ivSize, cipherBytes.length);
+                return cipher.doFinal(cipherBytes);
             }
         } catch (InvalidKeyException | InvalidAlgorithmParameterException | 
-                IllegalBlockSizeException | BadPaddingException | 
-                IOException ex) {
+                IllegalBlockSizeException | BadPaddingException ex) {
             throw new CryptoException("Could not encrypt data: " + ex.getLocalizedMessage(),ex);
         }
     }
@@ -219,6 +221,8 @@ public class PK extends Crypto {
      */
     public Verifier getVerifier(final Digester digester) {
         Validator.notNull(digester, "digester");
+        Transformation transformation = getTransformation();
+        
         final Cipher cipher = getCipher();
         return (final byte[] data, final byte[] signature) -> {
             synchronized(cipher) {
@@ -263,6 +267,7 @@ public class PK extends Crypto {
         
         final Cipher cipher = getCipher();
         final SecureRandom secureRandom = getSecureRandom();
+        final Transformation transformation = getTransformation();
         
         return (final byte[] data) -> {
             Validator.notNull(data, "data");
@@ -271,7 +276,7 @@ public class PK extends Crypto {
                     byte[] digest = digester.digest(data);
                     
                     if (transformation.hasIV()) {
-                        byte[] iv = transformation.getIV(secureRandom);
+                        byte[] iv = transformation.generateIV(secureRandom);
                         baos.write(iv);
                         cipher.init(Cipher.ENCRYPT_MODE, privateKey, new IvParameterSpec(iv));
                     } else {

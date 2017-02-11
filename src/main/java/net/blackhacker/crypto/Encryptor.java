@@ -34,9 +34,10 @@ public interface Encryptor {
      * Must be implemented by subclass
      * 
      * @param clearBytes -- array of bytes to be encrypted
+     * @param parameters
      * @return -- cipher bytes
      * @throws CryptoException
      */
-     public byte[] encrypt(byte[] clearBytes) throws CryptoException;
+     public byte[] encrypt(byte[] clearBytes, Object... parameters) throws CryptoException;
     
 }

@@ -31,4 +31,10 @@ package net.blackhacker.crypto;
  */
 final public class Strings {
     final static public String NOT_NULL_MSG = "%s can't be null";
+    final static public String COULDNT_CREATE_KEY_SPEC = "Couldn't create key spec :%s : %s";
+    final static public String COULDNT_CREATE_PARAM_SPEC = "Couldn't create parameter spec :%s : %s";
+    final static public String COULDNT_CREATE_KEY_FACT_MSG = "Couldn't create key factory: %s : %s";
+    final static public String COULDNT_ENCRYPT_MSG = "Could not encrypt data: %s : %s";
+    final static public String NON_PBE_MSG = "This constructor requires a non-PBE Transformation.";
+    final static public String PBE_MSG = "This constructor requires a PBE Transformation.";
 }

@@ -25,8 +25,9 @@ package net.blackhacker.crypto;
 
 import net.blackhacker.crypto.algorithm.SymetricAlgorithm;
 import net.blackhacker.crypto.algorithm.Mode;
+import net.blackhacker.crypto.algorithm.DigestAlgorithm;
+
 import java.security.SecureRandom;
-import java.security.Security;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -43,7 +44,6 @@ import org.junit.Test;
 import org.junit.rules.ErrorCollector;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.spongycastle.jce.provider.BouncyCastleProvider;
 
 /**
  *
@@ -58,7 +58,8 @@ public class SKTest {
     private SK me;
     private SK foe;
     
-    static private String passphrase;
+    static private char[] passphrase;
+    static private char[] foePassphrase;
     static private byte[] message = new byte[245];  //245 is the largest data RSA encrypts
     
     public SKTest(Transformation t) {
@@ -85,6 +86,15 @@ public class SKTest {
                 { new Transformation(SymetricAlgorithm.AES, Mode.CFB) },
                 { new Transformation(SymetricAlgorithm.AES, Mode.OFB) },
                 { new Transformation(SymetricAlgorithm.AES, Mode.CTR) },
+                
+                /*PBE */
+                { new Transformation(DigestAlgorithm.MD5, SymetricAlgorithm.DES) },
+                { new Transformation(DigestAlgorithm.MD5, SymetricAlgorithm.DESede) },
+                
+                /*
+                { new Transformation(DigestAlgorithm.SHA1, SymetricAlgorithm.DESede) },
+                { new Transformation(DigestAlgorithm.SHA256, SymetricAlgorithm.AES) },
+                */
             }
         ));
         
@@ -97,52 +107,83 @@ public class SKTest {
     @BeforeClass
     static public void setupClass() throws CryptoException {
         SecureRandom sr = new SecureRandom();
-        passphrase = "The quickbown fox jumped over the lazy dog.";
+        
+        passphrase = new char[ sr.nextInt(30) + 1];
+        for (int p = 0; p < passphrase.length; p++) {
+            passphrase[p] = (char) (sr.nextInt(94) + 32);
+        }
+
+        foePassphrase = new char[ sr.nextInt(30) + 1];
+        for (int p = 0; p < foePassphrase.length; p++) {
+            foePassphrase[p] = (char) (sr.nextInt(94) + 32);
+        }
+        
         sr.nextBytes(message);
-        //message = "A far far better thing I do than I have ever done before.".getBytes(StandardCharsets.UTF_8);
-        Security.insertProviderAt(new BouncyCastleProvider(),1);
     }
     
     @Before
     public void setupTest() throws CryptoException {
-        friend = new SK(transformation);
-        me = new SK(transformation, friend.getKeyEncoded());
-        foe = new SK(transformation);
+        if (transformation.isPBE()) {
+            friend = new SK(transformation, passphrase);
+            me = new SK(transformation, passphrase);
+            foe = new SK(transformation, foePassphrase);
+            
+        } else {
+            friend = new SK(transformation);
+            me = new SK(transformation, friend.getKeyEncoded());
+            foe = new SK(transformation);
+        }
     }
     
     @Test
     public void encryptDecryptTest() throws CryptoException {
-
-        String algorithm = me.getAlgorithm();
+        int iterationCount;
+        byte[] salt;
+        byte[] iv;
+        byte[] clearbytes2;
+        String algorithm = me.getTransformation().toString();
+        boolean isPBE = me.isPBE();
+        boolean hasIV = me.hasIV();
+        Object[] params = null;
         
         byte[] friendCipherBytes = friend.encrypt(message);
         assertNotNull(algorithm + ":friend.encrypt: failed", friendCipherBytes);
+        if (isPBE) {
+            salt = friend.getSalt();
+            iterationCount = friend.getIterationCount();
+            params = new Object[] {salt, iterationCount};
+        }
         
-        byte[] friendClearBytes = friend.decrypt(friendCipherBytes);
+        if (hasIV) {
+            iv = friend.getIV();
+            params = new Object[] { iv };
+        }
+        
+        byte[] friendClearBytes = friend.decrypt(friendCipherBytes, params);
         assertNotNull(algorithm + ":friend.decrypt: failed", friendClearBytes);
         assertArrayEquals(algorithm + ":friend doesn't decrypt itself", 
                 message, friendClearBytes);
         
-        byte[] meCipherBytes = me.encrypt(message);
+        byte[] meCipherBytes = me.encrypt(message, params);
         assertNotNull(algorithm + ":me.encrypt: failed", meCipherBytes); 
         
-        byte[] meClearBytes = me.decrypt(meCipherBytes);
+        byte[] meClearBytes = me.decrypt(meCipherBytes, params);
         assertNotNull(algorithm + ":me.encrypt: failed", meClearBytes);
         assertArrayEquals(algorithm + ":me doesn't decrypt itself",
                 meClearBytes, message);
 
-        friendClearBytes = friend.decrypt(meCipherBytes);
+        friendClearBytes = friend.decrypt(meCipherBytes, params);
         assertNotNull(algorithm + ":friend.decrypt: failed", friendClearBytes);
         assertArrayEquals(algorithm + ":friend doesn't decrypt me", 
                 message, friendClearBytes);
         
-        meClearBytes = me.decrypt(friendCipherBytes);
+        meClearBytes = me.decrypt(friendCipherBytes, params);
         assertNotNull(algorithm + ":me.decrypt: failed", meClearBytes);
         assertArrayEquals(algorithm + ":me doesn't decrypt friend", 
                 message, friendClearBytes);
         
         try {
-            byte[] clearbytes2 = foe.decrypt(friendCipherBytes);
+            clearbytes2 = foe.decrypt(friendCipherBytes, params);
             assertFalse(
                 algorithm + ":foe.decrypt: foe decrypted friend's message", 
                 Arrays.equals(friendClearBytes, clearbytes2));
@@ -151,12 +192,12 @@ public class SKTest {
         }
         
         try {
-            byte[] clearbytes2 = foe.decrypt(meCipherBytes);
+            clearbytes2 = foe.decrypt(meCipherBytes, params);
             assertFalse(
                 algorithm + ":foe.decrypt: foe decrypted me's message", 
                 Arrays.equals(friendClearBytes, clearbytes2));
         } catch (CryptoException e) {
-            // 
+            // this is good. foes shouldn't be able to decrypt friend bytes
         }
     }
 }

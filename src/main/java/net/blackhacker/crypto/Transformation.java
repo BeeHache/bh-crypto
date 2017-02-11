@@ -47,7 +47,6 @@ import javax.crypto.spec.PBEParameterSpec;
         final private Mode mode;
         final private Padding padding;
         final private boolean isPBE;
-        final private boolean isAsymetric;
         
         private Transformation(
                 DigestAlgorithm digestAlgorithm,
@@ -55,35 +54,45 @@ import javax.crypto.spec.PBEParameterSpec;
                 AsymetricAlgorithm asymetricAlgorithm,
                 Mode mode, 
                 Padding padding, 
-                boolean isPBE,
-                boolean isAsymetric) {
+                boolean isPBE) {
             this.digestAlgorithm = digestAlgorithm;
             this.symetricAlgorithm = symetricAlgorithm;
             this.asymetricAlgorithm = asymetricAlgorithm;
             this.mode = mode;
             this.padding = padding;
             this.isPBE = isPBE;
-            this.isAsymetric = isAsymetric;
         }
 
         public Transformation(final SymetricAlgorithm encryptionAlgorithm, final Mode mode, final Padding padding) {
-            this(null, encryptionAlgorithm, null, mode, padding, false, false);
+            this(null, encryptionAlgorithm, null, mode, padding, false);
         }
         
         public Transformation(final SymetricAlgorithm encryptionAlgorithm, final Mode mode) {
-            this(null, encryptionAlgorithm, null, mode, Padding.PKCS5Padding, false, false);
+            this(null, encryptionAlgorithm, null, mode, Padding.PKCS5Padding, false);
         }
         
         public Transformation(final DigestAlgorithm digestAlgorithm, final SymetricAlgorithm symetricAlgorithm) {
-            this(digestAlgorithm, symetricAlgorithm, null, null, null, true, false);
+            this(digestAlgorithm, symetricAlgorithm, null, null, null, true);
         }
         
         public Transformation(final AsymetricAlgorithm asymetricAlgorithm, final Mode mode) {
-            this(null, null, asymetricAlgorithm, mode, null, false, true);
+            this(null, null, asymetricAlgorithm, mode, Padding.PKCS5Padding, false);
+        }
+        
+        public Transformation(final AsymetricAlgorithm asymetricAlgorithm, final Mode mode, final Padding padding) {
+            this(null, null, asymetricAlgorithm, mode, padding, false);
         }
         
         public int getBlockSize() {
-            return symetricAlgorithm.blockSize();
+            return symetricAlgorithm!=null 
+                    ? symetricAlgorithm.getBlockSize()
+                    : asymetricAlgorithm.getBlockSize();
+        }
+        
+        public int getKeySize() {
+            return symetricAlgorithm!=null
+                    ? symetricAlgorithm.getKeySize()
+                    : asymetricAlgorithm.getKeySize();
         }
         
         public int getBlockSizeBytes() {
@@ -91,11 +100,15 @@ import javax.crypto.spec.PBEParameterSpec;
         }
 
         public boolean hasIV() {
-            return mode.hasIV();
+            return mode!= null && mode.hasIV();
         }
         
         public boolean isPBE() {
             return isPBE;
+        }
+        
+        public boolean isAsymetric() {
+            return asymetricAlgorithm != null;
         }
         
         public byte[] readIV(InputStream is ) throws IOException {
@@ -104,7 +117,7 @@ import javax.crypto.spec.PBEParameterSpec;
             return iv;
         }
         
-        public byte[] getIV(SecureRandom secureRandom) {
+        public byte[] generateIV(SecureRandom secureRandom) {
             final byte[] array = new byte[ getBlockSizeBytes()];
             secureRandom.nextBytes(array);
             return array;            
@@ -122,8 +135,14 @@ import javax.crypto.spec.PBEParameterSpec;
             return symetricAlgorithm.makeKeySpec(key);
         }
         
-        public AlgorithmParameterSpec makeParameterSpec(byte[] iv) throws CryptoException {
-            return symetricAlgorithm.makeParameterSpec(iv);
+        public AlgorithmParameterSpec makeParameterSpec(Object...params) throws CryptoException {
+            if (isPBE) {
+                Validator.isTrue(params.length==2, "");
+                return new PBEParameterSpec((byte[])params[0], (int)params[1]);
+            } else {
+                Validator.isTrue(params.length==1, "");
+                return symetricAlgorithm.makeParameterSpec((byte[])params[0]);
+            }
         }
         
         @Override
@@ -131,11 +150,28 @@ import javax.crypto.spec.PBEParameterSpec;
             if(isPBE)
                 return String.format("PBEWith%sAnd%s", 
                         digestAlgorithm.name(), 
-                        symetricAlgorithm.name());
+                        symetricAlgorithm.getPBEName());
+            else if (isAsymetric())
+                return String.format("%s/%s/%s", 
+                        asymetricAlgorithm, 
+                        mode, 
+                        padding);
             else
                 return String.format("%s/%s/%s", 
                         symetricAlgorithm, 
                         mode, 
                         padding);
+        }
+        
+        public String getAlgorithmString() {
+            if (symetricAlgorithm!=null) {
+                if (isPBE)
+                    return String.format("PBEWith%sAnd%s", 
+                        digestAlgorithm.name(), 
+                        symetricAlgorithm.getPBEName());
+                else
+                    return symetricAlgorithm.toString();
+            } else
+                return asymetricAlgorithm.toString();
         }
     }

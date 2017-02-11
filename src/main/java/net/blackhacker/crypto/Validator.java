@@ -32,4 +32,13 @@ final public class Validator {
         if (o == null)
             throw new NullPointerException(String.format(Strings.NOT_NULL_MSG, parameterName));
     }
+    
+    static public void isTrue(boolean test, String message) {
+        if (!test)
+            throw new RuntimeException(message);
+    }
+    
+    static public void isFalse(boolean test, String message) {
+        isTrue(!test, message);
+    }
 }

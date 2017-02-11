@@ -23,6 +23,7 @@
  */
 package net.blackhacker.crypto.algorithm;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.KeySpec;
@@ -38,14 +39,14 @@ import net.blackhacker.crypto.CryptoException;
  */
 public enum SymetricAlgorithm {
     /* Cipher*/
-    AES(128, SecretKeySpec.class, IvParameterSpec.class, false),
-    AES192(192, SecretKeySpec.class, IvParameterSpec.class, false),
+    AES(128, SecretKeySpec.class, IvParameterSpec.class),
+    AES192(192, SecretKeySpec.class, IvParameterSpec.class),
     AESWrap(128, null, null),
     ARCFOUR, 
     Blowfish,
     CCM,
     DES(DESKeySpec.class, IvParameterSpec.class), 
-    DESede(DESedeKeySpec.class, IvParameterSpec.class),
+    DESede(64, DESedeKeySpec.class, IvParameterSpec.class, "TripleDES"),
     DESedeWrap,
     ECIES,
     GCM, 
@@ -54,33 +55,42 @@ public enum SymetricAlgorithm {
     RC5;
 
     SymetricAlgorithm(){
-        this(64, null, null, false);
+        this(64, null, null, null);
     }
 
     SymetricAlgorithm(
             Class <? extends KeySpec> keySpecClass, 
             Class <? extends AlgorithmParameterSpec> algorParamSpecClass) {
-        this(64, keySpecClass, algorParamSpecClass, false);
+        this(64, keySpecClass, algorParamSpecClass, null);
     }
 
     SymetricAlgorithm(int s,
             Class <? extends KeySpec> keySpecClass, 
             Class <? extends AlgorithmParameterSpec> algorParamSpecClass) {
-        this(s, keySpecClass, algorParamSpecClass, false);
+        this(s, keySpecClass, algorParamSpecClass, null);
     }
     
     SymetricAlgorithm(
             int s, 
             Class <? extends KeySpec> keySpecClass, 
             Class <? extends AlgorithmParameterSpec> algorParamSpecClass,
-            boolean isPBE ){
+            String PBEName ){
         this.blockSize = s;
         this.keySpecClass = keySpecClass;
         this.algorParamSpecClass = algorParamSpecClass;
+        this.PBEName = PBEName;
     }
 
-    public int blockSize() {
+    public int getBlockSize() {
         return blockSize;
+    }
+    
+    public int getKeySize() {
+        return keySize;
+    }
+    
+    public String getPBEName() {
+        return PBEName == null ? name() : PBEName;
     }
 
     public KeySpec makeKeySpec(final byte[] key) throws CryptoException {
@@ -100,6 +110,20 @@ public enum SymetricAlgorithm {
         }
     }
 
+    public KeySpec makeKeySpec(final char[] password) throws CryptoException {
+        try {
+            Constructor<? extends KeySpec> con = keySpecClass.getConstructor(char[].class);
+            if (con!=null){
+                return con.newInstance(password);
+            }
+            throw new CryptoException(name() + "Not a PBE Algorithm");
+        } catch (NoSuchMethodException | SecurityException | 
+                InstantiationException | IllegalAccessException | 
+                IllegalArgumentException | InvocationTargetException ex) {
+            throw new CryptoException("Couldn't make keyspec", ex);
+        }
+    }    
+    
     public AlgorithmParameterSpec makeParameterSpec(byte[] iv) throws CryptoException {
         try {
             return algorParamSpecClass
@@ -123,6 +147,8 @@ public enum SymetricAlgorithm {
     }
 
     final int blockSize;
+    int keySize;
+    final String PBEName;
     final Class <? extends KeySpec> keySpecClass;
     final Class <? extends AlgorithmParameterSpec> algorParamSpecClass;
 }

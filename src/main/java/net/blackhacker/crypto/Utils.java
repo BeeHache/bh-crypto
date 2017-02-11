@@ -23,7 +23,9 @@
  */
 package net.blackhacker.crypto;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Utility class
@@ -38,7 +40,7 @@ final public class Utils {
      * @return single array containing contents of all arrays
      */
     
-    static public byte[] joinArrays(final byte[] ...arrays){
+    static public byte[] joinArrays(final byte[] ...arrays) {
         Validator.notNull(arrays, "arrays");
         int sum=Arrays.asList(arrays).stream().mapToInt( n -> n!=null ? n.length : 0).sum();
         
@@ -52,5 +54,21 @@ final public class Utils {
             }
         }
         return retval;
-    }    
+    }
+    
+    static public byte[][] splitBytes(final byte[]data, final int[] lengths) {
+        Validator.notNull(data, "data");
+        Validator.notNull(lengths, "lengths");
+        int d=0;
+        List<byte[]> arrays = new ArrayList<>();
+        for (int l=0; l < lengths.length; l++) {
+            byte[]array = new byte[lengths[l]];
+            for(int a=0; a < array.length; a++){
+                array[a] = data[d++];
+            }
+            arrays.add(array);
+        }
+        
+        return arrays.toArray(new byte[0][]);
+    }
 }

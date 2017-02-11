@@ -26,6 +26,8 @@ package net.blackhacker.crypto;
 //import java.util.Arrays;
 import java.util.Random;
 import org.junit.Assert;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
@@ -47,7 +49,9 @@ public class UtilsTest {
         Random r = new Random();
         byte[] a1 = new byte[r.nextInt(100)];
         byte[] a2 = new byte[r.nextInt(100)];
-        int s1 = 0, s2 = 0, s3 = 0;
+        byte[] a3 = new byte[r.nextInt(100)];
+        
+        int s1 = 0, s2 = 0, s3 = 0, sx = 0;
         
         for (int i = 0; i < a1.length; i++) {
             a1[i] = (byte)i;
@@ -58,13 +62,24 @@ public class UtilsTest {
             a2[i] = (byte)i;
             s2 += i;
         }
-        
-        byte[] a3 = Utils.joinArrays(a1, a2);
-        for (int i = 0; i < a3.length; i++){
-            s3 += (int)a3[i];
+
+        for (int i = 0; i < a3.length; i++) {
+            a3[i] = (byte)i;
+            s3 += i;
         }
         
-        Assert.assertEquals(s1 + s2, s3);
+        byte[] ax = Utils.joinArrays(a1, a2, a3);
+        for (int i = 0; i < ax.length; i++){
+            sx += (int)ax[i];
+        }
+        
+        assertEquals(s1 + s2 + s3, sx);
+        
+        byte[][] split = Utils.splitBytes(ax, new int[]{a1.length, a2.length, a3.length});
+        assertEquals("", 3, split.length);
+        assertArrayEquals("", a1, split[0]);
+        assertArrayEquals("", a2, split[1]);
+        assertArrayEquals("", a3, split[2]);
     }
     
     

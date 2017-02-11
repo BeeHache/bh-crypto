@@ -274,7 +274,7 @@ public class CryptoTest {
     public ErrorCollector collector= new ErrorCollector();
     
     public void encryptDecryptTest() throws CryptoException {
-        String algorithm = me.getAlgorithm();
+        String algorithm = me.getTransformation().toString();
         
         byte[] friendCipherBytes = friend.encrypt(message);
         assertNotNull(algorithm + ":friend.encrypt: failed", friendCipherBytes);
@@ -284,8 +284,6 @@ public class CryptoTest {
         assertArrayEquals(algorithm + ":friend doesn't decrypt itself", 
                 message, friendClearBytes);
         
-
-        
         byte[] meCipherBytes = me.encrypt(message);
         assertNotNull(algorithm + ":me.encrypt: failed", meCipherBytes); 
         
@@ -293,7 +291,6 @@ public class CryptoTest {
         assertNotNull(algorithm + ":me.encrypt: failed", meClearBytes);
         assertArrayEquals(algorithm + ":me doesn't decrypt itself",
                 meClearBytes, message);
-
 
         friendClearBytes = friend.decrypt(meCipherBytes);
         assertNotNull(algorithm + ":friend.decrypt: failed", friendClearBytes);

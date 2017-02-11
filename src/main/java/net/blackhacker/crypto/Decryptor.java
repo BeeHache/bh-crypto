@@ -34,9 +34,10 @@ public interface Decryptor {
      * Must be implemented by subclass
      * 
      * @param cipherBytes -- bytes to be decrypted
+     * @param parameters
      * @return -- bytes in the clear
      * @throws CryptoException 
      */
-     public byte[] decrypt(final byte[] cipherBytes) throws CryptoException;    
+     public byte[] decrypt(final byte[] cipherBytes, Object... parameters) throws CryptoException;    
 
 }
