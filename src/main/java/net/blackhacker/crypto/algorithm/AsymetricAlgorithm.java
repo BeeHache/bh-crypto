@@ -43,10 +43,11 @@ import net.blackhacker.crypto.Strings;
  */
 public enum AsymetricAlgorithm {
     /* Cipher*/
-    RSA(1024, 936, RSAPublicKeySpec.class, RSAPrivateKeySpec.class, null),
-    DiffieHellman(1024, 0, DHPublicKeySpec.class, DHPrivateKeySpec.class, null),
-    DSA(1024, 0, DSAPublicKeySpec.class, DSAPrivateKeySpec.class, null),
-    EC(1024, 0, ECPublicKeySpec.class, ECPrivateKeySpec.class, null);
+    RSA1024(1024, 936, RSAPublicKeySpec.class, RSAPrivateKeySpec.class, null, "RSA"),
+    RSA2048(2048, 936, RSAPublicKeySpec.class, RSAPrivateKeySpec.class, null, "RSA"),
+    DiffieHellman(1024, 0, DHPublicKeySpec.class, DHPrivateKeySpec.class, null, "DH"),
+    DSA(1024, 0, DSAPublicKeySpec.class, DSAPrivateKeySpec.class, null, null),
+    EC(1024, 0, ECPublicKeySpec.class, ECPrivateKeySpec.class, null, null);
 
     
     AsymetricAlgorithm(
@@ -54,12 +55,14 @@ public enum AsymetricAlgorithm {
             int blockSize,
             Class <? extends KeySpec> publicKeySpecClass,
             Class <? extends KeySpec> privateKeySpecClass, 
-            Class <? extends AlgorithmParameterSpec> algorParamSpecClass){
+            Class <? extends AlgorithmParameterSpec> algorParamSpecClass,
+            String name){
         this.keySize = keySize;
         this.blockSize = blockSize;
         this.publicKeySpecClass = publicKeySpecClass;
         this.privateKeySpecClass = privateKeySpecClass;
         this.algorParamSpecClass = algorParamSpecClass;
+        this.name = name;
     }
     
     public int getKeySize() {
@@ -119,9 +122,15 @@ public enum AsymetricAlgorithm {
                     name(),ex.getLocalizedMessage()), ex);
         }
     }
+    
+    @Override
+    public String toString() {
+        return name == null ? name() : name;
+    }
 
     final int keySize;
     int blockSize;
+    final String name;
     final Class <? extends KeySpec> publicKeySpecClass;
     final Class <? extends KeySpec> privateKeySpecClass;
     final Class <? extends AlgorithmParameterSpec> algorParamSpecClass;

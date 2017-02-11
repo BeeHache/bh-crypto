@@ -51,7 +51,7 @@ final public class CryptoFactory {
      */
     static public PK newEncryptorRSAWithECB() throws CryptoException {
         return new PK(
-                new Transformation(AsymetricAlgorithm.RSA, Mode.ECB));
+                new Transformation(AsymetricAlgorithm.RSA1024, Mode.ECB));
     }
     
     /**
@@ -70,7 +70,7 @@ final public class CryptoFactory {
         Validator.notNull(publicKeyEncoded, "publicKeyEncoded");
         Validator.notNull(privateKeyEncoded, "privateKeyEncoded");
         return new PK(
-                new Transformation(AsymetricAlgorithm.RSA, Mode.ECB)
+                new Transformation(AsymetricAlgorithm.RSA1024, Mode.ECB)
                 ,publicKeyEncoded,privateKeyEncoded);
     }
 
@@ -84,7 +84,7 @@ final public class CryptoFactory {
             throws CryptoException {
         Validator.notNull(publicKeyEncoded, "publicKeyEncoded");
         return new PK(
-                new Transformation(AsymetricAlgorithm.RSA, Mode.ECB)
+                new Transformation(AsymetricAlgorithm.RSA1024, Mode.ECB)
                 ,publicKeyEncoded);
     }  
 

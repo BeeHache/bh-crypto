@@ -67,7 +67,8 @@ public class PKTest {
     public static Collection<Transformation[]> data() throws CryptoException {
         List<Transformation[]> l = new ArrayList<>(Arrays.asList(
             new Transformation[][] {
-                { new Transformation(AsymetricAlgorithm.RSA, Mode.ECB, Padding.PKCS1Padding) },
+                { new Transformation(AsymetricAlgorithm.RSA1024, Mode.ECB, Padding.PKCS1Padding) },
+                { new Transformation(AsymetricAlgorithm.RSA2048, Mode.ECB, Padding.PKCS1Padding) },
                 
             }));
         return l;
