@@ -202,7 +202,10 @@ public class PK extends Crypto {
             }
         } catch (InvalidKeyException | InvalidAlgorithmParameterException | 
                 IllegalBlockSizeException | BadPaddingException ex) {
-            throw new CryptoException("Could not encrypt data: " + ex.getLocalizedMessage(),ex);
+            throw new CryptoException(
+                String.format(Strings.COULDNT_DECRYPT_MSG, 
+                        transformation.toString(),
+                        ex.getLocalizedMessage()),ex);
         }
     }
     

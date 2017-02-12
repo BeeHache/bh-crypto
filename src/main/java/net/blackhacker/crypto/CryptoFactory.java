@@ -37,11 +37,6 @@ import net.blackhacker.crypto.algorithm.AsymetricAlgorithm;
  */
 final public class CryptoFactory {
     
-    static public int RSA_MAX_BYTES = 245;
-    
-    final static AlgorithmParameterSpec RSA_ALGOR_PARAM_SPEC = 
-        new RSAKeyGenParameterSpec(2048, RSAKeyGenParameterSpec.F4);
-    
     /**
      * Factory method for generating PK object using RSA
      * 
