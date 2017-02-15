@@ -34,13 +34,15 @@ import javax.crypto.spec.SecretKeySpec;
 import net.blackhacker.crypto.CryptoException;
 
 /**
- *
+ * Represents each of the supported symetric algorithms
+ * 
  * @author ben
  */
 public enum SymetricAlgorithm {
     /* Cipher*/
     AES(128, SecretKeySpec.class, IvParameterSpec.class),
-    AES192(192, SecretKeySpec.class, IvParameterSpec.class),
+    AES192(192, SecretKeySpec.class, IvParameterSpec.class, "AES"),
+    AES256(256, SecretKeySpec.class, IvParameterSpec.class, "AES"),
     AESWrap(128, null, null),
     ARCFOUR, 
     Blowfish,

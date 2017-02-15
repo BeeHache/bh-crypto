@@ -38,7 +38,8 @@ import net.blackhacker.crypto.CryptoException;
 import net.blackhacker.crypto.Strings;
 
 /**
- *
+ * Represents each of the supported asymetric algorithms
+ * 
  * @author ben
  */
 public enum AsymetricAlgorithm {
@@ -48,7 +49,6 @@ public enum AsymetricAlgorithm {
     DiffieHellman(1024, 0, DHPublicKeySpec.class, DHPrivateKeySpec.class, null, "DH"),
     DSA(1024, 0, DSAPublicKeySpec.class, DSAPrivateKeySpec.class, null, null),
     EC(1024, 0, ECPublicKeySpec.class, ECPrivateKeySpec.class, null, null);
-
     
     AsymetricAlgorithm(
             int keySize, 
@@ -80,13 +80,16 @@ public enum AsymetricAlgorithm {
         } catch (NoSuchMethodException | SecurityException | 
                 InstantiationException | IllegalAccessException | 
                 IllegalArgumentException | InvocationTargetException ex) {
-            throw new CryptoException(String.format(Strings.COULDNT_CREATE_KEY_SPEC,
-                            name(),ex.getLocalizedMessage()), ex);
+            throw new CryptoException(
+                    String.format(Strings.COULDNT_CREATE_KEY_SPEC,
+                    name(),
+                    ex.getLocalizedMessage()), 
+                ex);
         }
     }    
     
 
-    public KeySpec makeKeySpec(final byte[] key) throws CryptoException {
+    public KeySpec makePrivateKeySpec(final byte[] key) throws CryptoException {
         try {
             return privateKeySpecClass
                 .getConstructor(byte[].class).newInstance(key);

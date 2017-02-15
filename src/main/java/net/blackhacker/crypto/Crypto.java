@@ -51,8 +51,6 @@ public abstract class Crypto implements Encryptor, Decryptor {
      * SecureRandom
      */
     final private SecureRandom secureRandom = new SecureRandom();
-    
-    //final private AlgorithmParameterSpec algorithmParameterSpec;
 
     private int iterationCount = 100;
     private byte[] salt;
@@ -66,15 +64,17 @@ public abstract class Crypto implements Encryptor, Decryptor {
      * @param params
      * @throws CryptoException
      */
-    protected  Crypto(final Transformation transformation, Object... params) throws CryptoException {
+    protected  Crypto(final Transformation transformation, final Object... params) throws CryptoException {
         Validator.notNull(transformation, "transformation");
+        Validator.notNull(params, "params");
         this.transformation = transformation;
         
         try {
-            cipher = Cipher.getInstance(transformation.getAlgorithmString());
+            String as = transformation.toString();
+            cipher = Cipher.getInstance(as);
         } catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
             String msg = String.format(
-                    "Couldn't generate cipher for %s : %s", 
+                    Strings.COULDNT_CREATE_CIPHER, 
                     transformation.getAlgorithmString(),
                     ex.getLocalizedMessage());
             throw new CryptoException(msg, ex);

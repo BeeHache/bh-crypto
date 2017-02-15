@@ -23,7 +23,6 @@
  */
 package net.blackhacker.crypto;
 
-//import java.util.Arrays;
 import java.util.Random;
 import org.junit.Assert;
 import static org.junit.Assert.assertArrayEquals;

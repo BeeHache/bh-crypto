@@ -71,17 +71,33 @@ public class PK extends Crypto {
             final byte[] publicKeyEncoded, final byte[] privateKeyEncoded)
             throws CryptoException {
         super(transformation);
-        Validator.notNull(transformation, "transformation");
-        Validator.notNull(publicKeyEncoded, "publicKeyEncoded");
-        Validator.notNull(privateKeyEncoded, "privateKeyEncoded");
+        PublicKey pu;
+        PrivateKey pr;
+        
         try {
             KeyFactory kf = KeyFactory.getInstance(transformation.getAlgorithmString());
             
-            publicKey = kf.generatePublic(
-                    new X509EncodedKeySpec(publicKeyEncoded));
+            pu = publicKeyEncoded!=null ? 
+                kf.generatePublic(new X509EncodedKeySpec(publicKeyEncoded)) :
+                null; 
             
-            privateKey = kf.generatePrivate(
-                    new PKCS8EncodedKeySpec(privateKeyEncoded));
+            pr = privateKeyEncoded!=null ?
+                kf.generatePrivate(new PKCS8EncodedKeySpec(privateKeyEncoded)) :
+                null;
+            
+            if (pu==null && pr==null) {
+                KeyPairGenerator kpg = KeyPairGenerator
+                        .getInstance(transformation.getAlgorithmString());
+                kpg.initialize(transformation.getKeySize(), getSecureRandom());
+                KeyPair kp = kpg.generateKeyPair();
+                pu = kp.getPublic();
+                pr = kp.getPrivate();                
+            }
+            
+            publicKey = pu;
+            privateKey = pr;
+            
+            
         } catch(NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new CryptoException(e);
         }
@@ -98,18 +114,7 @@ public class PK extends Crypto {
      */
     public PK(final Transformation transformation, final byte[] publicKeyEncoded)
             throws CryptoException {
-        super(transformation);
-        Validator.notNull(publicKeyEncoded, "publicKeyEncoded");
-        try {
-            KeyFactory kf = KeyFactory.getInstance(transformation.getAlgorithmString());
-            
-            publicKey = kf.generatePublic(
-                    new X509EncodedKeySpec(publicKeyEncoded));
-            
-            privateKey = null;
-        } catch(NoSuchAlgorithmException | InvalidKeySpecException e) {
-            throw new CryptoException(e);
-        }
+        this(transformation, publicKeyEncoded, null);
     }
     
     /**
@@ -121,18 +126,7 @@ public class PK extends Crypto {
      * @see AlgorithmParameterSpec
      */
     public PK(final Transformation transformation) throws CryptoException {
-        super(transformation);
-        
-        try {
-            KeyPairGenerator kpg = KeyPairGenerator
-                    .getInstance(transformation.getAlgorithmString());
-            kpg.initialize(transformation.getKeySize(), getSecureRandom());
-            KeyPair kp = kpg.generateKeyPair();
-            publicKey = kp.getPublic();
-            privateKey = kp.getPrivate();
-        } catch(NoSuchAlgorithmException e) {
-            throw new CryptoException(e);
-        }
+        this(transformation, null, null);
     }
 
     

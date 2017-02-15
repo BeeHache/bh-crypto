@@ -27,8 +27,6 @@ package net.blackhacker.crypto;
 import net.blackhacker.crypto.algorithm.SymetricAlgorithm;
 import net.blackhacker.crypto.algorithm.Mode;
 import net.blackhacker.crypto.algorithm.DigestAlgorithm;
-import java.security.spec.AlgorithmParameterSpec;
-import java.security.spec.RSAKeyGenParameterSpec;
 import net.blackhacker.crypto.algorithm.AsymetricAlgorithm;
 
 /**
@@ -62,8 +60,6 @@ final public class CryptoFactory {
     static public PK newEncryptorRSAWithECB(
             final byte[] publicKeyEncoded, final byte[] privateKeyEncoded) 
             throws CryptoException {
-        Validator.notNull(publicKeyEncoded, "publicKeyEncoded");
-        Validator.notNull(privateKeyEncoded, "privateKeyEncoded");
         return new PK(
                 new Transformation(AsymetricAlgorithm.RSA1024, Mode.ECB)
                 ,publicKeyEncoded,privateKeyEncoded);
@@ -77,7 +73,6 @@ final public class CryptoFactory {
      */
     static public PK newEncryptorRSAWithECB(final byte[] publicKeyEncoded) 
             throws CryptoException {
-        Validator.notNull(publicKeyEncoded, "publicKeyEncoded");
         return new PK(
                 new Transformation(AsymetricAlgorithm.RSA1024, Mode.ECB)
                 ,publicKeyEncoded);
@@ -104,7 +99,6 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorDESWithECB(final byte[] key) throws CryptoException {
-        Validator.notNull(key, "key");
         return new SK(new Transformation(SymetricAlgorithm.DES, Mode.ECB), key);
     }
     
@@ -130,7 +124,6 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorDESWithCBC(final byte[] key) throws CryptoException {
-        Validator.notNull(key, "key");
         return new SK(new Transformation(SymetricAlgorithm.DES, Mode.CBC), key);
     } 
     
@@ -154,7 +147,6 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorDESWithCFB(final byte[] key) throws CryptoException {
-        Validator.notNull(key, "key");
         return new SK(new Transformation(SymetricAlgorithm.DES, Mode.CFB), key);
     }
     
@@ -178,7 +170,6 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorDESWithOFB(final byte[] key) throws CryptoException {
-        Validator.notNull(key, "key");
         return new SK(new Transformation(SymetricAlgorithm.DES, Mode.OFB), key);
     }
     
@@ -204,7 +195,6 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorDESedeWithECB(final byte[] key) throws CryptoException {
-        Validator.notNull(key, "key");
         return new SK(new Transformation(SymetricAlgorithm.DESede, Mode.ECB), key);
     }
     
@@ -230,7 +220,6 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorDESedeWithCBC(final byte[] key) throws CryptoException {
-        Validator.notNull(key, "key");
         return new SK(new Transformation(SymetricAlgorithm.DESede, Mode.CBC), key);
     }
     
@@ -256,7 +245,6 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorDESedeWithCFB(final byte[] key) throws CryptoException {
-        Validator.notNull(key, "key");
         return new SK(
             new Transformation(SymetricAlgorithm.DESede, Mode.CFB), key);
     }
@@ -284,7 +272,6 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorDESedeWithOFB(final byte[] key) throws CryptoException {
-        Validator.notNull(key, "key");
         return new SK(
             new Transformation(SymetricAlgorithm.DESede, Mode.OFB), key);
     }
@@ -299,7 +286,6 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorAES128WithECB(final byte[] key) throws CryptoException {
-        Validator.notNull(key, "key");
         return new SK(
             new Transformation(SymetricAlgorithm.AES, Mode.ECB),key);
     }
@@ -337,7 +323,6 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorAES128WithCBC(final byte[] key) throws CryptoException {
-        Validator.notNull(key, "key");
         return new SK(new Transformation(SymetricAlgorithm.AES, Mode.CBC), key);
     }
 
@@ -352,7 +337,6 @@ final public class CryptoFactory {
      */
     final static public SK newEncryptorAES128WithCFB(final byte[] key) 
             throws CryptoException {
-        Validator.notNull(key, "key");
         return new SK(
             new Transformation(SymetricAlgorithm.AES, Mode.CFB), key
         );
@@ -381,7 +365,6 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorAES128WithOFB(final byte[] key) throws CryptoException {
-        Validator.notNull(key, "key");
         return new SK( new Transformation(SymetricAlgorithm.AES, Mode.OFB), key);
     }
     
@@ -406,7 +389,6 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorAES128WithCTR(final byte[] key) throws CryptoException {
-        Validator.notNull(key, "key");
         return new SK(
             new Transformation(SymetricAlgorithm.AES, Mode.CTR),key);
     }
@@ -434,7 +416,6 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorAES128WithOCB(final byte[] key) throws CryptoException {
-        Validator.notNull(key, "key");
         return new SK(
             new Transformation(SymetricAlgorithm.AES, Mode.OCB), key);
     }
@@ -462,7 +443,6 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorAES192WithECB(final byte[] key) throws CryptoException {
-        Validator.notNull(key, "key");
         return new SK(
             new Transformation(SymetricAlgorithm.AES192, Mode.ECB), key);
     }    
@@ -503,7 +483,6 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorAES192WithCBC(final byte[] key) throws CryptoException {
-        Validator.notNull(key, "key");
         return new SK(
             new Transformation(SymetricAlgorithm.AES192, Mode.CBC), key);
     }
@@ -530,7 +509,6 @@ final public class CryptoFactory {
      * @throws CryptoException
      */
     final static public SK newEncryptorPBEWithMD5AndTripleDES(String password) throws CryptoException {
-        Validator.notNull(password, "password");
         return new SK(
             new Transformation(DigestAlgorithm.MD5, SymetricAlgorithm.DESede),
             password.toCharArray()
@@ -544,7 +522,6 @@ final public class CryptoFactory {
      * @throws CryptoException
      */
     final static public SK newEncryptorPBEWithMD5AndDES(String password) throws CryptoException {
-        Validator.notNull(password, "password");
         return new SK(
             new Transformation(DigestAlgorithm.MD5, SymetricAlgorithm.DES),
             password.toCharArray()
@@ -558,7 +535,6 @@ final public class CryptoFactory {
      * @throws CryptoException
      */
     final static public SK newEncryptorPBEWithSHA256And256BitAES(String password) throws CryptoException {
-        Validator.notNull(password, "password");
         return new SK(
             new Transformation(DigestAlgorithm.SHA256, SymetricAlgorithm.AES),
             password.toCharArray()
@@ -572,7 +548,6 @@ final public class CryptoFactory {
      * @throws CryptoException
      */
     final static public SK newEncryptorPBEWithSHA1AndDESede(String password) throws CryptoException {
-        Validator.notNull(password, "password");
         return new SK(
             new Transformation(DigestAlgorithm.SHA1, SymetricAlgorithm.DESede),
             password.toCharArray()

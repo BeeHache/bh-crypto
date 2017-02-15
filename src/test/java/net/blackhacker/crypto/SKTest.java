@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import static net.blackhacker.crypto.TestUtils.jce;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertNotNull;
@@ -60,7 +61,7 @@ public class SKTest {
     
     static private char[] passphrase;
     static private char[] foePassphrase;
-    static private byte[] message = new byte[245];  //245 is the largest data RSA encrypts
+    static private byte[] message;
     
     public SKTest(Transformation t) {
         transformation = t;
@@ -90,13 +91,25 @@ public class SKTest {
                 /*PBE */
                 { new Transformation(DigestAlgorithm.MD5, SymetricAlgorithm.DES) },
                 { new Transformation(DigestAlgorithm.MD5, SymetricAlgorithm.DESede) },
-                
-                /*
-                { new Transformation(DigestAlgorithm.SHA1, SymetricAlgorithm.DESede) },
-                { new Transformation(DigestAlgorithm.SHA256, SymetricAlgorithm.AES) },
-                */
             }
         ));
+        
+        if (jce()) {
+            l.addAll(
+                Arrays.asList(
+                    new Transformation[][] {
+                        { new Transformation(SymetricAlgorithm.AES192, Mode.ECB) },
+                        { new Transformation(SymetricAlgorithm.AES192, Mode.CBC) },
+                        { new Transformation(SymetricAlgorithm.AES192, Mode.CFB) },
+                        { new Transformation(SymetricAlgorithm.AES192, Mode.OFB) },
+                        { new Transformation(SymetricAlgorithm.AES192, Mode.CTR) },
+                        
+                        /* PBE */
+                        { new Transformation(DigestAlgorithm.SHA1, SymetricAlgorithm.DESede) },
+                        { new Transformation(DigestAlgorithm.SHA256, SymetricAlgorithm.AES256) },
+                        
+                    }));
+        }
         
         return l;
     }
@@ -117,6 +130,8 @@ public class SKTest {
         for (int p = 0; p < foePassphrase.length; p++) {
             foePassphrase[p] = (char) (sr.nextInt(94) + 32);
         }
+        
+        message = new byte[sr.nextInt(1024)];
         
         sr.nextBytes(message);
     }

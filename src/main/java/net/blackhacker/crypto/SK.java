@@ -48,7 +48,6 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class SK extends Crypto {
     final private Key key;
-    
 
     /**
      *
@@ -79,8 +78,7 @@ public class SK extends Crypto {
      * @param encodedKeySpec
      * @throws CryptoException
      */
-    protected SK(final Transformation transformation,
-                 final byte[] encodedKeySpec)
+    protected SK(final Transformation transformation, final byte[] encodedKeySpec)
             throws CryptoException {
         super(transformation);
         Validator.isFalse(transformation.isPBE(), Strings.NON_PBE_MSG);
@@ -98,10 +96,11 @@ public class SK extends Crypto {
                     .generateSecret(spec);
             }
         } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
-            String msg = String.format("Couldn't create key factory: %s : %s",
-                    transformation.getAlgorithmString(), ex.getLocalizedMessage()
-                    );
-            throw new CryptoException(msg,ex);
+            throw new CryptoException(
+                String.format(Strings.COULDNT_CREATE_KEY_FACT_MSG,
+                    transformation.getAlgorithmString(),
+                    ex.getLocalizedMessage())
+                    ,ex);
         }
     }
     
@@ -123,13 +122,11 @@ public class SK extends Crypto {
             SecretKeyFactory kf = SecretKeyFactory.getInstance(algorithm);
             key = kf.generateSecret(spec);
             
-            
-            
         } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
             throw new CryptoException(
-                    String.format(Strings.COULDNT_CREATE_KEY_FACT_MSG,
-                    algorithm,
-                    ex.getLocalizedMessage()),ex);
+                String.format(Strings.COULDNT_CREATE_KEY_FACT_MSG,
+                algorithm,
+                ex.getLocalizedMessage()),ex);
         }
     } 
     
@@ -160,8 +157,9 @@ public class SK extends Crypto {
         } catch (InvalidKeyException | InvalidAlgorithmParameterException | 
                 IllegalBlockSizeException | BadPaddingException  ex) {
             throw new CryptoException(
-                "Could not encrypt data:" + ex.getLocalizedMessage(),
-                ex);
+                String.format(Strings.COULDNT_ENCRYPT_MSG,
+                getTransformation(),
+                ex.getLocalizedMessage()),ex);
         }
     }
     
@@ -193,9 +191,9 @@ public class SK extends Crypto {
         } catch (InvalidKeyException | InvalidAlgorithmParameterException |
                 IllegalBlockSizeException | BadPaddingException  ex) {
             throw new CryptoException(
-                    "Could not decrypt data: " +
-                    transformation.toString() + ":" +
-                    ex.getLocalizedMessage(),ex);
+                String.format(Strings.COULDNT_DECRYPT_MSG,
+                transformation,
+                ex.getLocalizedMessage()),ex);
         }
     }
     

@@ -23,31 +23,22 @@
  */
 package net.blackhacker.crypto;
 
+
 import java.security.NoSuchAlgorithmException;
-import java.security.Security;
 import javax.crypto.Cipher;
-import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.spongycastle.jce.provider.BouncyCastleProvider;
+
 
 /**
  *
  * @author ben
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({UtilsTest.class, SKTest.class, PKTest.class})
-final public class TestSuite {
-    
-    @BeforeClass
-    static public void setup() {
-        Security.insertProviderAt(new BouncyCastleProvider(),1);
-    }
+final public class TestUtils {
     
     
     static public boolean jce() {
         try {
-            return Cipher.getMaxAllowedKeyLength("AES/ECB/PKCS5Padding") == Integer.MAX_VALUE;
+            int makl = Cipher.getMaxAllowedKeyLength("AES");
+            return  makl == Integer.MAX_VALUE;
         } catch (NoSuchAlgorithmException ex) {
             return false;
         }

@@ -42,6 +42,7 @@ public class DigesterBase implements Digester {
      * @throws net.blackhacker.crypto.DigesterException
      */
     protected DigesterBase(final DigestAlgorithm digestAlgorithm) throws DigesterException {
+        Validator.notNull(digestAlgorithm, "digestAlgorithm");
     	try {
             messageDigest = MessageDigest.getInstance(digestAlgorithm.name());
     	} catch(NoSuchAlgorithmException e) {
