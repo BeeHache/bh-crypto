@@ -11,8 +11,8 @@
 
   <name>${project.groupId}:${project.artifactId}</name>
   <description></description>
-  <url>https://github.com/BeeHache/bh-crypto</url>
-  
+  <url>https://bh-crypto.blackhacker.net</url>
+
   <developers>
     <developer>
       <name>Benjaming King</name>
@@ -24,14 +24,16 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <download.dir>${project.reporting.outputDirectory}/downloads</download.dir>
+    <readme.src.file>README.md</readme.src.file>
+    <readme.tgt.file>README.html</readme.tgt.file>
+    <license.src.file>LICENSE</license.src.file>
+    <license.tgt.file>MIT_LICENSE</license.tgt.file>
+    <license.name>MIT License</license.name>
+    <license.page>${license.tgt.file}.html</license.page>
   </properties>
 
   <dependencies>
-       <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.5</version>
-      </dependency>
       <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk16</artifactId>
@@ -50,8 +52,7 @@
             <version>4.11</version>
             <scope>test</scope>
         </dependency>
-  </dependencies>
-  
+  </dependencies>  
     <build>
         <plugins>
             <plugin>
@@ -66,19 +67,6 @@
             </plugin>
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-javadoc-plugin</artifactId>
-              <version>2.10.4</version>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-source-plugin</artifactId>
               <version>3.0.1</version>
                 <executions>
@@ -89,7 +77,6 @@
                     </goals>
                   </execution>
                 </executions>
-
             </plugin>
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
@@ -110,27 +97,75 @@
               </executions>
             </plugin>
             <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                  <execution>
-                    <phase>install</phase>
-                    <configuration>
-                      <tasks>
-                          <delete dir="docs/apidocs"/>
-                          <copy todir="docs/apidocs">
-                               <fileset dir="target/apidocs" includes="**"/>
-                          </copy>
-                      </tasks>
-                    </configuration>
-                    <goals>
-                      <goal>run</goal>
-                    </goals>
-                  </execution>
-                </executions>
+                <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-site-plugin</artifactId>
+              <version>3.6</version>
+              <configuration>
+                  <generateSitemap>true</generateSitemap>
+              </configuration>
+              <dependencies>
+                <dependency>
+                  <groupId>org.apache.maven.doxia</groupId>
+                  <artifactId>doxia-module-markdown</artifactId>
+                  <version>1.7</version>
+                </dependency>
+              </dependencies>
             </plugin>
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <phase>site</phase>
+                        <goals>
+                          <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <mkdir dir="${download.dir}" />
+                                <copy todir="${download.dir}" flatten="true">
+                                    <fileset dir=".">
+                                        <include name="*/*.jar"/>
+                                    </fileset>
+                                </copy>
+                            </target>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>pre-site.id</id>
+                        <phase>pre-site</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <mkdir dir="${project.build.directory}/generated-site/markdown" />
+                                <copy  todir="${project.build.directory}/generated-site/markdown">
+                                    <file file="${readme.src.file}" />
+                                    <file file="${license.src.file}" />
+                                </copy>
+                                <move file="${project.build.directory}/generated-site/markdown/${license.src.file}" 
+                                      tofile="${project.build.directory}/generated-site/markdown/${license.tgt.file}.md"/>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>                
+            </plugin>
         </plugins>
     </build>
+    <reporting>
+        <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-javadoc-plugin</artifactId>
+              <version>2.10.4</version>
+              <configuration>
+                <destDir>apidocs/${project.version}</destDir>
+              </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
   <scm>
       <connection>scm:git:git://github.com/BeeHache/bh-crypto.git</connection>
       <developerConnection>scm:git:git://github.com/BeeHache/bh-crypto.git</developerConnection>

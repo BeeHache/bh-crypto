@@ -36,11 +36,14 @@ final public class TestUtils {
     
     
     static public boolean jce() {
+        return false;
+        /***
         try {
             int makl = Cipher.getMaxAllowedKeyLength("AES");
             return  makl == Integer.MAX_VALUE;
         } catch (NoSuchAlgorithmException ex) {
             return false;
         }
+        ***/
     }   
 }

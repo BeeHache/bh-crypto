@@ -1,0 +1,19 @@
+<project xsi:schemaLocation="http://maven.apache.org/DECORATION/1.7.0 http://maven.apache.org/xsd/decoration-1.7.0.xsd" xmlns="http://maven.apache.org/DECORATION/1.7.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    name="BH Crypto">
+  <bannerLeft>
+    <name>BH Crypto</name>
+  </bannerLeft>
+  <publishDate position="right"/>
+  <version position="right"/>
+  <body>
+    <links>
+        <item name="My Site" href="http://blackhacker.net" />
+      <item name="net.blackhacker:bh-crypto" href="./" />
+    </links>
+    <menu ref="parent" >
+        <item name="READ ME" href="${readme.tgt.file}" />
+        <item name="${license.name}" href="${license.page}"/>
+    </menu>
+    <menu ref="reports" />
+  </body>
+</project>
