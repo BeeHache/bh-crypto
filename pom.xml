@@ -25,14 +25,17 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <download.dir>${project.reporting.outputDirectory}/downloads</download.dir>
-    <readme.src.file>README.md</readme.src.file>
-    <readme.tgt.file>README.html</readme.tgt.file>
+    <generated-markdown.dir>${project.build.directory}/generated-site/markdown</generated-markdown.dir>
+    <generated-apt.dir>${project.build.directory}/generated-site/apt</generated-apt.dir>
+    <generated-xhtml.dir>${project.build.directory}/generated-site/xhtml</generated-xhtml.dir>
+    <readme.file>README.md</readme.file>
+    <readme.page>README.html</readme.page>
     <license.src.file>LICENSE</license.src.file>
-    <license.tgt.file>MIT_LICENSE</license.tgt.file>
+    <license.tgt.file>MIT_LICENSE.xhtml</license.tgt.file>
     <license.name>MIT License</license.name>
-    <license.page>${license.tgt.file}.html</license.page>
+    <license.page>MIT_LICENSE.html</license.page>
   </properties>
-
+  
   <dependencies>
       <dependency>
             <groupId>org.bouncycastle</groupId>
@@ -79,37 +82,24 @@
                 </executions>
             </plugin>
             <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-gpg-plugin</artifactId>
-              <version>1.6</version>
-              <executions>
-                <execution>
-                  <id>sign-artifacts</id>
-                  <phase>verify</phase>
-                  <goals>
-                    <goal>sign</goal>
-                  </goals>
-                  <configuration>
-                    <keyname>${gpg.keyname}</keyname>
-                    <passphraseServerId>${gpg.keyname}</passphraseServerId>
-                  </configuration>
-                </execution>
-              </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-site-plugin</artifactId>
               <version>3.6</version>
-              <configuration>
-                  <generateSitemap>true</generateSitemap>
-              </configuration>
               <dependencies>
                 <dependency>
                   <groupId>org.apache.maven.doxia</groupId>
                   <artifactId>doxia-module-markdown</artifactId>
                   <version>1.7</version>
                 </dependency>
+                <dependency>
+                    <groupId>org.apache.maven.doxia</groupId>
+                    <artifactId>doxia-module-xhtml</artifactId>
+                    <version>1.7</version>
+                </dependency>
               </dependencies>
+              <configuration>
+                  <generateSitemap>true</generateSitemap>
+              </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -140,13 +130,28 @@
                         </goals>
                         <configuration>
                             <target>
-                                <mkdir dir="${project.build.directory}/generated-site/markdown" />
-                                <copy  todir="${project.build.directory}/generated-site/markdown">
-                                    <file file="${readme.src.file}" />
+                                <mkdir dir="${generated-markdown.dir}" />
+                                <mkdir dir="${generated-apt.dir}" />
+                                <mkdir dir="${generated-xhtml.dir}" />
+                                <copy  todir="${generated-markdown.dir}">
+                                    <file file="${readme.file}" />
+                                </copy>
+                                
+                                <concat destfile="${generated-xhtml.dir}/${license.tgt.file}">
+                                    <header filtering="no" trimleading="yes">
+                                        &lt;html&gt;&lt;pre&gt;
+                                    </header>
+                                    <file file="${license.src.file}" />
+                                    <footer filtering="yes" trimleading="yes">
+                                        &lt;/pre&gt;&lt;/html&gt;
+                                    </footer>
+                                </concat>
+                                
+                                <!-- copy  todir="${generated-apt.dir}">
                                     <file file="${license.src.file}" />
                                 </copy>
-                                <move file="${project.build.directory}/generated-site/markdown/${license.src.file}" 
-                                      tofile="${project.build.directory}/generated-site/markdown/${license.tgt.file}.md"/>
+                                <move file="${generated-apt.dir}/${license.src.file}" 
+                                      tofile="${generated-apt.dir}/${license.tgt.file}"/  -->
                             </target>
                         </configuration>
                     </execution>
@@ -161,7 +166,7 @@
               <artifactId>maven-javadoc-plugin</artifactId>
               <version>2.10.4</version>
               <configuration>
-                <destDir>apidocs/${project.version}</destDir>
+                <destDir>${project.version}</destDir>
               </configuration>
             </plugin>
         </plugins>
@@ -177,4 +182,38 @@
           <url>http://www.opensource.org/licenses/mit-license.php</url>
       </license>
   </licenses>
+
+    <profiles>
+        <profile>
+            <id>release-sign-artifacts</id>
+            <activation>
+                <property>
+                    <name>sign</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <configuration>
+                                    <keyname>${gpg.keyname}</keyname>
+                                    <passphraseServerId>${gpg.keyname}</passphraseServerId>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

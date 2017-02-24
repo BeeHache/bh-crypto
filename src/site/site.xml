@@ -6,14 +6,16 @@
   <publishDate position="right"/>
   <version position="right"/>
   <body>
-    <links>
-        <item name="My Site" href="http://blackhacker.net" />
-      <item name="net.blackhacker:bh-crypto" href="./" />
-    </links>
-    <menu ref="parent" >
-        <item name="READ ME" href="${readme.tgt.file}" />
+    <menu name="Menu" inherit="bottom">
+        <item name="Sitemap" href="sitemap.html" />
+        <item name="READ ME" href="${readme.page}" />
         <item name="${license.name}" href="${license.page}"/>
+        <item name="API Docs" target="_blank" href="apidocs/${project.version}/index.html" />
     </menu>
-    <menu ref="reports" />
   </body>
+  <skin>
+    <groupId>org.apache.maven.skins</groupId>
+    <artifactId>maven-fluido-skin</artifactId>
+    <version>1.6</version>
+  </skin>
 </project>
