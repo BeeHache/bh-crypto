@@ -34,6 +34,7 @@
     <license.tgt.file>MIT_LICENSE.xhtml</license.tgt.file>
     <license.name>MIT License</license.name>
     <license.page>MIT_LICENSE.html</license.page>
+    <github.global.server>github</github.global.server>
   </properties>
   
   <dependencies>
@@ -188,7 +189,7 @@
             <id>release-sign-artifacts</id>
             <activation>
                 <property>
-                    <name>sign</name>
+                    <name>release</name>
                     <value>true</value>
                 </property>
             </activation>
@@ -209,6 +210,22 @@
                                     <keyname>${gpg.keyname}</keyname>
                                     <passphraseServerId>${gpg.keyname}</passphraseServerId>
                                 </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.github.github</groupId>
+                        <artifactId>site-maven-plugin</artifactId>
+                        <version>0.12</version>
+                        <configuration>
+                            <message>Creating site for ${project.version}</message>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>site</goal>
+                                </goals>
+                                <phase>site</phase>
                             </execution>
                         </executions>
                     </plugin>
