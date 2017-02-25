@@ -98,9 +98,6 @@
                     <version>1.7</version>
                 </dependency>
               </dependencies>
-              <configuration>
-                  <generateSitemap>true</generateSitemap>
-              </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -147,12 +144,6 @@
                                         &lt;/pre&gt;&lt;/html&gt;
                                     </footer>
                                 </concat>
-                                
-                                <!-- copy  todir="${generated-apt.dir}">
-                                    <file file="${license.src.file}" />
-                                </copy>
-                                <move file="${generated-apt.dir}/${license.src.file}" 
-                                      tofile="${generated-apt.dir}/${license.tgt.file}"/  -->
                             </target>
                         </configuration>
                     </execution>
@@ -163,26 +154,49 @@
     <reporting>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.6</version>
+                <configuration>
+                    <reports>
+                        <report>cim</report>
+                        <report>dependencies</report>
+                        <report>issue-tracking</report>
+                        <report>license</report>
+                        <report>project-team</report>
+                    </reports>
+                  <generateSitemap>true</generateSitemap>
+                </configuration>
+            </plugin>
+            <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-javadoc-plugin</artifactId>
               <version>2.10.4</version>
+              <reportSets>
+                  <reportSet>
+                      <reports>
+                        <report>javadoc</report>
+                      </reports>
+                  </reportSet>
+              </reportSets>
               <configuration>
                 <destDir>apidocs/${project.version}</destDir>
               </configuration>
             </plugin>
         </plugins>
     </reporting>
-  <scm>
-      <connection>scm:git:git://github.com/BeeHache/bh-crypto.git</connection>
-      <developerConnection>scm:git:git://github.com/BeeHache/bh-crypto.git</developerConnection>
-      <url>https://github.com/BeeHache/bh-crypto</url>
-  </scm>
-  <licenses>
-      <license>
-          <name>MIT License</name>
-          <url>http://www.opensource.org/licenses/mit-license.php</url>
-      </license>
-  </licenses>
+    <scm>
+        <connection>scm:git:git://github.com/BeeHache/bh-crypto.git</connection>
+        <developerConnection>scm:git:git://github.com/BeeHache/bh-crypto.git</developerConnection>
+        <url>https://github.com/BeeHache/bh-crypto</url>
+    </scm>
+    <licenses>
+        <license>
+            <name>${license.name}</name>
+            <url>/${license.page}</url>
+            <!-- url>http://www.opensource.org/licenses/mit-license.php</url -->
+        </license>
+    </licenses>
 
     <profiles>
         <profile>

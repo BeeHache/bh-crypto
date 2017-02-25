@@ -7,10 +7,12 @@
   <version position="right"/>
   <body>
     <menu name="Main" inherit="bottom">
+        <item name="Home" href="/" />
         <item name="Sitemap" href="sitemap.html" />
         <item name="READ ME" href="${readme.page}" />
         <item name="${license.name}" href="${license.page}"/>
     </menu>
+    <menu ref="reports"/>
     <menu name="API">
         <item name="0.5.3" target="_blank" href="apidocs/0.5.3/index.html" />
     </menu>

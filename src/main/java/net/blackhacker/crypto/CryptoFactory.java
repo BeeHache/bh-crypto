@@ -66,10 +66,12 @@ final public class CryptoFactory {
     }
 
     /**
-     *
+     * Factory method for building PK object from public keys using RSA
+     * 
      * @param publicKeyEncoded
-     * @return
+     * @return PK object
      * @throws CryptoException
+     * @see PK
      */
     static public PK newEncryptorRSAWithECB(final byte[] publicKeyEncoded) 
             throws CryptoException {
@@ -490,10 +492,13 @@ final public class CryptoFactory {
     
 
     /**
-     *
+     * Builds a new Password Based Encryption (PBE) enabled SK object based on
+     * the given password
+     * 
      * @param password
-     * @return
+     * @return SK
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newEncryptorPBEWithSHAAnd3KeyTripleDES(String password) throws CryptoException {
         return new SK(
@@ -503,10 +508,13 @@ final public class CryptoFactory {
     }
 
     /**
-     *
+     * Builds a new Password Based Encryption (PBE) enabled SK object based on
+     * the given password
+     * 
      * @param password
-     * @return
+     * @return SK object
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newEncryptorPBEWithMD5AndTripleDES(String password) throws CryptoException {
         return new SK(
@@ -516,10 +524,13 @@ final public class CryptoFactory {
     }
     
     /**
-     *
+     * Builds a new Password Based Encryption (PBE) enabled SK object based on
+     * the given password
+     * 
      * @param password
-     * @return
+     * @return SK object
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newEncryptorPBEWithMD5AndDES(String password) throws CryptoException {
         return new SK(
@@ -529,10 +540,13 @@ final public class CryptoFactory {
     }
 
     /**
-     *
+     * Builds a new Password Based Encryption (PBE) enabled SK object based on
+     * the given password
+     * 
      * @param password
-     * @return
+     * @return SK object
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newEncryptorPBEWithSHA256And256BitAES(String password) throws CryptoException {
         return new SK(
@@ -542,10 +556,13 @@ final public class CryptoFactory {
     }
     
     /**
-     *
+     * Builds a new Password Based Encryption (PBE) enabled SK object based on
+     * the given password
+     * 
      * @param password
-     * @return
+     * @return SK object
      * @throws CryptoException
+     * @see SK
      */
     final static public SK newEncryptorPBEWithSHA1AndDESede(String password) throws CryptoException {
         return new SK(

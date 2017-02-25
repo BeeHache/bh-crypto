@@ -57,6 +57,12 @@ public class PK extends Crypto {
     final private PublicKey publicKey;
     final private PrivateKey privateKey;
     
+    static final public Digester DEFAULT_DIGESTER;
+    
+    static {
+        DEFAULT_DIGESTER = DigesterFactory.newDigesterMD5();
+    }
+    
     /**
      * Constructor build public and private keys from the parameterSpec, and the
      * encoded keys
@@ -204,17 +210,21 @@ public class PK extends Crypto {
     }
     
     /**
+     * Builds a new Verifier based on this PK object and the DEFAULT_DIGESTER
      * 
-     * @return
+     * @return new Verifier object
+     * @see Verifier
      */
     public Verifier getVerifier() {
-        return getVerifier(null);
+        return getVerifier(DEFAULT_DIGESTER);
     }
 
     /**
-     *
+     * Builds a new Verifier based on this PK object and the given Digester
+     * 
      * @param digester
-     * @return
+     * @return new Verifier object
+     * @see Verifier
      */
     public Verifier getVerifier(final Digester digester) {
         Validator.notNull(digester, "digester");
@@ -244,18 +254,21 @@ public class PK extends Crypto {
     }
 
     /**
-     *
-     * @return
+     * Builds a new Signer based on this PK object and the DEAULT_DIGESTER
+     * 
+     * @return Signer
      * @throws CryptoException
+     * @see Signer
      */
     public Signer getSigner() throws CryptoException {
-        return getSigner(null);
+        return getSigner(DEFAULT_DIGESTER);
     }
     
     /**
-     *
+     * Builds a new Signer based on this PK object and the given Digester
+     * 
      * @param digester
-     * @return
+     * @return a new Signer object
      * @throws CryptoException
      */
     public Signer getSigner(final Digester digester) throws CryptoException {

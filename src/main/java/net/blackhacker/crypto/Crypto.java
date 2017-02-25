@@ -28,6 +28,10 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
 import java.util.Arrays;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.StampedLock;
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
@@ -56,6 +60,9 @@ public abstract class Crypto implements Encryptor, Decryptor {
     private byte[] salt;
     private byte[] iv;
     
+    
+    private final StampedLock saltLock = new StampedLock();
+    private final StampedLock ivLock = new StampedLock();
     
     /**
      * Constructor
@@ -86,6 +93,7 @@ public abstract class Crypto implements Encryptor, Decryptor {
     
     
     /**
+     * The internal Cipher object
      * 
      * @return Cipher
      * @see Cipher
@@ -95,6 +103,7 @@ public abstract class Crypto implements Encryptor, Decryptor {
     }
     
     /**
+     * The internal SecureRandom
      * 
      * @return SecureRandom object
      * @see SecureRandom
@@ -106,7 +115,7 @@ public abstract class Crypto implements Encryptor, Decryptor {
     /**
      * Transformation
      * 
-     * @return
+     * @return internal Transformation object
      * @see Transformation
      */
     final public Transformation getTransformation() {
@@ -114,8 +123,9 @@ public abstract class Crypto implements Encryptor, Decryptor {
     }
 
     /**
-     *
-     * @return
+     * Iteration count
+     * 
+     * @return iteration count
      */
     public int getIterationCount(){
         return iterationCount;
@@ -130,46 +140,77 @@ public abstract class Crypto implements Encryptor, Decryptor {
     }
 
     /**
-     *
-     * @return
+     * returns a byte array containing the Initialization Vector(IV)
+     * It should be noted that this is a copy of the arrays that is maintained
+     * internally
+     * 
+     * @return iv
      */
     final public byte[] getIV(){
+        long stamp = ivLock.readLock();
+        try {
         if (iv==null)
             return null;
         return Arrays.copyOf(iv, iv.length);
+        } finally {
+            ivLock.unlock(stamp);
+        }
     }
 
+    /**
+     * sets the value of the Initialization Vector
+     * 
+     * @param iv a byte array
+     */
     final public void setIV(final byte[] iv) {
-        Validator.notNull(iv, "iv");
-        this.iv = Arrays.copyOf(iv, iv.length);
+        long stamp = ivLock.writeLock();
+        try {
+            Validator.notNull(iv, "iv");
+            this.iv = Arrays.copyOf(iv, iv.length);
+        } finally {
+            ivLock.unlock(stamp);
+        }
     }
     
     /**
-     *
-     * @return
+     * Generates a new Initialization Vector (IV) and stores it internally
+     * 
+     * @return new IV in the form a byte array
      */
     final public byte[] generateIV() {
-        iv = transformation.generateIV(secureRandom);
+        setIV(transformation.generateIV(secureRandom));
         return getIV();
     }
     
     /**
-     *
-     * @return
+     *  Salt
+     * 
+     * @return salt in the form of a byte array
      */
     final public byte[] getSalt() {
-        if (salt==null)
-            return null;
-        return Arrays.copyOf(salt, salt.length);
+        long stamp = saltLock.readLock();
+        try {
+            if (salt==null)
+                return null;
+            return Arrays.copyOf(salt, salt.length);
+        } finally {
+            saltLock.unlock(stamp);
+        }
     }
     
     final public void setSalt(byte[] salt) {
-        this.salt = Arrays.copyOf(salt, salt.length);
+        long stamp = saltLock.writeLock();
+        try {
+            this.salt = Arrays.copyOf(salt, salt.length);
+        } finally {
+            saltLock.unlock(stamp);
+        }
     }
     
     final public byte[] generateSalt() {
-        salt = new byte[ transformation.getBlockSizeBytes()];
-        secureRandom.nextBytes(salt);
+        byte[] s  = new byte[ transformation.getBlockSizeBytes()];
+        secureRandom.nextBytes(s);
+        setSalt(s);
         return getSalt();
     }
     
@@ -213,14 +254,27 @@ public abstract class Crypto implements Encryptor, Decryptor {
         return aps;
     }    
 
+    /**
+     *
+     * @return returns true if this is s
+     */
     public boolean hasIV() {
         return transformation.hasIV();
     }
 
+    /**
+     *
+     * @return true if this is a PBE
+     */
     public boolean isPBE() {
         return transformation.isPBE();
     }
 
+    /**
+     * Returns true if this object represents an asymetric algorithm
+     * 
+     * @return true is the object represents an asymetric algorithm
+     */
     public boolean isAsymetric() {
         return transformation.isAsymetric();
     }
