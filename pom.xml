@@ -167,7 +167,7 @@
               <artifactId>maven-javadoc-plugin</artifactId>
               <version>2.10.4</version>
               <configuration>
-                <destDir>${project.version}</destDir>
+                <destDir>apidocs/${project.version}</destDir>
               </configuration>
             </plugin>
         </plugins>

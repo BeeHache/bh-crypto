@@ -6,11 +6,17 @@
   <publishDate position="right"/>
   <version position="right"/>
   <body>
-    <menu name="Menu" inherit="bottom">
+    <menu name="Main" inherit="bottom">
         <item name="Sitemap" href="sitemap.html" />
         <item name="READ ME" href="${readme.page}" />
         <item name="${license.name}" href="${license.page}"/>
-        <item name="API Docs" target="_blank" href="apidocs/${project.version}/index.html" />
+    </menu>
+    <menu name="API">
+        <item name="0.5.3" target="_blank" href="apidocs/0.5.3/index.html" />
+    </menu>
+    <menu name="Downloads">
+        <item name="bh-crypto-0.5.3.jar"  href="downloads/bh-crypto-0.5.3.jar" />
+        <item name="bh-crypto-0.5.3-sources.jar"  href="downloads/bh-crypto-0.5.3-sources.jar" />
     </menu>
   </body>
   <skin>
