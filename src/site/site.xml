@@ -7,7 +7,7 @@
   <version position="right"/>
   <body>
     <menu name="Main" inherit="bottom">
-        <item name="Home" href="/" />
+        <item name="Home" href="index.html" />
         <item name="Sitemap" href="sitemap.html" />
         <item name="READ ME" href="${readme.page}" />
         <item name="${license.name}" href="${license.page}"/>
@@ -19,6 +19,7 @@
     <menu name="Downloads">
         <item name="bh-crypto-0.5.3.jar"  href="downloads/bh-crypto-0.5.3.jar" />
         <item name="bh-crypto-0.5.3-sources.jar"  href="downloads/bh-crypto-0.5.3-sources.jar" />
+        <item name="bh-crypto-0.5.3-javadoc.jar"  href="downloads/bh-crypto-0.5.3-javadoc.jar" />
     </menu>
   </body>
   <skin>

@@ -10,7 +10,7 @@
   <packaging>jar</packaging>
 
   <name>${project.groupId}:${project.artifactId}</name>
-  <description></description>
+  <description>This package tries to simplify Java Encryption.</description>
   <url>https://bh-crypto.blackhacker.net</url>
 
   <developers>
@@ -24,16 +24,31 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <download.dir>${project.reporting.outputDirectory}/downloads</download.dir>
-    <generated-markdown.dir>${project.build.directory}/generated-site/markdown</generated-markdown.dir>
-    <generated-apt.dir>${project.build.directory}/generated-site/apt</generated-apt.dir>
-    <generated-xhtml.dir>${project.build.directory}/generated-site/xhtml</generated-xhtml.dir>
+    
+    <site.dir>${project.reporting.outputDirectory}</site.dir>
+    <build.dir>${project.build.directory}</build.dir>
+    <download.dir>${site.dir}/downloads</download.dir>
+
+    <generated-site.dir>${build.dir}/generated-site</generated-site.dir>        
+    <generated-markdown.dir>${generated-site.dir}/markdown</generated-markdown.dir>
+    <generated-apt.dir>${generated-site.dir}/apt</generated-apt.dir>
+    <generated-xhtml.dir>${generated-site.dir}/xhtml</generated-xhtml.dir>
+    
+    <cname.file>${site.dir}/CNAME</cname.file>
+    <apidocs.tgt.dir>${site.dir}/apidocs/${project.version}</apidocs.tgt.dir>
+    <apidocs.src.dir>${build.dir}/apidocs</apidocs.src.dir>
+
+    <javadoc.jar>${project.artifactId}-${project.version}-javadoc.jar</javadoc.jar>
+
     <readme.file>README.md</readme.file>
     <readme.page>README.html</readme.page>
+    
     <license.src.file>LICENSE</license.src.file>
-    <license.tgt.file>MIT_LICENSE.xhtml</license.tgt.file>
+    <license.tgt.file>LICENSE.xhtml</license.tgt.file>
     <license.name>MIT License</license.name>
-    <license.page>MIT_LICENSE.html</license.page>
+    <license.page>LICENSE.html</license.page>
+    <license.url>${project.url}/${license.page}</license.url>
+        
     <github.global.server>github</github.global.server>
   </properties>
   
@@ -82,6 +97,24 @@
                   </execution>
                 </executions>
             </plugin>
+
+
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-javadoc-plugin</artifactId>
+              <version>2.10.4</version>
+              <executions>
+                  <execution>
+                      <goals>
+                          <goal>jar</goal>
+                      </goals>
+                  </execution>
+              </executions>
+              <configuration>
+              </configuration>
+            </plugin>
+
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-site-plugin</artifactId>
@@ -128,13 +161,16 @@
                         </goals>
                         <configuration>
                             <target>
+                                <!-- CNMAE file-->
+                                <echo message="bh-crypto.blackhacker.net" file="${cname.file}" />
+                                
                                 <mkdir dir="${generated-markdown.dir}" />
                                 <mkdir dir="${generated-apt.dir}" />
                                 <mkdir dir="${generated-xhtml.dir}" />
                                 <copy  todir="${generated-markdown.dir}">
                                     <file file="${readme.file}" />
                                 </copy>
-                                
+                                <!-- license file -->
                                 <concat destfile="${generated-xhtml.dir}/${license.tgt.file}">
                                     <header filtering="no" trimleading="yes">
                                         &lt;html&gt;&lt;pre&gt;
@@ -144,6 +180,19 @@
                                         &lt;/pre&gt;&lt;/html&gt;
                                     </footer>
                                 </concat>
+
+                                                                
+                                <mkdir dir="${download.dir}" />
+                                <copy todir="${download.dir}" flatten="true">
+                                    <fileset dir=".">
+                                        <include name="*/*.jar"/>
+                                    </fileset>
+                                </copy>                                
+                                
+                                <copy todir="${apidocs.tgt.dir}">
+                                    <fileset dir="${apidocs.src.dir}" />
+                                </copy>
+                                
                             </target>
                         </configuration>
                     </execution>
@@ -162,26 +211,10 @@
                         <report>cim</report>
                         <report>dependencies</report>
                         <report>issue-tracking</report>
-                        <report>license</report>
                         <report>project-team</report>
                     </reports>
                   <generateSitemap>true</generateSitemap>
                 </configuration>
-            </plugin>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-javadoc-plugin</artifactId>
-              <version>2.10.4</version>
-              <reportSets>
-                  <reportSet>
-                      <reports>
-                        <report>javadoc</report>
-                      </reports>
-                  </reportSet>
-              </reportSets>
-              <configuration>
-                <destDir>apidocs/${project.version}</destDir>
-              </configuration>
             </plugin>
         </plugins>
     </reporting>
@@ -193,8 +226,7 @@
     <licenses>
         <license>
             <name>${license.name}</name>
-            <url>/${license.page}</url>
-            <!-- url>http://www.opensource.org/licenses/mit-license.php</url -->
+            <url>/${license.url}</url>
         </license>
     </licenses>
 
@@ -233,6 +265,7 @@
                         <version>0.12</version>
                         <configuration>
                             <message>Creating site for ${project.version}</message>
+                            <merge>true</merge>
                         </configuration>
                         <executions>
                             <execution>
