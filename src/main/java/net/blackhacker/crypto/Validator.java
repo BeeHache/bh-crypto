@@ -30,7 +30,8 @@ package net.blackhacker.crypto;
 final public class Validator {
     static public void notNull(Object o, String parameterName) {
         if (o == null)
-            throw new NullPointerException(String.format(Strings.NOT_NULL_MSG, parameterName));
+            throw new NullPointerException(
+                    String.format(Strings.NOT_NULL_MSG, parameterName));
     }
     
     static public void isTrue(boolean test, String message) {
@@ -40,5 +41,10 @@ final public class Validator {
     
     static public void isFalse(boolean test, String message) {
         isTrue(!test, message);
+    }
+    
+    static public void isA(Object o, Class clazz, String parameterName) {
+        isTrue(o.getClass().equals(clazz), 
+               String.format(Strings.SHOULD_BE_A,parameterName, clazz.getName()));
     }
 }
