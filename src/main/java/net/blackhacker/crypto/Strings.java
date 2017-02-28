@@ -39,4 +39,5 @@ final public class Strings {
     final static public String COULDNT_DECRYPT_MSG = "Could not decrypt data: %s : %s";
     final static public String NON_PBE_MSG = "This constructor requires a non-PBE Transformation.";
     final static public String PBE_MSG = "This constructor requires a PBE Transformation.";
+    final static public String SHOULD_BE_A = "%s should be a %s";
 }
