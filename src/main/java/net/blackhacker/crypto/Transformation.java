@@ -1,7 +1,7 @@
-/*
- * The MIT License
+/**
+ * The MIT License (MIT)
  *
- * Copyright 2017 ben.
+ * Copyright (c) 2015-2017 Benjamin King aka Blackhacker(bh@blackhacker.net)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -10,16 +10,16 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 package net.blackhacker.crypto;
 
@@ -36,10 +36,12 @@ import java.security.spec.KeySpec;
 import javax.crypto.spec.PBEParameterSpec;
 
 /**
- *
- * @author ben
+ * Holds the information about the Algorithm, mode and Padding used to initialize
+ * a cipher
+ * 
+ * @author Benjamin King 
  */
-    public class Transformation {
+public class Transformation {
         
         final private SymetricAlgorithm symetricAlgorithm;
         final private AsymetricAlgorithm asymetricAlgorithm;
@@ -107,7 +109,7 @@ import javax.crypto.spec.PBEParameterSpec;
             return isPBE;
         }
         
-        public boolean isAsymetric() {
+        final public boolean isAsymetric() {
             return asymetricAlgorithm != null;
         }
         
@@ -132,16 +134,25 @@ import javax.crypto.spec.PBEParameterSpec;
         }
 
         public KeySpec makeKeySpec(byte[] key) throws CryptoException {
-            return symetricAlgorithm.makeKeySpec(key);
+            return symetricAlgorithm!=null
+                    ? symetricAlgorithm.makeKeySpec(key)
+                    : asymetricAlgorithm.makePublicKeySpec(key);
         }
         
         public AlgorithmParameterSpec makeParameterSpec(Object...params) throws CryptoException {
             if (isPBE) {
                 Validator.isTrue(params.length==2, "");
                 return new PBEParameterSpec((byte[])params[0], (int)params[1]);
-            } else {
+            } else if (symetricAlgorithm != null) {
                 Validator.isTrue(params.length==1, "");
                 return symetricAlgorithm.makeParameterSpec((byte[])params[0]);
+            } else if (params.length>1){
+                Validator.isA(params[0], byte[].class, "params[0]");
+                Validator.isA(params[1], int.class, "params[1] should be an int");
+                return asymetricAlgorithm.makeParameterSpec((byte[])params[0], (int)params[1]);
+            } else {
+                Validator.isA(params[0], byte[].class, "params[0]");
+                return asymetricAlgorithm.makeParameterSpec((byte[])params[0]);
             }
         }
         
