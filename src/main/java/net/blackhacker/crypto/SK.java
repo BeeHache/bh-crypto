@@ -27,7 +27,6 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
@@ -37,7 +36,6 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
@@ -47,21 +45,26 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class SK extends Crypto {
     final private Key key;
-
-    /**
-     *
-     * @param transformation
-     * @throws CryptoException
-     */
-    protected SK(final Transformation transformation) throws CryptoException {
+    
+    protected SK(Transformation transformation, Object... parameters) throws CryptoException{
         super(transformation);
-        Validator.isFalse(transformation.isPBE(), Strings.NON_PBE_MSG);
-        
         try {
-            KeyGenerator kg = KeyGenerator.getInstance(transformation.getAlgorithmString());
-            kg.init(getSecureRandom());
-            key = kg.generateKey();
-        } catch (NoSuchAlgorithmException e) {
+            if (parameters.length==0){
+                KeyGenerator kg = KeyGenerator
+                    .getInstance(transformation.getAlgorithmString());                
+                kg.init(getSecureRandom());
+                key = kg.generateKey();
+            } else {
+                KeySpec spec = transformation.makeKeySpec(parameters);
+                if(spec instanceof SecretKeySpec) {
+                    key = (Key)spec;
+                } else {
+                    SecretKeyFactory kf = SecretKeyFactory
+                        .getInstance(transformation.getAlgorithmString());
+                    key = kf.generateSecret(spec);
+                }
+            }
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new CryptoException(
                 String.format(
                     "Couldn't generate key for %s : %s", 
@@ -70,64 +73,6 @@ public class SK extends Crypto {
                 e);
         }
     }
-    
-    /**
-     *
-     * @param transformation
-     * @param encodedKeySpec
-     * @throws CryptoException
-     */
-    protected SK(final Transformation transformation, final byte[] encodedKeySpec)
-            throws CryptoException {
-        super(transformation);
-        Validator.isFalse(transformation.isPBE(), Strings.NON_PBE_MSG);
-        Validator.notNull(encodedKeySpec, "encodedKeySpec");
-        try {
-            KeySpec spec = transformation
-                .getSymetricAlgorithm()
-                .makeKeySpec(encodedKeySpec);
-            
-            if (spec instanceof SecretKeySpec) {
-                key = (Key) spec;
-            } else {
-                key = SecretKeyFactory
-                    .getInstance(transformation.getAlgorithmString())
-                    .generateSecret(spec);
-            }
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
-            throw new CryptoException(
-                String.format(Strings.COULDNT_CREATE_KEY_FACT_MSG,
-                    transformation.getAlgorithmString(),
-                    ex.getLocalizedMessage()),
-                ex);
-        }
-    }
-    
-    /**
-     *
-     * @param transformation
-     * @param password
-     * @throws CryptoException
-     */
-    protected SK(final Transformation transformation, final char[] password)
-            throws CryptoException {
-        super(transformation);
-        Validator.isTrue(transformation.isPBE(), Strings.PBE_MSG);
-        Validator.notNull(password, "password");
-        
-        String algorithm = transformation.getAlgorithmString();
-        try {
-            PBEKeySpec spec = new PBEKeySpec(password);
-            SecretKeyFactory kf = SecretKeyFactory.getInstance(algorithm);
-            key = kf.generateSecret(spec);
-            
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
-            throw new CryptoException(
-                String.format(Strings.COULDNT_CREATE_KEY_FACT_MSG,
-                algorithm,
-                ex.getLocalizedMessage()),ex);
-        }
-    } 
     
     /**
      *

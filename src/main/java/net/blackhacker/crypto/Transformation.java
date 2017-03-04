@@ -33,10 +33,6 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.KeySpec;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.crypto.spec.PBEParameterSpec;
 
 /**
@@ -52,7 +48,6 @@ public class Transformation {
         final private DigestAlgorithm digestAlgorithm;
         final private Mode mode;
         final private Padding padding;
-        final private boolean isPBE;
         
         private Transformation(
                 DigestAlgorithm digestAlgorithm,
@@ -66,7 +61,6 @@ public class Transformation {
             this.asymetricAlgorithm = asymetricAlgorithm;
             this.mode = mode;
             this.padding = padding;
-            this.isPBE = isPBE;
         }
 
         public Transformation(final SymetricAlgorithm encryptionAlgorithm, final Mode mode, final Padding padding) {
@@ -109,8 +103,8 @@ public class Transformation {
             return mode!= null && mode.hasIV();
         }
         
-        public boolean isPBE() {
-            return isPBE;
+        final public boolean isPBE() {
+            return digestAlgorithm !=null;
         }
         
         final public boolean isAsymetric() {
@@ -148,7 +142,7 @@ public class Transformation {
                 if (params==null || params.length==0){
                     return null;
 
-                } else if (isPBE) {
+                } else if (isPBE()) {
                     return PBEParameterSpec.class
                         .getConstructor(byte[].class, int.class)
                         .newInstance(params);
@@ -188,31 +182,30 @@ public class Transformation {
         
         @Override
         public String toString() {
-            if(isPBE)
+            if(isPBE())
                 return String.format("PBEWith%sAnd%s", 
                         digestAlgorithm.name(), 
                         symetricAlgorithm.getPBEName());
-            else if (isAsymetric())
+            else if (symetricAlgorithm!=null)
                 return String.format("%s/%s/%s", 
-                        asymetricAlgorithm, 
+                        symetricAlgorithm, 
                         mode, 
                         padding);
             else
                 return String.format("%s/%s/%s", 
-                        symetricAlgorithm, 
+                        asymetricAlgorithm, 
                         mode, 
                         padding);
         }
         
         public String getAlgorithmString() {
-            if (symetricAlgorithm!=null) {
-                if (isPBE)
-                    return String.format("PBEWith%sAnd%s", 
-                        digestAlgorithm.name(), 
-                        symetricAlgorithm.getPBEName());
-                else
-                    return symetricAlgorithm.toString();
-            } else
+            if (isPBE())
+                return String.format("PBEWith%sAnd%s", 
+                    digestAlgorithm.name(), 
+                    symetricAlgorithm.getPBEName());
+            else if (symetricAlgorithm!=null)
+                return symetricAlgorithm.toString();
+            else
                 return asymetricAlgorithm.toString();
         }
     }

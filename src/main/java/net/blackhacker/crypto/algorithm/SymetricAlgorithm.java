@@ -31,6 +31,7 @@ import java.util.List;
 import javax.crypto.spec.DESKeySpec;
 import javax.crypto.spec.DESedeKeySpec;
 import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import net.blackhacker.crypto.CryptoException;
 import net.blackhacker.crypto.Strings;
@@ -107,24 +108,46 @@ public enum SymetricAlgorithm {
         return classes.toArray(new Class<?>[0]);
     }
     
-    
+    /**
+     * Creates new KeySpec based on internal keySpecClass and the given
+     * parameters
+     * 
+     * @param parameters
+     * @return KeySpec
+     * @throws CryptoException
+     * @see KeySpec
+     */
     public KeySpec makeKeySpec(Object... parameters) throws CryptoException {
-        Validator.isTrue(parameters.length > 0, "");
-        
+        Validator.isTrue(parameters.length > 0, "parameters are empty");
+        Class<?>[] classes = getClasses(parameters);
         try {
-            try {
-                return keySpecClass
-                        .getConstructor(getClasses(parameters))
-                        .newInstance(parameters);
-                
-            } catch(NoSuchMethodException e) {
-                return keySpecClass
-                        .getConstructor(byte[].class, String.class)
-                        .newInstance(parameters[0], name());
+            for (int i = 0; i< 3; i++) {
+                try {
+                    switch(i) {
+                        case 0:
+                            return keySpecClass
+                                .getConstructor(classes)
+                                .newInstance(parameters);
+                        case 1:
+                            return keySpecClass
+                                .getConstructor(parameters[0].getClass(), String.class)
+                                .newInstance(parameters[0], name());
+
+                        case 2:
+                            return PBEKeySpec.class
+                                .getConstructor(classes)
+                                .newInstance(parameters);
+                    }
+                } catch(NoSuchMethodException e) {
+
+                }
             }
-        } catch (SecurityException | InstantiationException | 
+            
+            throw new CryptoException("Unsupported parameters");
+            
+        }  catch (SecurityException | InstantiationException | 
                 IllegalArgumentException | IllegalAccessException | 
-                InvocationTargetException | NoSuchMethodException ex) {
+                InvocationTargetException ex) {
             throw new CryptoException(
                     String.format(Strings.COULDNT_CREATE_KEY_SPEC,
                     name(),

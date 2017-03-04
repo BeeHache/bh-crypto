@@ -64,12 +64,9 @@ public abstract class Crypto implements Encryptor, Decryptor {
      * Constructor
      * 
      * @param transformation
-     * @param params
      * @throws CryptoException
      */
-    protected  Crypto(final Transformation transformation, final Object... params) throws CryptoException {
-        Validator.notNull(transformation, "transformation");
-        Validator.notNull(params, "params");
+    protected  Crypto(Transformation transformation) throws CryptoException {
         this.transformation = transformation;
         
         try {
