@@ -1,4 +1,6 @@
-<project xsi:schemaLocation="http://maven.apache.org/DECORATION/1.7.0 http://maven.apache.org/xsd/decoration-1.7.0.xsd" xmlns="http://maven.apache.org/DECORATION/1.7.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xsi:schemaLocation="http://maven.apache.org/DECORATION/1.7.0 http://maven.apache.org/xsd/decoration-1.7.0.xsd" 
+         xmlns="http://maven.apache.org/DECORATION/1.7.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     name="BH Crypto">
   <bannerLeft>
     <name>BH Crypto</name>
@@ -14,12 +16,12 @@
     </menu>
     <menu ref="reports"/>
     <menu name="API">
-        <item name="0.5.3" target="_blank" href="apidocs/0.5.3/index.html" />
+        <item name="${project.version}" target="_blank" href="apidocs/${project.version}/index.html" />
     </menu>
     <menu name="Downloads">
-        <item name="bh-crypto-0.5.3.jar"  href="downloads/bh-crypto-0.5.3.jar" />
-        <item name="bh-crypto-0.5.3-sources.jar"  href="downloads/bh-crypto-0.5.3-sources.jar" />
-        <item name="bh-crypto-0.5.3-javadoc.jar"  href="downloads/bh-crypto-0.5.3-javadoc.jar" />
+        <item name="bh-crypto-${project.version}.jar"  href="downloads/bh-crypto-${project.version}.jar" />
+        <item name="bh-crypto-${project.version}-sources.jar"  href="downloads/bh-crypto-${project.version}-sources.jar" />
+        <item name="bh-crypto-${project.version}-javadoc.jar"  href="downloads/bh-crypto-${project.version}-javadoc.jar" />
     </menu>
   </body>
   <skin>

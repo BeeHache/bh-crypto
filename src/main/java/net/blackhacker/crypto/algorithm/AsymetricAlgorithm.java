@@ -30,12 +30,17 @@ import java.security.spec.DSAPublicKeySpec;
 import java.security.spec.ECPrivateKeySpec;
 import java.security.spec.ECPublicKeySpec;
 import java.security.spec.KeySpec;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.RSAPrivateKeySpec;
 import java.security.spec.RSAPublicKeySpec;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.ArrayList;
+import java.util.List;
 import javax.crypto.spec.DHPrivateKeySpec;
 import javax.crypto.spec.DHPublicKeySpec;
 import net.blackhacker.crypto.CryptoException;
 import net.blackhacker.crypto.Strings;
+import net.blackhacker.crypto.Validator;
 
 /**
  * Represents each of the supported asymetric algorithms
@@ -73,38 +78,57 @@ public enum AsymetricAlgorithm {
         return blockSize;
     }
 
-    public KeySpec makePublicKeySpec(final byte[] key) throws CryptoException {
+    public KeySpec makePublicKeySpec(Object... parameters) throws CryptoException {
+        Validator.isTrue(parameters.length > 0, "");
+        
         try {
-            return publicKeySpecClass
-                .getConstructor(byte[].class).newInstance(key);
-        } catch (NoSuchMethodException | SecurityException | 
-                InstantiationException | IllegalAccessException | 
-                IllegalArgumentException | InvocationTargetException ex) {
+            try{
+                return publicKeySpecClass
+                    .getConstructor(getClasses(parameters))
+                    .newInstance(parameters);
+            } catch (NoSuchMethodException e){
+                return new X509EncodedKeySpec((byte[])parameters[0]);
+            }
+        } catch (SecurityException | InstantiationException | 
+                IllegalArgumentException | IllegalAccessException | 
+                InvocationTargetException ex) {
             throw new CryptoException(
-                    String.format(Strings.COULDNT_CREATE_KEY_SPEC,
+                String.format(Strings.COULDNT_CREATE_KEY_SPEC,
                     name(),
                     ex.getLocalizedMessage()), 
                 ex);
         }
-    }    
+    }
     
 
-    public KeySpec makePrivateKeySpec(final byte[] key) throws CryptoException {
+    public KeySpec makePrivateKeySpec(Object... parameters) throws CryptoException {
+        Validator.isTrue(parameters.length > 0, "");
+        
         try {
+            try {
             return privateKeySpecClass
-                .getConstructor(byte[].class).newInstance(key);
-        } catch (NoSuchMethodException | SecurityException | 
+                .getConstructor(getClasses(parameters))
+                .newInstance(parameters);
+            } catch(NoSuchMethodException e){
+                return new PKCS8EncodedKeySpec((byte[])parameters[0]);
+            }
+        } catch (SecurityException | 
                 InstantiationException | IllegalAccessException | 
                 IllegalArgumentException | InvocationTargetException ex) {
-            throw new CryptoException(String.format(Strings.COULDNT_CREATE_KEY_SPEC,
-                    name(),ex.getLocalizedMessage()), ex);
+            throw new CryptoException(
+                    String.format(Strings.COULDNT_CREATE_KEY_SPEC,
+                        name(),
+                        ex.getLocalizedMessage()), 
+                    ex);
         }
     }
-
-    public AlgorithmParameterSpec makeParameterSpec(final byte[] iv) throws CryptoException {
+    
+    public AlgorithmParameterSpec makeParameterSpec(Object... parameters) throws CryptoException {
+        Validator.isTrue(parameters.length > 0, "");
         try {
             return algorParamSpecClass
-                    .getConstructor(byte[].class).newInstance(iv);
+                .getConstructor(getClasses(parameters))
+                .newInstance(parameters);
         } catch (NoSuchMethodException | SecurityException | 
                 InstantiationException | IllegalAccessException | 
                 IllegalArgumentException | InvocationTargetException ex) {
@@ -112,24 +136,35 @@ public enum AsymetricAlgorithm {
                     name(),ex.getLocalizedMessage()), ex);
         }
     }
-
-    public AlgorithmParameterSpec makeParameterSpec(byte[] salt, int count) throws CryptoException {
-        try {
-            return algorParamSpecClass
-                .getConstructor(byte[].class, int.class)
-                .newInstance(salt, count);
-        } catch (NoSuchMethodException | SecurityException | 
-                InstantiationException | IllegalAccessException | 
-                IllegalArgumentException | InvocationTargetException ex) {
-            throw new CryptoException(String.format(Strings.COULDNT_CREATE_PARAM_SPEC,
-                    name(),ex.getLocalizedMessage()), ex);
+    
+    static private Class<?>[] getClasses(Object[] objs) {
+        List<Class<?>> classes = new ArrayList<>();
+        for(Object obj : objs) {
+            classes.add(obj.getClass());
         }
+        
+        return classes.toArray(new Class<?>[0]);
     }
+    
     
     @Override
     public String toString() {
         return name == null ? name() : name;
     }
+
+    public Class<? extends KeySpec> getPublicKeySpecClass() {
+        return publicKeySpecClass;
+    }
+
+    public Class<? extends KeySpec> getPrivateKeySpecClass() {
+        return privateKeySpecClass;
+    }
+
+    public Class<? extends AlgorithmParameterSpec> getAlgorParamSpecClass() {
+        return algorParamSpecClass;
+    }
+    
+    
 
     final int keySize;
     int blockSize;

@@ -73,8 +73,7 @@ public abstract class Crypto implements Encryptor, Decryptor {
         this.transformation = transformation;
         
         try {
-            String as = transformation.toString();
-            cipher = Cipher.getInstance(as);
+            cipher = Cipher.getInstance(transformation.toString());
         } catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
             String msg = String.format(
                     Strings.COULDNT_CREATE_CIPHER, 
@@ -152,6 +151,15 @@ public abstract class Crypto implements Encryptor, Decryptor {
             ivLock.unlock(stamp);
         }
     }
+    
+    private void _setIV(final byte[] iv){
+        long stamp = ivLock.writeLock();
+        try {
+            this.iv = iv;
+        } finally {
+            ivLock.unlock(stamp);
+        }
+    }
 
     /**
      * sets the value of the Initialization Vector
@@ -159,13 +167,8 @@ public abstract class Crypto implements Encryptor, Decryptor {
      * @param iv a byte array
      */
     final public void setIV(final byte[] iv) {
-        long stamp = ivLock.writeLock();
-        try {
-            Validator.notNull(iv, "iv");
-            this.iv = Arrays.copyOf(iv, iv.length);
-        } finally {
-            ivLock.unlock(stamp);
-        }
+        Validator.notNull(iv, "iv");
+        _setIV(Arrays.copyOf(iv, iv.length));
     }
     
     /**
@@ -173,8 +176,10 @@ public abstract class Crypto implements Encryptor, Decryptor {
      * 
      * @return new IV in the form a byte array
      */
-    final public byte[] generateIV() {
-        setIV(transformation.generateIV(secureRandom));
+    final public byte[] generateIV() {        
+        byte[] array = new byte[ transformation.getBlockSizeBytes()];
+        secureRandom.nextBytes(array);
+        _setIV(array);
         return getIV();
     }
     
@@ -193,61 +198,68 @@ public abstract class Crypto implements Encryptor, Decryptor {
             saltLock.unlock(stamp);
         }
     }
-    
-    final public void setSalt(byte[] salt) {
+
+
+    private void _setSalt(final byte[] salt){
         long stamp = saltLock.writeLock();
         try {
-            this.salt = Arrays.copyOf(salt, salt.length);
+            this.salt = salt;
         } finally {
             saltLock.unlock(stamp);
         }
     }
     
+    final public void setSalt(byte[] salt) {
+        _setSalt(Arrays.copyOf(salt, salt.length));
+    }
+    
     final public byte[] generateSalt() {
         byte[] s  = new byte[ transformation.getBlockSizeBytes()];
         secureRandom.nextBytes(s);
-        setSalt(s);
+        _setSalt(s);
         return getSalt();
     }
     
     protected AlgorithmParameterSpec processParameters(Object[] parameters) {
-        AlgorithmParameterSpec aps = null;
-        if (transformation.hasIV()) {
-            byte[] iv = null;
-            if (parameters != null && parameters.length > 0) {
+        if (parameters != null && parameters.length > 0) {
+            if (transformation.hasIV()) {
+                byte[] iv = null;
+
                 for(Object parameter : parameters) {
-                    if (parameter.getClass().equals(byte[].class)) {
+                    if ((parameter!=null) && 
+                        (parameter.getClass().equals(byte[].class))) {
                         setIV((byte[])parameter);
                         iv = getIV();
                         break;
                     }
                 }
-            }
             
-            if (iv==null){
-                iv = generateIV();
-            }
-            aps = new IvParameterSpec(iv);
+                if (iv==null){
+                    iv = generateIV();
+                }
+
+                return new IvParameterSpec(iv);
             
-        } else if (transformation.isPBE()) {
-            if (parameters!=null && parameters.length > 0) {
+            } else if (transformation.isPBE()) {
+
                 for(Object parameter : parameters) {
                     if (parameter.getClass().equals(Integer.class)){
                         iterationCount = (Integer)parameter;
-                        
+
                     } else if (parameter.getClass().equals(byte[].class)) {
                         setSalt((byte[])parameter);
                     }
                 }
+
+                if (getSalt()==null) {
+                    generateSalt();
+                }
+
+                return new PBEParameterSpec(getSalt(), getIterationCount());
             }
-            
-            if (salt == null) {
-                generateSalt();
-            }
-            aps = new PBEParameterSpec(salt, iterationCount);
         }
         
-        return aps;
+        return null;
     }    
 
     /**

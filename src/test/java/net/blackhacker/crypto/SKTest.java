@@ -159,7 +159,7 @@ public class SKTest {
         String algorithm = me.getTransformation().toString();
         boolean isPBE = me.isPBE();
         boolean hasIV = me.hasIV();
-        Object[] params = null;
+        Object[] params = {};
         
         byte[] friendCipherBytes = friend.encrypt(message);
         assertNotNull(algorithm + ":friend.encrypt: failed", friendCipherBytes);

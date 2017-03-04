@@ -30,9 +30,13 @@ import net.blackhacker.crypto.algorithm.DigestAlgorithm;
 import net.blackhacker.crypto.algorithm.AsymetricAlgorithm;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.SecureRandom;
+import java.lang.reflect.InvocationTargetException;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.KeySpec;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.crypto.spec.PBEParameterSpec;
 
 /**
@@ -119,12 +123,6 @@ public class Transformation {
             return iv;
         }
         
-        public byte[] generateIV(SecureRandom secureRandom) {
-            final byte[] array = new byte[ getBlockSizeBytes()];
-            secureRandom.nextBytes(array);
-            return array;            
-        }
-        
         final public SymetricAlgorithm getSymetricAlgorithm() {
             return symetricAlgorithm;
         }
@@ -133,27 +131,59 @@ public class Transformation {
             return digestAlgorithm;
         }
 
-        public KeySpec makeKeySpec(byte[] key) throws CryptoException {
-            return symetricAlgorithm!=null
-                    ? symetricAlgorithm.makeKeySpec(key)
-                    : asymetricAlgorithm.makePublicKeySpec(key);
+        public KeySpec makeKeySpec(Object... params) throws CryptoException {
+            return symetricAlgorithm.makeKeySpec(params);
+        }
+
+        public KeySpec makePublicKeySpec(Object... params) throws CryptoException{
+            return asymetricAlgorithm.makePublicKeySpec(params);
+        }
+        
+        public KeySpec makePrivateKeySpec(Object... params) throws CryptoException{
+            return asymetricAlgorithm.makePrivateKeySpec(params);
         }
         
         public AlgorithmParameterSpec makeParameterSpec(Object...params) throws CryptoException {
-            if (isPBE) {
-                Validator.isTrue(params.length==2, "");
-                return new PBEParameterSpec((byte[])params[0], (int)params[1]);
-            } else if (symetricAlgorithm != null) {
-                Validator.isTrue(params.length==1, "");
-                return symetricAlgorithm.makeParameterSpec((byte[])params[0]);
-            } else if (params.length>1){
-                Validator.isA(params[0], byte[].class, "params[0]");
-                Validator.isA(params[1], int.class, "params[1] should be an int");
-                return asymetricAlgorithm.makeParameterSpec((byte[])params[0], (int)params[1]);
-            } else {
-                Validator.isA(params[0], byte[].class, "params[0]");
-                return asymetricAlgorithm.makeParameterSpec((byte[])params[0]);
+            try {
+                if (params==null || params.length==0){
+                    return null;
+
+                } else if (isPBE) {
+                    return PBEParameterSpec.class
+                        .getConstructor(byte[].class, int.class)
+                        .newInstance(params);
+
+                } else if (symetricAlgorithm != null) {
+
+                    return symetricAlgorithm
+                            .getAlgorParamSpecClass()
+                            .getConstructor(getClasses(params))
+                            .newInstance(params);    
+
+
+                } else if (asymetricAlgorithm != null) {
+
+                    return asymetricAlgorithm
+                            .getAlgorParamSpecClass()
+                            .getConstructor(getClasses(params))
+                            .newInstance(params);
+
+                }
+            } catch (NoSuchMethodException | SecurityException | 
+                     InstantiationException | IllegalAccessException | 
+                     IllegalArgumentException | InvocationTargetException ex) {
+                throw new CryptoException("Couldn't build parameterspec :" +ex.getLocalizedMessage(), ex);
             }
+            throw new CryptoException("Unsupported parameters");
+        }
+        
+        static private Class<?>[] getClasses(Object[] objs) {
+            Class<?>[] classes = new Class<?>[objs.length]; 
+            for(int i = 0; i< objs.length; i++) {
+                classes[i] = objs[i].getClass();
+            }
+        
+            return classes;
         }
         
         @Override

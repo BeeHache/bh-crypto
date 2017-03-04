@@ -23,15 +23,18 @@
  */
 package net.blackhacker.crypto.algorithm;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.KeySpec;
+import java.util.ArrayList;
+import java.util.List;
 import javax.crypto.spec.DESKeySpec;
 import javax.crypto.spec.DESedeKeySpec;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import net.blackhacker.crypto.CryptoException;
+import net.blackhacker.crypto.Strings;
+import net.blackhacker.crypto.Validator;
 
 /**
  * Represents each of the supported symetric algorithms
@@ -94,43 +97,49 @@ public enum SymetricAlgorithm {
     public String getPBEName() {
         return PBEName == null ? name() : PBEName;
     }
-
-    public KeySpec makeKeySpec(final byte[] key) throws CryptoException {
+    
+    static private Class<?>[] getClasses(Object[] objs) {
+        List<Class<?>> classes = new ArrayList<>();
+        for(Object obj : objs) {
+            classes.add(obj.getClass());
+        }
+        
+        return classes.toArray(new Class<?>[0]);
+    }
+    
+    
+    public KeySpec makeKeySpec(Object... parameters) throws CryptoException {
+        Validator.isTrue(parameters.length > 0, "");
+        
         try {
-            if (keySpecClass.equals(SecretKeySpec.class))
+            try {
+                return keySpecClass
+                        .getConstructor(getClasses(parameters))
+                        .newInstance(parameters);
+                
+            } catch(NoSuchMethodException e) {
                 return keySpecClass
                         .getConstructor(byte[].class, String.class)
-                        .newInstance(key, name());
-            else
-                return keySpecClass
-                        .getConstructor(byte[].class)
-                        .newInstance(key);
-        } catch (NoSuchMethodException | SecurityException | 
-                InstantiationException | IllegalAccessException | 
-                IllegalArgumentException | InvocationTargetException ex) {
-            throw new CryptoException("Couldn't make keyspec", ex);
+                        .newInstance(parameters[0], name());
+            }
+        } catch (SecurityException | InstantiationException | 
+                IllegalArgumentException | IllegalAccessException | 
+                InvocationTargetException | NoSuchMethodException ex) {
+            throw new CryptoException(
+                    String.format(Strings.COULDNT_CREATE_KEY_SPEC,
+                    name(),
+                    ex.getLocalizedMessage()), 
+                ex);
         }
     }
-
-    public KeySpec makeKeySpec(final char[] password) throws CryptoException {
-        try {
-            Constructor<? extends KeySpec> con = keySpecClass.getConstructor(char[].class);
-            if (con!=null){
-                return con.newInstance(password);
-            }
-            throw new CryptoException(name() + "Not a PBE Algorithm");
-        } catch (NoSuchMethodException | SecurityException | 
-                InstantiationException | IllegalAccessException | 
-                IllegalArgumentException | InvocationTargetException ex) {
-            throw new CryptoException("Couldn't make keyspec", ex);
-        }
-    }    
     
-    public AlgorithmParameterSpec makeParameterSpec(byte[] iv) throws CryptoException {
+    
+    public AlgorithmParameterSpec makeParameterSpec(Object... parameters) throws CryptoException {
+        Validator.isTrue(parameters.length > 0, "");
         try {
             return algorParamSpecClass
-                        .getConstructor(byte[].class)
-                        .newInstance(iv);
+                .getConstructor(getClasses(parameters))
+                .newInstance(parameters);
         } catch (NoSuchMethodException | SecurityException | 
                 InstantiationException | IllegalAccessException | 
                 IllegalArgumentException | InvocationTargetException ex) {
@@ -138,14 +147,12 @@ public enum SymetricAlgorithm {
         }
     }
 
-    public AlgorithmParameterSpec makeParameterSpec(byte[] salt, int count) throws CryptoException {
-        try {
-            return algorParamSpecClass.getConstructor(byte[].class, int.class).newInstance(salt, count);
-        } catch (NoSuchMethodException | SecurityException | 
-                InstantiationException | IllegalAccessException | 
-                IllegalArgumentException | InvocationTargetException ex) {
-            throw new CryptoException("Couldn't make parameter spec: " + ex.getLocalizedMessage(), ex);
-        }
+    public Class<? extends KeySpec> getKeySpecClass() {
+        return keySpecClass;
+    }
+
+    public Class<? extends AlgorithmParameterSpec> getAlgorParamSpecClass() {
+        return algorParamSpecClass;
     }
 
     final int blockSize;

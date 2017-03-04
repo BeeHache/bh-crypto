@@ -98,8 +98,8 @@ public class SK extends Crypto {
             throw new CryptoException(
                 String.format(Strings.COULDNT_CREATE_KEY_FACT_MSG,
                     transformation.getAlgorithmString(),
-                    ex.getLocalizedMessage())
-                    ,ex);
+                    ex.getLocalizedMessage()),
+                ex);
         }
     }
     
@@ -139,16 +139,28 @@ public class SK extends Crypto {
     @Override
     public byte[] encrypt(final byte[] data, Object... parameters) throws CryptoException {
         Validator.notNull(data, "data");
+        Transformation transformation = getTransformation();
         Cipher cipher = getCipher();
-        SecureRandom secureRandom = getSecureRandom();
-        AlgorithmParameterSpec aps = processParameters(parameters);
+        
+        if (parameters==null || parameters.length==0) {
+            if (isPBE())
+                parameters = new Object[]{ generateSalt(), getIterationCount() };
+            
+            if (transformation.hasIV()){
+                parameters = new Object[]{ generateIV()};
+            }
+        }
+            
+        AlgorithmParameterSpec aps = transformation.makeParameterSpec(parameters);
         
         try {
             synchronized(cipher) {                
                 if (aps != null) {
-                    cipher.init(Cipher.ENCRYPT_MODE, key, aps, secureRandom);
+                    cipher
+                        .init(Cipher.ENCRYPT_MODE, key, aps, getSecureRandom());
                 } else {
-                    cipher.init(Cipher.ENCRYPT_MODE, key, secureRandom);
+                    cipher
+                        .init(Cipher.ENCRYPT_MODE, key, getSecureRandom());
                 }
                 
                 return cipher.doFinal(data);
@@ -174,7 +186,7 @@ public class SK extends Crypto {
         Validator.notNull(data, "data");
         Cipher cipher = getCipher();
         Transformation transformation = getTransformation();
-        AlgorithmParameterSpec aps = processParameters(parameters);
+        AlgorithmParameterSpec aps = transformation.makeParameterSpec(parameters);
         
         try {
             synchronized(cipher) {

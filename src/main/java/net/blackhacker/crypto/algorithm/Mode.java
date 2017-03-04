@@ -28,7 +28,6 @@ package net.blackhacker.crypto.algorithm;
  * @author ben
  */
 public enum Mode {
-    /* Cipher */
     NONE(false), CBC(true), CFB(true), CTR(true), CTS(true), ECB(false),
     OFB(true), PCBC(true), OCB(true);
 

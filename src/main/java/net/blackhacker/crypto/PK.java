@@ -37,8 +37,6 @@ import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -83,11 +81,11 @@ public class PK extends Crypto {
             KeyFactory kf = KeyFactory.getInstance(transformation.getAlgorithmString());
             
             pu = publicKeyEncoded!=null ? 
-                kf.generatePublic(new X509EncodedKeySpec(publicKeyEncoded)) :
+                kf.generatePublic(transformation.makePublicKeySpec(publicKeyEncoded)) :
                 null; 
             
             pr = privateKeyEncoded!=null ?
-                kf.generatePrivate(new PKCS8EncodedKeySpec(privateKeyEncoded)) :
+                kf.generatePrivate(transformation.makePrivateKeySpec(privateKeyEncoded)) :
                 null;
             
             if (pu==null && pr==null) {
@@ -275,8 +273,6 @@ public class PK extends Crypto {
         Validator.notNull(privateKey, "privateKey");
         
         final Cipher cipher = getCipher();
-        final SecureRandom secureRandom = getSecureRandom();
-        final Transformation transformation = getTransformation();
         
         return (final byte[] data) -> {
             Validator.notNull(data, "data");
@@ -284,8 +280,8 @@ public class PK extends Crypto {
                 try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
                     byte[] digest = digester.digest(data);
                     
-                    if (transformation.hasIV()) {
-                        byte[] iv = transformation.generateIV(secureRandom);
+                    if (getTransformation().hasIV()) {
+                        byte[] iv = generateIV();
                         baos.write(iv);
                         cipher.init(Cipher.ENCRYPT_MODE, privateKey, new IvParameterSpec(iv));
                     } else {
