@@ -54,7 +54,6 @@
         
     <github.global.server>github</github.global.server>
   </properties>
-
   <dependencies>
       <dependency>
             <groupId>org.bouncycastle</groupId>
@@ -74,7 +73,7 @@
             <version>4.11</version>
             <scope>test</scope>
         </dependency>
-  </dependencies>  
+  </dependencies>
     <build>
         <plugins>
             <plugin>
@@ -190,7 +189,6 @@
                                 <copy todir="${apidocs.tgt.dir}">
                                     <fileset dir="${apidocs.src.dir}" />
                                 </copy>
-                                
                             </target>
                         </configuration>
                     </execution>
@@ -270,6 +268,12 @@
 
         </plugins>
     </reporting>
+    <licenses>
+        <license>
+            <name>${license.name}</name>
+            <url>/${license.url}</url>
+        </license>
+    </licenses>
     <scm>
         <connection>scm:git:git://github.com/BeeHache/bh-crypto.git</connection>
         <developerConnection>scm:git:git://github.com/BeeHache/bh-crypto.git</developerConnection>
@@ -279,12 +283,16 @@
       <system>GitHub</system>
       <url>https://github.com/BeeHache/bh-crypto/issues/</url>
     </issueManagement>
-    <licenses>
-        <license>
-            <name>${license.name}</name>
-            <url>/${license.url}</url>
-        </license>
-    </licenses>
+    <distributionManagement>
+      <snapshotRepository>
+        <id>ossrh</id>
+        <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      </snapshotRepository>
+      <repository>
+        <id>ossrh</id>
+        <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+      </repository>
+    </distributionManagement>
     <profiles>
         <profile>
             <id>deploy-site</id>
