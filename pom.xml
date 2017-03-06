@@ -274,7 +274,7 @@
     <scm>
         <connection>scm:git:git://github.com/BeeHache/bh-crypto.git</connection>
         <developerConnection>scm:git:git://github.com/BeeHache/bh-crypto.git</developerConnection>
-        <url>https://github.com/BeeHache/bh-crypto/</url>
+        <url>git+ssh://BeeHache@github.com/BeeHache/bh-crypto.git</url>
       <tag>bh-crypto-0.5.4</tag>
   </scm>
     <issueManagement>
