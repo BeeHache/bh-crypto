@@ -43,26 +43,28 @@ import net.blackhacker.crypto.Validator;
  * @author ben
  */
 public enum SymetricAlgorithm {
-    /* Cipher*/
     AES(128, SecretKeySpec.class, IvParameterSpec.class),
     AES192(192, SecretKeySpec.class, IvParameterSpec.class, "AES"),
     AES256(256, SecretKeySpec.class, IvParameterSpec.class, "AES"),
-    AESWrap(128, null, null),
-    ARCFOUR, 
-    Blowfish,
-    CCM,
+    //AESWrap(128, null, null),
+    //ARCFOUR, 
+    //Blowfish,
+    //CCM,
     DES(DESKeySpec.class, IvParameterSpec.class), 
     DESede(64, DESedeKeySpec.class, IvParameterSpec.class, "TripleDES"),
-    DESedeWrap,
-    ECIES,
-    GCM, 
-    RC2, 
-    RC4, 
-    RC5;
+    //DESedeWrap,
+    //ECIES,
+    //GCM, 
+    //RC2, 
+    //RC4, 
+    //RC5
+    ;
 
+    /*
     SymetricAlgorithm(){
         this(64, null, null, null);
     }
+    */
 
     SymetricAlgorithm(
             Class <? extends KeySpec> keySpecClass, 
@@ -91,10 +93,6 @@ public enum SymetricAlgorithm {
         return blockSize;
     }
     
-    public int getKeySize() {
-        return keySize;
-    }
-    
     public String getPBEName() {
         return PBEName == null ? name() : PBEName;
     }
@@ -121,26 +119,25 @@ public enum SymetricAlgorithm {
         Validator.isTrue(parameters.length > 0, "parameters are empty");
         Class<?>[] classes = getClasses(parameters);
         try {
-            for (int i = 0; i< 3; i++) {
-                try {
-                    switch(i) {
-                        case 0:
-                            return keySpecClass
-                                .getConstructor(classes)
-                                .newInstance(parameters);
-                        case 1:
-                            return keySpecClass
-                                .getConstructor(parameters[0].getClass(), String.class)
-                                .newInstance(parameters[0], name());
-
-                        case 2:
-                            return PBEKeySpec.class
-                                .getConstructor(classes)
-                                .newInstance(parameters);
-                    }
-                } catch(NoSuchMethodException e) {
-
-                }
+            try {
+                return keySpecClass
+                    .getConstructor(classes)
+                    .newInstance(parameters);
+            } catch (NoSuchMethodException ex) {
+            }
+            
+            try {
+                return keySpecClass
+                    .getConstructor(parameters[0].getClass(), String.class)
+                    .newInstance(parameters[0], name());
+            } catch (NoSuchMethodException ex) {
+            }
+            
+            try {
+                return PBEKeySpec.class
+                    .getConstructor(classes)
+                    .newInstance(parameters);
+            } catch (NoSuchMethodException ex) {
             }
             
             throw new CryptoException("Unsupported parameters");
@@ -149,23 +146,35 @@ public enum SymetricAlgorithm {
                 IllegalArgumentException | IllegalAccessException | 
                 InvocationTargetException ex) {
             throw new CryptoException(
-                    String.format(Strings.COULDNT_CREATE_KEY_SPEC,
+                    String.format(Strings.COULDNT_CREATE_KEY_SPEC_MSG_FMT,
                     name(),
                     ex.getLocalizedMessage()), 
                 ex);
         }
     }
     
-    
-    public AlgorithmParameterSpec makeParameterSpec(Object... parameters) throws CryptoException {
+    /**
+     * Instantiates new AlgorithmParameterSpec from internal AlgorithmParameterSpec
+     * class object and the given parameters
+     * 
+     * @param parameters
+     * @return AlgorithmParameterSpec
+     * @throws CryptoException
+     * @see AlgorithmParameterSpec
+     */
+    public AlgorithmParameterSpec makeParameterSpec(Object... parameters) 
+            throws CryptoException {
         Validator.isTrue(parameters.length > 0, "");
         try {
             return algorParamSpecClass
                 .getConstructor(getClasses(parameters))
                 .newInstance(parameters);
-        } catch (NoSuchMethodException | SecurityException | 
-                InstantiationException | IllegalAccessException | 
-                IllegalArgumentException | InvocationTargetException ex) {
+        } catch (NoSuchMethodException ex) {
+            throw new CryptoException("Unsupported parameters");
+            
+        } catch (SecurityException | InstantiationException | 
+                IllegalAccessException | IllegalArgumentException | 
+                InvocationTargetException ex) {
             throw new CryptoException("Couldn't make parameter spec", ex);
         }
     }
@@ -178,9 +187,8 @@ public enum SymetricAlgorithm {
         return algorParamSpecClass;
     }
 
-    final int blockSize;
-    int keySize;
-    final String PBEName;
-    final Class <? extends KeySpec> keySpecClass;
-    final Class <? extends AlgorithmParameterSpec> algorParamSpecClass;
+    final private int blockSize;
+    final private String PBEName;
+    final private Class <? extends KeySpec> keySpecClass;
+    final private Class <? extends AlgorithmParameterSpec> algorParamSpecClass;
 }

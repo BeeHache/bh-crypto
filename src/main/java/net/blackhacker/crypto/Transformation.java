@@ -84,14 +84,14 @@ public class Transformation {
         }
         
         public int getBlockSize() {
-            return symetricAlgorithm!=null 
+            return isSymetric()
                     ? symetricAlgorithm.getBlockSize()
                     : asymetricAlgorithm.getBlockSize();
         }
         
         public int getKeySize() {
-            return symetricAlgorithm!=null
-                    ? symetricAlgorithm.getKeySize()
+            return isSymetric()
+                    ? -1
                     : asymetricAlgorithm.getKeySize();
         }
         
@@ -111,10 +111,8 @@ public class Transformation {
             return asymetricAlgorithm != null;
         }
         
-        public byte[] readIV(InputStream is ) throws IOException {
-            final byte[] iv = new byte[getBlockSizeBytes()];
-            is.read(iv);
-            return iv;
+        final public boolean isSymetric() {
+            return symetricAlgorithm != null;
         }
         
         final public SymetricAlgorithm getSymetricAlgorithm() {
@@ -126,20 +124,29 @@ public class Transformation {
         }
 
         public KeySpec makeKeySpec(Object... params) throws CryptoException {
-            return symetricAlgorithm.makeKeySpec(params);
+            if (isSymetric())
+                return symetricAlgorithm.makeKeySpec(params);
+            
+            throw new CryptoException(Strings.NOT_SYMETRIC_MSG);
         }
 
         public KeySpec makePublicKeySpec(Object... params) throws CryptoException{
-            return asymetricAlgorithm.makePublicKeySpec(params);
+            if (isAsymetric())
+                return asymetricAlgorithm.makePublicKeySpec(params);
+            
+            throw new CryptoException(Strings.NOT_ASYMETRIC_MSG);
         }
         
-        public KeySpec makePrivateKeySpec(Object... params) throws CryptoException{
-            return asymetricAlgorithm.makePrivateKeySpec(params);
+        public KeySpec makePrivateKeySpec(Object... params) throws CryptoException {
+            if (isAsymetric())
+                return asymetricAlgorithm.makePrivateKeySpec(params);
+            
+            throw new CryptoException(Strings.NOT_ASYMETRIC_MSG);
         }
         
         public AlgorithmParameterSpec makeParameterSpec(Object...params) throws CryptoException {
             try {
-                if (params==null || params.length==0){
+                if (params.length==0) {
                     return null;
 
                 } else if (isPBE()) {
@@ -147,17 +154,8 @@ public class Transformation {
                         .getConstructor(byte[].class, int.class)
                         .newInstance(params);
 
-                } else if (symetricAlgorithm != null) {
-
+                } else if (isSymetric()) {
                     return symetricAlgorithm
-                            .getAlgorParamSpecClass()
-                            .getConstructor(getClasses(params))
-                            .newInstance(params);    
-
-
-                } else if (asymetricAlgorithm != null) {
-
-                    return asymetricAlgorithm
                             .getAlgorParamSpecClass()
                             .getConstructor(getClasses(params))
                             .newInstance(params);
@@ -166,7 +164,7 @@ public class Transformation {
             } catch (NoSuchMethodException | SecurityException | 
                      InstantiationException | IllegalAccessException | 
                      IllegalArgumentException | InvocationTargetException ex) {
-                throw new CryptoException("Couldn't build parameterspec :" +ex.getLocalizedMessage(), ex);
+                throw new CryptoException("Couldn't build parameterspec :" + ex.getLocalizedMessage(), ex);
             }
             throw new CryptoException("Unsupported parameters");
         }
@@ -186,7 +184,8 @@ public class Transformation {
                 return String.format("PBEWith%sAnd%s", 
                         digestAlgorithm.name(), 
                         symetricAlgorithm.getPBEName());
-            else if (symetricAlgorithm!=null)
+            
+            else if (isSymetric())
                 return String.format("%s/%s/%s", 
                         symetricAlgorithm, 
                         mode, 
@@ -203,7 +202,7 @@ public class Transformation {
                 return String.format("PBEWith%sAnd%s", 
                     digestAlgorithm.name(), 
                     symetricAlgorithm.getPBEName());
-            else if (symetricAlgorithm!=null)
+            else if (isSymetric())
                 return symetricAlgorithm.toString();
             else
                 return asymetricAlgorithm.toString();

@@ -40,19 +40,19 @@ import static org.junit.Assert.fail;
  * @author ben
  */
 @RunWith(Parameterized.class)
-public class SymetricAlgorithmTest {
+public class AsymetricAlgorithmTest {
     
-    final private SymetricAlgorithm algorithm;
+    final private AsymetricAlgorithm algorithm;
     
-    public SymetricAlgorithmTest(SymetricAlgorithm algorithm){
+    public AsymetricAlgorithmTest(AsymetricAlgorithm algorithm){
         this.algorithm = algorithm;
     }
     
     @Parameterized.Parameters
-    public static Collection<SymetricAlgorithm[]> data() throws CryptoException {
-        Collection<SymetricAlgorithm[]> l = new ArrayList<>();
-        for (SymetricAlgorithm sa : SymetricAlgorithm.values()) {
-            l.add(new SymetricAlgorithm[]{sa});
+    public static Collection<AsymetricAlgorithm[]> data() throws CryptoException {
+        Collection<AsymetricAlgorithm[]> l = new ArrayList<>();
+        for (AsymetricAlgorithm sa : AsymetricAlgorithm.values()) {
+            l.add(new AsymetricAlgorithm[]{sa});
         }
         return l;
     }
@@ -60,47 +60,45 @@ public class SymetricAlgorithmTest {
     @Test
     public void gettersTest() {
         assertTrue("block size", algorithm.getBlockSize() > 0);
-        assertNotNull("PBE name", algorithm.getPBEName());
-        assertNotNull("KeySpec Class", algorithm.getKeySpecClass());
-        assertNotNull("AlgorithmParameterSpec Class", 
-                algorithm.getAlgorParamSpecClass());
+        assertNotNull("Public KeySpec Class", algorithm.getPublicKeySpecClass());
+        assertNotNull("Private KeySpec Class", algorithm.getPrivateKeySpecClass());
     }
     
     @Test
-    public void makeKeySpecTest() throws CryptoException {
+    public void makePublicKeySpecTest() throws CryptoException {
         int x = 100;
         byte[] b= new byte[algorithm.getBlockSize()];
-        assertNotNull(algorithm.makeKeySpec(b));
+        assertNotNull(algorithm.makePublicKeySpec(b));
         
         try {
-            algorithm.makeKeySpec();
+            algorithm.makePublicKeySpec();
             fail("empty params");
         } catch(RuntimeException e){
         }
 
         try {
-            algorithm.makeKeySpec(new Object());
+            algorithm.makePublicKeySpec(new Object());
             fail("arbitrary params");
         } catch(CryptoException e){
         }
     }
 
     @Test
-    public void makeParameterTest() throws CryptoException {
+    public void makePrivateKeySpecTest() throws CryptoException {
         int x = 100;
         byte[] b= new byte[algorithm.getBlockSize()];
-        assertNotNull(algorithm.makeParameterSpec(b));
+        assertNotNull(algorithm.makePrivateKeySpec(b));
         
         try {
-            algorithm.makeParameterSpec();
+            algorithm.makePrivateKeySpec();
             fail("empty params");
         } catch(RuntimeException e){
         }
-        
+
         try {
-            algorithm.makeParameterSpec(new Object());
+            algorithm.makePrivateKeySpec(new Object());
             fail("arbitrary params");
         } catch(CryptoException e){
         }
-    }    
+    }
 }

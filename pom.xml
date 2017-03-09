@@ -110,23 +110,6 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-site-plugin</artifactId>
-              <version>3.6</version>
-              <dependencies>
-                <dependency>
-                  <groupId>org.apache.maven.doxia</groupId>
-                  <artifactId>doxia-module-markdown</artifactId>
-                  <version>1.7</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.maven.doxia</groupId>
-                    <artifactId>doxia-module-xhtml</artifactId>
-                    <version>1.7</version>
-                </dependency>
-              </dependencies>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>1.8</version>
                 <executions>
@@ -225,6 +208,11 @@
                    </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.6</version>
+            </plugin>
         </plugins>
     </build>
     <reporting>
@@ -235,15 +223,20 @@
                 <version>3.6</version>
                 <configuration>
                     <reports>
-                      <report>dependencies</report>
-                      <report>project-team</report>
-                      <report>mailing-list</report>
+                      <!-- report>dependencies</report -->
+                      <!-- report>project-team</report -->
+                      <!-- report>mailing-list</report -->
                       <report>cim</report>
-                      <report>issue-tracking</report>
-                      <report>scm</report>
+                      <!--report>issue-tracking</report -->
+                      <!--report>scm</report -->
                     </reports>
                   <generateSitemap>true</generateSitemap>
                 </configuration>
+            </plugin>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-javadoc-plugin</artifactId>
+              <version>2.10.4</version>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -256,13 +249,6 @@
                     </formats>
                 </configuration>
             </plugin>
-              
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-changelog-plugin</artifactId>
-              <version>2.3</version>
-            </plugin>              
-
         </plugins>
     </reporting>
     <licenses>
@@ -276,7 +262,7 @@
         <developerConnection>scm:git:https://github.com/BeeHache/bh-crypto.git</developerConnection>
         <url>git+ssh://git@github.com/BeeHache/bh-crypto.git</url>
       <tag>bh-crypto-0.5.4</tag>
-  </scm>
+    </scm>
     <issueManagement>
       <system>GitHub</system>
       <url>https://github.com/BeeHache/bh-crypto/issues/</url>
@@ -302,7 +288,7 @@
                         <version>0.12</version>
                         <configuration>
                             <message>Creating site for ${project.version}</message>
-                            <merge>true</merge>
+                            <merge>false</merge>
                         </configuration>
                         <executions>
                             <execution>

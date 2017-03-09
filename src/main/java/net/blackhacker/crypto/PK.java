@@ -160,7 +160,7 @@ public class PK extends Crypto {
                 InvalidAlgorithmParameterException |
                 BadPaddingException ex) {
             throw new CryptoException(
-                    String.format(Strings.COULDNT_ENCRYPT_MSG, 
+                    String.format(Strings.COULDNT_ENCRYPT_MSG_FMT, 
                             getTransformation(),
                             ex.getLocalizedMessage()) ,ex);
         }
@@ -200,7 +200,7 @@ public class PK extends Crypto {
         } catch (InvalidKeyException | InvalidAlgorithmParameterException | 
                 IllegalBlockSizeException | BadPaddingException ex) {
             throw new CryptoException(
-                String.format(Strings.COULDNT_DECRYPT_MSG, 
+                String.format(Strings.COULDNT_DECRYPT_MSG_FMT,
                         transformation.toString(),
                         ex.getLocalizedMessage()),ex);
         }
@@ -225,17 +225,17 @@ public class PK extends Crypto {
      */
     public Verifier getVerifier(final Digester digester) {
         Validator.notNull(digester, "digester");
-        Transformation transformation = getTransformation();
         
+        final Transformation transformation = getTransformation();
         final Cipher cipher = getCipher();
+        
         return (final byte[] data, final byte[] signature) -> {
             synchronized(cipher) {
-                int ivSize = 0;
-                byte[] digest = digester==null ? null : digester.digest(data);
-                try(ByteArrayInputStream bais = new ByteArrayInputStream(data)) {
-                    if (getTransformation().hasIV()) {
-                        byte[] iv = transformation.readIV(bais);
-                        cipher.init(Cipher.DECRYPT_MODE, publicKey, new IvParameterSpec(iv));
+                byte[] digest = digester.digest(data);
+                try {
+                    if (transformation.hasIV()) {
+                        cipher.init(Cipher.DECRYPT_MODE, publicKey, 
+                                new IvParameterSpec(getIV()));
                     } else {
                         cipher.init(Cipher.DECRYPT_MODE, publicKey);
                     }
@@ -243,7 +243,7 @@ public class PK extends Crypto {
                     byte[]clearSig = cipher.doFinal(signature, transformation.getBlockSizeBytes(), signature.length);
                     return Arrays.equals(clearSig, digest);
                 } catch (InvalidKeyException | InvalidAlgorithmParameterException |
-                        IllegalBlockSizeException | BadPaddingException | IOException ex) {
+                        IllegalBlockSizeException | BadPaddingException ex) {
                     return false;
                 }
             }

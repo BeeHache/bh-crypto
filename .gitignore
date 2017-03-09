@@ -3,6 +3,7 @@
 .classpath
 .project
 nb-configuration.xml
+*.log
 # Package Files #
 *.jar
 *.war

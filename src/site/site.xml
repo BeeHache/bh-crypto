@@ -4,25 +4,21 @@
     name="BH Crypto">
   <bannerLeft>
     <name>BH Crypto</name>
+    <href>${project.url}</href>
   </bannerLeft>
   <publishDate position="right"/>
   <version position="right"/>
   <body>
-    <menu name="Main" inherit="bottom">
-        <item name="Home" href="index.html" />
-        <item name="Sitemap" href="sitemap.html" />
-        <item name="READ ME" href="${readme.page}" />
-        <item name="${license.name}" href="${license.page}"/>
+    <menu name="Main">
+        <item name="Home" href="index.html" collapse="true">
+            <item name="Sitemap" href="sitemap.html" />
+            <item name="READ ME" href="${readme.page}" />
+            <item name="${license.name}" href="${license.page}"/>
+            <item name="API" target="_blank" href="apidocs/index.html" />
+            <item ref="cim" />
+        </item>
     </menu>
     <menu ref="reports"/>
-    <menu name="API">
-        <item name="${project.version}" target="_blank" href="apidocs/${project.version}/index.html" />
-    </menu>
-    <menu name="Downloads">
-        <item name="bh-crypto-${project.version}.jar"  href="downloads/bh-crypto-${project.version}.jar" />
-        <item name="bh-crypto-${project.version}-sources.jar"  href="downloads/bh-crypto-${project.version}-sources.jar" />
-        <item name="bh-crypto-${project.version}-javadoc.jar"  href="downloads/bh-crypto-${project.version}-javadoc.jar" />
-    </menu>
   </body>
   <skin>
     <groupId>org.apache.maven.skins</groupId>

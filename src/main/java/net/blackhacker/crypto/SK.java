@@ -113,7 +113,7 @@ public class SK extends Crypto {
         } catch (InvalidKeyException | InvalidAlgorithmParameterException | 
                 IllegalBlockSizeException | BadPaddingException  ex) {
             throw new CryptoException(
-                String.format(Strings.COULDNT_ENCRYPT_MSG,
+                String.format(Strings.COULDNT_ENCRYPT_MSG_FMT,
                 getTransformation(),
                 ex.getLocalizedMessage()),ex);
         }
@@ -147,7 +147,7 @@ public class SK extends Crypto {
         } catch (InvalidKeyException | InvalidAlgorithmParameterException |
                 IllegalBlockSizeException | BadPaddingException  ex) {
             throw new CryptoException(
-                String.format(Strings.COULDNT_DECRYPT_MSG,
+                String.format(Strings.COULDNT_DECRYPT_MSG_FMT,
                 transformation,
                 ex.getLocalizedMessage()),ex);
         }

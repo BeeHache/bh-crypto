@@ -31,7 +31,7 @@ final public class Validator {
     static public void notNull(Object o, String parameterName) {
         if (o == null)
             throw new NullPointerException(
-                    String.format(Strings.NOT_NULL_MSG, parameterName));
+                    String.format(Strings.NOT_NULL_MSG_FMT, parameterName));
     }
     
     static public void isTrue(boolean test, String message) {
