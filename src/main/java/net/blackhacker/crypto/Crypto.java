@@ -72,8 +72,7 @@ public abstract class Crypto implements Encryptor, Decryptor {
         try {
             cipher = Cipher.getInstance(transformation.toString());
         } catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
-            String msg = String.format(
-                    Strings.COULDNT_CREATE_CIPHER, 
+            String msg = String.format(Strings.COULDNT_CREATE_CIPHER_MSG_FMT, 
                     transformation.getAlgorithmString(),
                     ex.getLocalizedMessage());
             throw new CryptoException(msg, ex);

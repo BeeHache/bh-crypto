@@ -30,14 +30,28 @@ package net.blackhacker.crypto;
  * @author Benjamin King aka Blackhacker<bh@blackhacker.net>
  */
 final public class Strings {
-    final static public String NOT_NULL_MSG = "%s can't be null";
-    final static public String COULDNT_CREATE_CIPHER = "Couldn't generate cipher for %s : %s";
-    final static public String COULDNT_CREATE_KEY_SPEC = "Couldn't create key spec :%s : %s";
-    final static public String COULDNT_CREATE_PARAM_SPEC = "Couldn't create parameter spec :%s : %s";
-    final static public String COULDNT_CREATE_KEY_FACT_MSG = "Couldn't create key factory: %s : %s";
-    final static public String COULDNT_ENCRYPT_MSG = "Could not encrypt data: %s : %s";
-    final static public String COULDNT_DECRYPT_MSG = "Could not decrypt data: %s : %s";
-    final static public String NON_PBE_MSG = "This constructor requires a non-PBE Transformation.";
-    final static public String PBE_MSG = "This constructor requires a PBE Transformation.";
-    final static public String SHOULD_BE_A = "%s should be a %s";
+    final static public String NOT_NULL_MSG_FMT 
+            = "%s can't be null";
+    final static public String COULDNT_CREATE_CIPHER_MSG_FMT 
+            = "Couldn't generate cipher for %s : %s";
+    final static public String COULDNT_CREATE_KEY_SPEC_MSG_FMT 
+            = "Couldn't create key spec :%s : %s";
+    final static public String COULDNT_CREATE_PARAM_SPEC_MSG_FMT 
+            = "Couldn't create parameter spec :%s : %s";
+    final static public String COULDNT_CREATE_KEY_FACT_MSG_FMT 
+            = "Couldn't create key factory: %s : %s";
+    final static public String COULDNT_ENCRYPT_MSG_FMT 
+            = "Could not encrypt data: %s : %s";
+    final static public String COULDNT_DECRYPT_MSG_FMT 
+            = "Could not decrypt data: %s : %s";
+    final static public String NON_PBE_MSG 
+            = "This constructor requires a non-PBE Transformation.";
+    final static public String PBE_MSG 
+            = "This constructor requires a PBE Transformation.";
+    final static public String SHOULD_BE_A 
+            = "%s should be a %s";
+    final static public String NOT_SYMETRIC_MSG 
+            = "This Transformation is not for a Symetric Algorithm";
+    final static public String NOT_ASYMETRIC_MSG 
+            = "This Transformation is not for a Asymetric Algorithm";
 }
