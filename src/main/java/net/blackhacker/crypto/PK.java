@@ -23,9 +23,6 @@
  */
 package net.blackhacker.crypto;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
@@ -137,16 +134,24 @@ public class PK extends Crypto {
      * Encrypts array of bytes
      * 
      * @param clearBytes
-     * @param parameters
      * @return encrypted version of clearBytes
      * @throws CryptoException
      */
     @Override
-    public byte[] encrypt(final byte[] clearBytes, Object... parameters) throws CryptoException {
+    public byte[] encrypt(final byte[] clearBytes) throws CryptoException {
         Validator.notNull(clearBytes, "clearBytes");
+        Transformation transformation = getTransformation();
         Cipher cipher = getCipher();
         SecureRandom secureRandom = getSecureRandom();
-        AlgorithmParameterSpec aps = processParameters(parameters);
+        AlgorithmParameterSpec aps = null;
+        byte[] iv = null;
+        
+        if (transformation.hasIV()) {
+            iv = generateIV();
+            aps = transformation.makeParameterSpec(iv);
+        }
+        
+        
         try {
             synchronized (cipher) {
                 if (aps!=null) {
@@ -154,8 +159,13 @@ public class PK extends Crypto {
                 } else {
                     cipher.init(Cipher.ENCRYPT_MODE, publicKey, secureRandom);
                 }
+                
+                byte[] cipherbytes = cipher.doFinal(clearBytes);
+                if (iv!=null) {
+                    return concat(iv, cipherbytes);
+                }
+                return cipherbytes;
             }
-            return cipher.doFinal(clearBytes);
         } catch (InvalidKeyException | IllegalBlockSizeException | 
                 InvalidAlgorithmParameterException |
                 BadPaddingException ex) {
@@ -169,23 +179,30 @@ public class PK extends Crypto {
     /**
      * Decrypts array of bytes
      * 
-     * @param cipherBytes
-     * @param parameters
+     * @param data
      * @return clear version of cipherBytes
      * @throws CryptoException 
      */
     @Override
-    public byte[] decrypt(final byte[] cipherBytes, Object... parameters) throws CryptoException {
-        Validator.notNull(cipherBytes, "cipherBytes");
+    public byte[] decrypt(final byte[] data) throws CryptoException {
+        Validator.notNull(data, "cipherBytes");
         if (privateKey==null){
             throw new CryptoException("No PrivateKey defined");
         }
         
-        Transformation transformation = getTransformation();
-        
         Cipher cipher = getCipher();
+        Transformation transformation = getTransformation();
         SecureRandom secureRandom = getSecureRandom();
-        AlgorithmParameterSpec aps = processParameters(parameters);
+        AlgorithmParameterSpec aps = null;
+        byte[] iv = null;
+        byte[] cipherBytes = data;
+        
+        if (transformation.hasIV()) {
+            iv = new byte[transformation.getBlockSizeBytes()];
+            cipherBytes = new byte[data.length - iv.length];
+            split(data, iv, cipherBytes);
+            aps = transformation.makeParameterSpec(iv);  
+        }
         
         try {
             synchronized(cipher) {
@@ -230,17 +247,26 @@ public class PK extends Crypto {
         final Cipher cipher = getCipher();
         
         return (final byte[] data, final byte[] signature) -> {
+            AlgorithmParameterSpec aps = null;
+            byte[] cipherBytes = data;
+            
+            if (transformation.hasIV()) {
+                byte[] iv = new byte[transformation.getBlockSizeBytes()];
+                cipherBytes = new byte[data.length - iv.length];
+                Crypto.split(data, iv, cipherBytes);
+                aps = new IvParameterSpec(iv);
+            }
+            
             synchronized(cipher) {
                 byte[] digest = digester.digest(data);
                 try {
-                    if (transformation.hasIV()) {
-                        cipher.init(Cipher.DECRYPT_MODE, publicKey, 
-                                new IvParameterSpec(getIV()));
+                    if (aps!=null) {
+                        cipher.init(Cipher.DECRYPT_MODE, publicKey, aps);
                     } else {
                         cipher.init(Cipher.DECRYPT_MODE, publicKey);
                     }
                 
-                    byte[]clearSig = cipher.doFinal(signature, transformation.getBlockSizeBytes(), signature.length);
+                    byte[]clearSig = cipher.doFinal(signature);
                     return Arrays.equals(clearSig, digest);
                 } catch (InvalidKeyException | InvalidAlgorithmParameterException |
                         IllegalBlockSizeException | BadPaddingException ex) {
@@ -276,22 +302,28 @@ public class PK extends Crypto {
         
         return (final byte[] data) -> {
             Validator.notNull(data, "data");
+            AlgorithmParameterSpec aps = null;
+            byte[] iv = null;
+            
+            if (getTransformation().hasIV()){
+                aps = new IvParameterSpec(generateIV());
+            }
+            
+            byte[] digest = digester.digest(data);
+            
             synchronized(cipher) {
-                try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-                    byte[] digest = digester.digest(data);
-                    
-                    if (getTransformation().hasIV()) {
-                        byte[] iv = generateIV();
-                        baos.write(iv);
-                        cipher.init(Cipher.ENCRYPT_MODE, privateKey, new IvParameterSpec(iv));
+                try {
+                    if (aps!=null) {
+                        cipher.init(Cipher.ENCRYPT_MODE, privateKey, aps);
                     } else {
                         cipher.init(Cipher.ENCRYPT_MODE, privateKey);
                     }
-                    baos.write(cipher.doFinal(digest));
-                    return baos.toByteArray();
+
+                    byte[] cipherBytes = cipher.doFinal(digest);
+                    return Crypto.concat(iv, cipherBytes);                    
+                    
                 } catch (InvalidKeyException | InvalidAlgorithmParameterException |
-                        IllegalBlockSizeException | BadPaddingException |
-                        IOException ex) {
+                        IllegalBlockSizeException | BadPaddingException ex) {
                     throw new SignerException(
                             "Could not sign data: " + ex.getLocalizedMessage(),ex);
                 }

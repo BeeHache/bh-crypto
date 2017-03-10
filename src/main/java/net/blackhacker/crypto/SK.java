@@ -77,26 +77,29 @@ public class SK extends Crypto {
     /**
      *
      * @param data
-     * @param parameters
      * @return encrypted version data
      * @throws CryptoException
      */
     @Override
-    public byte[] encrypt(final byte[] data, Object... parameters) throws CryptoException {
+    public byte[] encrypt(final byte[] data) throws CryptoException {
         Validator.notNull(data, "data");
         Transformation transformation = getTransformation();
         Cipher cipher = getCipher();
+        AlgorithmParameterSpec aps=null;
+        byte[] iv = null;
+        byte[] salt = null;
+        int iterationCount;
         
-        if (parameters==null || parameters.length==0) {
-            if (isPBE())
-                parameters = new Object[]{ generateSalt(), getIterationCount() };
-            
-            if (transformation.hasIV()){
-                parameters = new Object[]{ generateIV()};
-            }
+        if (isPBE()) {
+            salt = generateSalt();
+            iterationCount = getIterationCount();
+            aps = transformation.makeParameterSpec(salt, iterationCount);
         }
-            
-        AlgorithmParameterSpec aps = transformation.makeParameterSpec(parameters);
+        
+        if (transformation.hasIV()) {
+            iv = generateIV();
+            aps = transformation.makeParameterSpec(iv);
+        }
         
         try {
             synchronized(cipher) {                
@@ -108,7 +111,14 @@ public class SK extends Crypto {
                         .init(Cipher.ENCRYPT_MODE, key, getSecureRandom());
                 }
                 
-                return cipher.doFinal(data);
+                byte[] cipherbytes = cipher.doFinal(data);
+                if (iv!=null) {
+                    return concat(iv, cipherbytes);
+                }
+                if (salt!=null){
+                    return concat(salt, cipherbytes);
+                }
+                return cipherbytes;
             }
         } catch (InvalidKeyException | InvalidAlgorithmParameterException | 
                 IllegalBlockSizeException | BadPaddingException  ex) {
@@ -127,11 +137,26 @@ public class SK extends Crypto {
      * @throws CryptoException 
      */
     @Override
-    public byte[] decrypt(final byte[] data, Object... parameters) throws CryptoException {
+    public byte[] decrypt(final byte[] data) throws CryptoException {
         Validator.notNull(data, "data");
         Cipher cipher = getCipher();
         Transformation transformation = getTransformation();
-        AlgorithmParameterSpec aps = transformation.makeParameterSpec(parameters);
+        AlgorithmParameterSpec aps = null;
+        byte[] iv = null;
+        byte[] salt = null;
+        byte[] cipherBytes = data;
+        
+        if (transformation.isPBE()) {
+            salt = new byte[ transformation.getBlockSizeBytes() ];
+            cipherBytes = new byte[data.length - salt.length];
+            split(data, salt, cipherBytes);
+            aps = transformation.makeParameterSpec(salt, getIterationCount());
+        } else if (transformation.hasIV()) {
+            iv = new byte[transformation.getBlockSizeBytes()];
+            cipherBytes = new byte[data.length - iv.length];
+            split(data, iv, cipherBytes);
+            aps = transformation.makeParameterSpec(iv);  
+        } 
         
         try {
             synchronized(cipher) {
@@ -142,7 +167,7 @@ public class SK extends Crypto {
                     cipher.init(Cipher.DECRYPT_MODE, key);
                 }                
                 
-                return cipher.doFinal(data);
+                return cipher.doFinal(cipherBytes);
             }
         } catch (InvalidKeyException | InvalidAlgorithmParameterException |
                 IllegalBlockSizeException | BadPaddingException  ex) {

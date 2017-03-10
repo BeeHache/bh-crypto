@@ -53,12 +53,6 @@ public abstract class Crypto implements Encryptor, Decryptor {
     final private SecureRandom secureRandom = new SecureRandom();
 
     private int iterationCount = 100;
-    private byte[] salt;
-    private byte[] iv;
-    
-    
-    private final StampedLock saltLock = new StampedLock();
-    private final StampedLock ivLock = new StampedLock();
     
     /**
      * Constructor
@@ -66,7 +60,7 @@ public abstract class Crypto implements Encryptor, Decryptor {
      * @param transformation
      * @throws CryptoException
      */
-    protected  Crypto(Transformation transformation) throws CryptoException {
+    public  Crypto(Transformation transformation) throws CryptoException {
         this.transformation = transformation;
         
         try {
@@ -129,43 +123,6 @@ public abstract class Crypto implements Encryptor, Decryptor {
     final public void setIterationCount(int iterationCount) {
         this.iterationCount = iterationCount;
     }
-
-    /**
-     * returns a byte array containing the Initialization Vector(IV)
-     * It should be noted that this is a copy of the arrays that is maintained
-     * internally
-     * 
-     * @return iv
-     */
-    final public byte[] getIV(){
-        long stamp = ivLock.readLock();
-        try {
-        if (iv==null)
-            return null;
-        return Arrays.copyOf(iv, iv.length);
-        } finally {
-            ivLock.unlock(stamp);
-        }
-    }
-    
-    private void _setIV(final byte[] iv){
-        long stamp = ivLock.writeLock();
-        try {
-            this.iv = iv;
-        } finally {
-            ivLock.unlock(stamp);
-        }
-    }
-
-    /**
-     * sets the value of the Initialization Vector
-     * 
-     * @param iv a byte array
-     */
-    final public void setIV(final byte[] iv) {
-        Validator.notNull(iv, "iv");
-        _setIV(Arrays.copyOf(iv, iv.length));
-    }
     
     /**
      * Generates a new Initialization Vector (IV) and stores it internally
@@ -173,47 +130,13 @@ public abstract class Crypto implements Encryptor, Decryptor {
      * @return new IV in the form a byte array
      */
     final public byte[] generateIV() {        
-        byte[] array = new byte[ transformation.getBlockSizeBytes()];
-        secureRandom.nextBytes(array);
-        _setIV(array);
-        return getIV();
-    }
-    
-    /**
-     *  Salt
-     * 
-     * @return salt in the form of a byte array
-     */
-    final public byte[] getSalt() {
-        long stamp = saltLock.readLock();
-        try {
-            if (salt==null)
-                return null;
-            return Arrays.copyOf(salt, salt.length);
-        } finally {
-            saltLock.unlock(stamp);
-        }
-    }
-
-
-    private void _setSalt(final byte[] salt){
-        long stamp = saltLock.writeLock();
-        try {
-            this.salt = salt;
-        } finally {
-            saltLock.unlock(stamp);
-        }
-    }
-    
-    final public void setSalt(byte[] salt) {
-        _setSalt(Arrays.copyOf(salt, salt.length));
+        byte[] iv = new byte[ transformation.getBlockSizeBytes()];
+        secureRandom.nextBytes(iv);
+        return iv;
     }
     
     final public byte[] generateSalt() {
-        byte[] s  = new byte[ transformation.getBlockSizeBytes()];
-        secureRandom.nextBytes(s);
-        _setSalt(s);
-        return getSalt();
+        return generateIV();
     }
     
     protected AlgorithmParameterSpec processParameters(Object[] parameters) {
@@ -224,8 +147,7 @@ public abstract class Crypto implements Encryptor, Decryptor {
                 for(Object parameter : parameters) {
                     if ((parameter!=null) && 
                         (parameter.getClass().equals(byte[].class))) {
-                        setIV((byte[])parameter);
-                        iv = getIV();
+                        iv = (byte[])parameter;
                         break;
                     }
                 }
@@ -237,21 +159,22 @@ public abstract class Crypto implements Encryptor, Decryptor {
                 return new IvParameterSpec(iv);
             
             } else if (transformation.isPBE()) {
+                byte[] salt = null;
 
                 for(Object parameter : parameters) {
                     if (parameter.getClass().equals(Integer.class)){
                         iterationCount = (Integer)parameter;
 
                     } else if (parameter.getClass().equals(byte[].class)) {
-                        setSalt((byte[])parameter);
+                        salt = (byte[])parameter;
                     }
                 }
 
-                if (getSalt()==null) {
-                    generateSalt();
+                if (salt==null) {
+                    salt = generateSalt();
                 }
 
-                return new PBEParameterSpec(getSalt(), getIterationCount());
+                return new PBEParameterSpec(salt, getIterationCount());
             }
         }
         
@@ -281,6 +204,39 @@ public abstract class Crypto implements Encryptor, Decryptor {
      */
     public boolean isAsymetric() {
         return transformation.isAsymetric();
+    }
+    
+    /**
+     * 
+     * @param arrays
+     * @return 
+     */
+    static protected byte[] concat(byte[]... arrays){
+        int bufferSize = 0;
+        for(byte[] array : arrays){
+            bufferSize+= array.length;
+        }
+        
+        byte[] buffer = new byte[bufferSize];
+        int i = 0;
+        for (byte[]array : arrays){
+            if (array!=null)
+                for (int a=0 ; a < array.length; a++){
+                    buffer[i++] = array[a];
+                }
+        }
+        
+        return buffer;
+    }
+    
+    static protected void split(byte[] data, byte[]... arrays) {
+        int i = 0;
+        for (byte[] array : arrays) {
+            if (array != null)
+                for(int a=0; a < array.length; a++){
+                    array[a] = data[i++];
+                }
+        }
     }
     
     

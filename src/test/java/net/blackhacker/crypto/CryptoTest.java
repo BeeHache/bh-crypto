@@ -23,19 +23,44 @@
  */
 package net.blackhacker.crypto;
 
+import java.util.Random;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+
 /**
  *
- * @author Benjamin King aka Blackhacker(bh@blackhacker.net)
+ * @author ben
  */
-public interface Decryptor {
-    
-    /**
-     * Must be implemented by subclass
-     * 
-     * @param cipherBytes -- bytes to be decrypted
-     * @return -- bytes in the clear
-     * @throws CryptoException 
-     */
-     public byte[] decrypt(final byte[] cipherBytes) throws CryptoException;    
 
+public class CryptoTest {
+    
+    @Test
+    public void test() {
+        Random r = new Random();
+        
+        byte[] a1 = new byte[ r.nextInt(100)];
+        byte[] a2 = new byte[ r.nextInt(100)];
+        byte[] a3 = new byte[ r.nextInt(100)];
+        
+        r.nextBytes(a1);
+        r.nextBytes(a2);
+        r.nextBytes(a3);
+        
+        byte[] data = Crypto.concat(a1, a2, a3);
+        
+        assertEquals(a1.length + a2.length + a3.length, data.length);
+        
+        byte[] b1 = new byte[a1.length];
+        byte[] b2 = new byte[a2.length];
+        byte[] b3 = new byte[a3.length];
+        
+        Crypto.split(data, b1, b2, b3);
+        
+        assertArrayEquals(a1, b1);
+        assertArrayEquals(a2, b2);
+        assertArrayEquals(a3, b3);
+        
+    }
+    
 }

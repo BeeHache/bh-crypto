@@ -72,7 +72,7 @@ public class SKTest {
         
         List<Transformation[]> l = new ArrayList<>(Arrays.asList(
             new Transformation[][] {
-                { new Transformation(SymetricAlgorithm.DES, Mode.ECB) },
+                //{ new Transformation(SymetricAlgorithm.DES, Mode.ECB) },
                 { new Transformation(SymetricAlgorithm.DES, Mode.CBC) },
                 { new Transformation(SymetricAlgorithm.DES, Mode.CFB) },
                 { new Transformation(SymetricAlgorithm.DES, Mode.OFB) },
@@ -152,53 +152,37 @@ public class SKTest {
     
     @Test
     public void encryptDecryptTest() throws CryptoException {
-        int iterationCount;
-        byte[] salt;
-        byte[] iv;
         byte[] clearbytes2;
         String algorithm = me.getTransformation().toString();
-        boolean isPBE = me.isPBE();
-        boolean hasIV = me.hasIV();
-        Object[] params = {};
         
         byte[] friendCipherBytes = friend.encrypt(message);
         assertNotNull(algorithm + ":friend.encrypt: failed", friendCipherBytes);
-        if (isPBE) {
-            salt = friend.getSalt();
-            iterationCount = friend.getIterationCount();
-            params = new Object[] {salt, iterationCount};
-        }
         
-        if (hasIV) {
-            iv = friend.getIV();
-            params = new Object[] { iv };
-        }
-        
-        byte[] friendClearBytes = friend.decrypt(friendCipherBytes, params);
+        byte[] friendClearBytes = friend.decrypt(friendCipherBytes);
         assertNotNull(algorithm + ":friend.decrypt: failed", friendClearBytes);
         assertArrayEquals(algorithm + ":friend doesn't decrypt itself", 
                 message, friendClearBytes);
         
-        byte[] meCipherBytes = me.encrypt(message, params);
+        byte[] meCipherBytes = me.encrypt(message);
         assertNotNull(algorithm + ":me.encrypt: failed", meCipherBytes); 
         
-        byte[] meClearBytes = me.decrypt(meCipherBytes, params);
+        byte[] meClearBytes = me.decrypt(meCipherBytes);
         assertNotNull(algorithm + ":me.encrypt: failed", meClearBytes);
         assertArrayEquals(algorithm + ":me doesn't decrypt itself",
                 meClearBytes, message);
 
-        friendClearBytes = friend.decrypt(meCipherBytes, params);
+        friendClearBytes = friend.decrypt(meCipherBytes);
         assertNotNull(algorithm + ":friend.decrypt: failed", friendClearBytes);
         assertArrayEquals(algorithm + ":friend doesn't decrypt me", 
                 message, friendClearBytes);
         
-        meClearBytes = me.decrypt(friendCipherBytes, params);
+        meClearBytes = me.decrypt(friendCipherBytes);
         assertNotNull(algorithm + ":me.decrypt: failed", meClearBytes);
         assertArrayEquals(algorithm + ":me doesn't decrypt friend", 
                 message, friendClearBytes);
         
         try {
-            clearbytes2 = foe.decrypt(friendCipherBytes, params);
+            clearbytes2 = foe.decrypt(friendCipherBytes);
             assertFalse(
                 algorithm + ":foe.decrypt: foe decrypted friend's message", 
                 Arrays.equals(friendClearBytes, clearbytes2));
@@ -207,7 +191,7 @@ public class SKTest {
         }
         
         try {
-            clearbytes2 = foe.decrypt(meCipherBytes, params);
+            clearbytes2 = foe.decrypt(meCipherBytes);
             assertFalse(
                 algorithm + ":foe.decrypt: foe decrypted me's message", 
                 Arrays.equals(friendClearBytes, clearbytes2));

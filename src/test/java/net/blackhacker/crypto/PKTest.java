@@ -93,35 +93,27 @@ public class PKTest {
 
     @Test
     public void encryptDecryptTest() throws CryptoException {
-        byte[] iv = null;
         byte[] clearbytes2;
         String algorithm = me.getTransformation().toString();
-        boolean hasIV = me.hasIV();
-        Object[] params = null;
         
         byte[] friendCipherBytes = friend.encrypt(message);
         assertNotNull(algorithm + ":friend.encrypt: failed", friendCipherBytes);
         
-        if (hasIV) {
-            iv = friend.getIV();
-            params = new Object[] { iv };
-        }
-        
-        byte[] friendClearBytes = friend.decrypt(friendCipherBytes, params);
+        byte[] friendClearBytes = friend.decrypt(friendCipherBytes);
         assertNotNull(algorithm + ":friend.decrypt: failed", friendClearBytes);
         assertArrayEquals(algorithm + ":friend doesn't decrypt itself", 
                 message, friendClearBytes);
         
-        byte[] meCipherBytes = me.encrypt(message, params);
+        byte[] meCipherBytes = me.encrypt(message);
         assertNotNull(algorithm + ":me.encrypt: failed", meCipherBytes);
 
-        friendClearBytes = friend.decrypt(meCipherBytes, params);
+        friendClearBytes = friend.decrypt(meCipherBytes);
         assertNotNull(algorithm + ":friend.decrypt: failed", friendClearBytes);
         assertArrayEquals(algorithm + ":friend doesn't decrypt me", 
                 message, friendClearBytes);
         
         try {
-            clearbytes2 = foe.decrypt(friendCipherBytes, params);
+            clearbytes2 = foe.decrypt(friendCipherBytes);
             assertFalse(
                 algorithm + ":foe.decrypt: foe decrypted friend's message", 
                 Arrays.equals(friendClearBytes, clearbytes2));
@@ -130,7 +122,7 @@ public class PKTest {
         }
         
         try {
-            clearbytes2 = foe.decrypt(meCipherBytes, params);
+            clearbytes2 = foe.decrypt(meCipherBytes);
             assertFalse(
                 algorithm + ":foe.decrypt: foe decrypted me's message", 
                 Arrays.equals(friendClearBytes, clearbytes2));
