@@ -33,14 +33,14 @@ import org.junit.Test;
  * @author ben
  */
 
-public class CryptoTest {
+public class UtilsTest {
     
     @Test
     public void splitConcatTest() {
-        byte[] a0 = Crypto.concat();
+        byte[] a0 = Utils.concat();
         assertArrayEquals(new byte[0], a0);
         
-        a0 = Crypto.concat(null);
+        a0 = Utils.concat(null);
         assertArrayEquals(new byte[0], a0);
         
         Random r = new Random();
@@ -53,7 +53,7 @@ public class CryptoTest {
         r.nextBytes(a2);
         r.nextBytes(a3);
         
-        byte[] data = Crypto.concat(a1, a2, a3);
+        byte[] data = Utils.concat(a1, a2, a3);
         
         assertEquals(a1.length + a2.length + a3.length, data.length);
         int dx=0;
@@ -67,7 +67,7 @@ public class CryptoTest {
         byte[] b2 = new byte[a2.length];
         byte[] b3 = new byte[a3.length];
         
-        Crypto.split(data, b1, b2, b3);
+        Utils.split(data, b1, b2, b3);
         
         assertArrayEquals(a1, b1);
         assertArrayEquals(a2, b2);
