@@ -24,7 +24,8 @@
 package net.blackhacker.crypto;
 
 /**
- *
+ * Implemented by all classes that decrypt encrypted bytes
+ * 
  * @author Benjamin King aka Blackhacker(bh@blackhacker.net)
  */
 public interface Decryptor {
@@ -32,8 +33,8 @@ public interface Decryptor {
     /**
      * Must be implemented by subclass
      * 
-     * @param cipherBytes -- bytes to be decrypted
-     * @return -- bytes in the clear
+     * @param cipherBytes bytes to be decrypted
+     * @return bytes in the clear
      * @throws CryptoException 
      */
      public byte[] decrypt(final byte[] cipherBytes) throws CryptoException;    

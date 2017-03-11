@@ -75,15 +75,16 @@ public class PK extends Crypto {
         PrivateKey pr;
         
         try {
-            KeyFactory kf = KeyFactory.getInstance(transformation.getAlgorithmString());
+            KeyFactory kf = KeyFactory
+                    .getInstance(transformation.getAlgorithmString());
             
-            pu = publicKeyEncoded!=null ? 
-                kf.generatePublic(transformation.makePublicKeySpec(publicKeyEncoded)) :
-                null; 
+            pu = publicKeyEncoded!=null 
+                    ? kf.generatePublic(transformation.makePublicKeySpec(publicKeyEncoded)) 
+                    : null;
             
-            pr = privateKeyEncoded!=null ?
-                kf.generatePrivate(transformation.makePrivateKeySpec(privateKeyEncoded)) :
-                null;
+            pr = privateKeyEncoded!=null 
+                    ? kf.generatePrivate(transformation.makePrivateKeySpec(privateKeyEncoded)) 
+                    : null;
             
             if (pu==null && pr==null) {
                 KeyPairGenerator kpg = KeyPairGenerator
@@ -96,7 +97,6 @@ public class PK extends Crypto {
             
             publicKey = pu;
             privateKey = pr;
-            
             
         } catch(NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new CryptoException(e);
@@ -140,15 +140,14 @@ public class PK extends Crypto {
     @Override
     public byte[] encrypt(final byte[] clearBytes) throws CryptoException {
         Validator.notNull(clearBytes, "clearBytes");
-        Transformation transformation = getTransformation();
         Cipher cipher = getCipher();
         SecureRandom secureRandom = getSecureRandom();
         AlgorithmParameterSpec aps = null;
         byte[] iv = null;
         
-        if (transformation.hasIV()) {
+        if (hasIV()) {
             iv = generateIV();
-            aps = transformation.makeParameterSpec(iv);
+            aps = makeParameterSpec(iv);
         }
         
         
@@ -191,17 +190,16 @@ public class PK extends Crypto {
         }
         
         Cipher cipher = getCipher();
-        Transformation transformation = getTransformation();
         SecureRandom secureRandom = getSecureRandom();
         AlgorithmParameterSpec aps = null;
         byte[] iv = null;
         byte[] cipherBytes = data;
         
-        if (transformation.hasIV()) {
-            iv = new byte[transformation.getBlockSizeBytes()];
+        if (hasIV()) {
+            iv = new byte[getBlockSizeBytes()];
             cipherBytes = new byte[data.length - iv.length];
             split(data, iv, cipherBytes);
-            aps = transformation.makeParameterSpec(iv);  
+            aps = makeParameterSpec(iv);  
         }
         
         try {
@@ -218,7 +216,7 @@ public class PK extends Crypto {
                 IllegalBlockSizeException | BadPaddingException ex) {
             throw new CryptoException(
                 String.format(Strings.COULDNT_DECRYPT_MSG_FMT,
-                        transformation.toString(),
+                        getTransformation(),
                         ex.getLocalizedMessage()),ex);
         }
     }
@@ -352,10 +350,22 @@ public class PK extends Crypto {
         return privateKey;
     }
     
+    /**
+     * PublicKey encoded into a byte array
+     * 
+     * @return encoded PublicKey
+     * @see PublicKey
+     */
     final public byte[] getPublicKeyEncoded() {
         return publicKey.getEncoded();
     }
     
+    /**
+     * PrivateKey encoded into a byte array
+     * 
+     * @return encoded PrivateKey
+     * @see PrivateKey
+     */
     final public byte[] getPrivateKeyEncoded() {
         return privateKey == null ? null : privateKey.getEncoded();
     }

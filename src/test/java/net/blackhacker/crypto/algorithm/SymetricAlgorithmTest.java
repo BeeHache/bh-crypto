@@ -42,17 +42,17 @@ import static org.junit.Assert.fail;
 @RunWith(Parameterized.class)
 public class SymetricAlgorithmTest {
     
-    final private SymetricAlgorithm algorithm;
+    final private SymmetricAlgorithm algorithm;
     
-    public SymetricAlgorithmTest(SymetricAlgorithm algorithm){
+    public SymetricAlgorithmTest(SymmetricAlgorithm algorithm){
         this.algorithm = algorithm;
     }
     
     @Parameterized.Parameters
-    public static Collection<SymetricAlgorithm[]> data() throws CryptoException {
-        Collection<SymetricAlgorithm[]> l = new ArrayList<>();
-        for (SymetricAlgorithm sa : SymetricAlgorithm.values()) {
-            l.add(new SymetricAlgorithm[]{sa});
+    public static Collection<SymmetricAlgorithm[]> data() throws CryptoException {
+        Collection<SymmetricAlgorithm[]> l = new ArrayList<>();
+        for (SymmetricAlgorithm sa : SymmetricAlgorithm.values()) {
+            l.add(new SymmetricAlgorithm[]{sa});
         }
         return l;
     }

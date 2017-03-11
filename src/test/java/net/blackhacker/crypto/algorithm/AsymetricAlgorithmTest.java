@@ -42,17 +42,17 @@ import static org.junit.Assert.fail;
 @RunWith(Parameterized.class)
 public class AsymetricAlgorithmTest {
     
-    final private AsymetricAlgorithm algorithm;
+    final private AsymmetricAlgorithm algorithm;
     
-    public AsymetricAlgorithmTest(AsymetricAlgorithm algorithm){
+    public AsymetricAlgorithmTest(AsymmetricAlgorithm algorithm){
         this.algorithm = algorithm;
     }
     
     @Parameterized.Parameters
-    public static Collection<AsymetricAlgorithm[]> data() throws CryptoException {
-        Collection<AsymetricAlgorithm[]> l = new ArrayList<>();
-        for (AsymetricAlgorithm sa : AsymetricAlgorithm.values()) {
-            l.add(new AsymetricAlgorithm[]{sa});
+    public static Collection<AsymmetricAlgorithm[]> data() throws CryptoException {
+        Collection<AsymmetricAlgorithm[]> l = new ArrayList<>();
+        for (AsymmetricAlgorithm sa : AsymmetricAlgorithm.values()) {
+            l.add(new AsymmetricAlgorithm[]{sa});
         }
         return l;
     }

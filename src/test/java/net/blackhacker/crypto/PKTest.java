@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import net.blackhacker.crypto.algorithm.AsymetricAlgorithm;
+import net.blackhacker.crypto.algorithm.AsymmetricAlgorithm;
 import net.blackhacker.crypto.algorithm.Mode;
 import net.blackhacker.crypto.algorithm.Padding;
 
@@ -65,10 +65,9 @@ public class PKTest {
     
     @Parameterized.Parameters
     public static Collection<Transformation[]> data() throws CryptoException {
-        List<Transformation[]> l = new ArrayList<>(Arrays.asList(
-            new Transformation[][] {
-                { new Transformation(AsymetricAlgorithm.RSA1024, Mode.ECB, Padding.PKCS1Padding) },
-                { new Transformation(AsymetricAlgorithm.RSA2048, Mode.ECB, Padding.PKCS1Padding) },
+        List<Transformation[]> l = new ArrayList<>(Arrays.asList(new Transformation[][] {
+                { new Transformation(AsymmetricAlgorithm.RSA1024, Mode.ECB, Padding.PKCS1Padding) },
+                { new Transformation(AsymmetricAlgorithm.RSA2048, Mode.ECB, Padding.PKCS1Padding) },
                 
             }));
         return l;

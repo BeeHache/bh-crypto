@@ -23,10 +23,10 @@
  */
 package net.blackhacker.crypto;
 
-import net.blackhacker.crypto.algorithm.SymetricAlgorithm;
+import net.blackhacker.crypto.algorithm.SymmetricAlgorithm;
 import net.blackhacker.crypto.algorithm.Mode;
 import net.blackhacker.crypto.algorithm.DigestAlgorithm;
-import net.blackhacker.crypto.algorithm.AsymetricAlgorithm;
+import net.blackhacker.crypto.algorithm.AsymmetricAlgorithm;
 
 /**
  *
@@ -43,7 +43,7 @@ final public class CryptoFactory {
      */
     static public PK newEncryptorRSAWithECB() throws CryptoException {
         return new PK(
-                new Transformation(AsymetricAlgorithm.RSA1024, Mode.ECB));
+                new Transformation(AsymmetricAlgorithm.RSA1024, Mode.ECB));
     }
     
     /**
@@ -60,7 +60,7 @@ final public class CryptoFactory {
             final byte[] publicKeyEncoded, final byte[] privateKeyEncoded) 
             throws CryptoException {
         return new PK(
-                new Transformation(AsymetricAlgorithm.RSA1024, Mode.ECB)
+                new Transformation(AsymmetricAlgorithm.RSA1024, Mode.ECB)
                 ,publicKeyEncoded,privateKeyEncoded);
     }
 
@@ -75,7 +75,7 @@ final public class CryptoFactory {
     static public PK newEncryptorRSAWithECB(final byte[] publicKeyEncoded) 
             throws CryptoException {
         return new PK(
-                new Transformation(AsymetricAlgorithm.RSA1024, Mode.ECB)
+                new Transformation(AsymmetricAlgorithm.RSA1024, Mode.ECB)
                 ,publicKeyEncoded);
     }  
 
@@ -87,7 +87,7 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorDESWithECB() throws CryptoException {
-        return new SK(new Transformation(SymetricAlgorithm.DES, Mode.ECB));
+        return new SK(new Transformation(SymmetricAlgorithm.DES, Mode.ECB));
     }
 
     /**
@@ -100,7 +100,7 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorDESWithECB(final byte[] key) throws CryptoException {
-        return new SK(new Transformation(SymetricAlgorithm.DES, Mode.ECB), key);
+        return new SK(new Transformation(SymmetricAlgorithm.DES, Mode.ECB), key);
     }
     
     /**
@@ -112,7 +112,7 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorDESWithCBC() throws CryptoException {
-        return new SK(new Transformation(SymetricAlgorithm.DES, Mode.CBC));
+        return new SK(new Transformation(SymmetricAlgorithm.DES, Mode.CBC));
     } 
 
     /**
@@ -125,7 +125,7 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorDESWithCBC(final byte[] key) throws CryptoException {
-        return new SK(new Transformation(SymetricAlgorithm.DES, Mode.CBC), key);
+        return new SK(new Transformation(SymmetricAlgorithm.DES, Mode.CBC), key);
     } 
     
     /**
@@ -136,7 +136,7 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorDESWithCFB() throws CryptoException {
-        return new SK(new Transformation(SymetricAlgorithm.DES, Mode.CFB));
+        return new SK(new Transformation(SymmetricAlgorithm.DES, Mode.CFB));
     }
 
     /**
@@ -148,7 +148,7 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorDESWithCFB(final byte[] key) throws CryptoException {
-        return new SK(new Transformation(SymetricAlgorithm.DES, Mode.CFB), key);
+        return new SK(new Transformation(SymmetricAlgorithm.DES, Mode.CFB), key);
     }
     
     /**
@@ -159,7 +159,7 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorDESWithOFB() throws CryptoException {
-        return new SK(new Transformation(SymetricAlgorithm.DES, Mode.OFB));
+        return new SK(new Transformation(SymmetricAlgorithm.DES, Mode.OFB));
     }
 
     /**
@@ -171,7 +171,7 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorDESWithOFB(final byte[] key) throws CryptoException {
-        return new SK(new Transformation(SymetricAlgorithm.DES, Mode.OFB), key);
+        return new SK(new Transformation(SymmetricAlgorithm.DES, Mode.OFB), key);
     }
     
     
@@ -183,7 +183,7 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorDESedeWithECB() throws CryptoException {
-        return new SK(new Transformation(SymetricAlgorithm.DESede, Mode.ECB));
+        return new SK(new Transformation(SymmetricAlgorithm.DESede, Mode.ECB));
     }
 
     /**
@@ -196,7 +196,7 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorDESedeWithECB(final byte[] key) throws CryptoException {
-        return new SK(new Transformation(SymetricAlgorithm.DESede, Mode.ECB), key);
+        return new SK(new Transformation(SymmetricAlgorithm.DESede, Mode.ECB), key);
     }
     
     /**
@@ -208,7 +208,7 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorDESedeWithCBC() throws CryptoException {
-        return new SK(new Transformation(SymetricAlgorithm.DESede, Mode.CBC));
+        return new SK(new Transformation(SymmetricAlgorithm.DESede, Mode.CBC));
     }
 
     /**
@@ -221,7 +221,7 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorDESedeWithCBC(final byte[] key) throws CryptoException {
-        return new SK(new Transformation(SymetricAlgorithm.DESede, Mode.CBC), key);
+        return new SK(new Transformation(SymmetricAlgorithm.DESede, Mode.CBC), key);
     }
     
     /**
@@ -233,7 +233,7 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorDESedeWithCFB() throws CryptoException {
-        return new SK(new Transformation(SymetricAlgorithm.DESede, Mode.CFB));
+        return new SK(new Transformation(SymmetricAlgorithm.DESede, Mode.CFB));
     }
 
     /**
@@ -247,7 +247,7 @@ final public class CryptoFactory {
      */
     final static public SK newEncryptorDESedeWithCFB(final byte[] key) throws CryptoException {
         return new SK(
-            new Transformation(SymetricAlgorithm.DESede, Mode.CFB), key);
+            new Transformation(SymmetricAlgorithm.DESede, Mode.CFB), key);
     }
     
     /**
@@ -260,7 +260,7 @@ final public class CryptoFactory {
      */
     final static public SK newEncryptorDESedeWithOFB() throws CryptoException {
         return new SK(
-                new Transformation(SymetricAlgorithm.DESede, Mode.OFB));
+                new Transformation(SymmetricAlgorithm.DESede, Mode.OFB));
     }
 
     /**
@@ -274,7 +274,7 @@ final public class CryptoFactory {
      */
     final static public SK newEncryptorDESedeWithOFB(final byte[] key) throws CryptoException {
         return new SK(
-            new Transformation(SymetricAlgorithm.DESede, Mode.OFB), key);
+            new Transformation(SymmetricAlgorithm.DESede, Mode.OFB), key);
     }
 
     /**
@@ -288,7 +288,7 @@ final public class CryptoFactory {
      */
     final static public SK newEncryptorAES128WithECB(final byte[] key) throws CryptoException {
         return new SK(
-            new Transformation(SymetricAlgorithm.AES, Mode.ECB),key);
+            new Transformation(SymmetricAlgorithm.AES, Mode.ECB),key);
     }
 
     /**
@@ -299,7 +299,7 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorAES128WithECB() throws CryptoException {
-        return new SK(new Transformation(SymetricAlgorithm.AES, Mode.ECB));
+        return new SK(new Transformation(SymmetricAlgorithm.AES, Mode.ECB));
     }    
     
     
@@ -311,7 +311,7 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorAES128WithCBC() throws CryptoException {
-        return new SK(new Transformation(SymetricAlgorithm.DESede, Mode.CBC));
+        return new SK(new Transformation(SymmetricAlgorithm.DESede, Mode.CBC));
     }
     
     /**
@@ -324,7 +324,7 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorAES128WithCBC(final byte[] key) throws CryptoException {
-        return new SK(new Transformation(SymetricAlgorithm.AES, Mode.CBC), key);
+        return new SK(new Transformation(SymmetricAlgorithm.AES, Mode.CBC), key);
     }
 
     /**
@@ -339,7 +339,7 @@ final public class CryptoFactory {
     final static public SK newEncryptorAES128WithCFB(final byte[] key) 
             throws CryptoException {
         return new SK(
-            new Transformation(SymetricAlgorithm.AES, Mode.CFB), key
+            new Transformation(SymmetricAlgorithm.AES, Mode.CFB), key
         );
     }
 
@@ -353,7 +353,7 @@ final public class CryptoFactory {
      */
     final static public SK newEncryptorAES128WithCFB() throws CryptoException {
         return new SK(
-            new Transformation(SymetricAlgorithm.AES, Mode.CFB));
+            new Transformation(SymmetricAlgorithm.AES, Mode.CFB));
     }
 
     /**
@@ -366,7 +366,7 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorAES128WithOFB(final byte[] key) throws CryptoException {
-        return new SK( new Transformation(SymetricAlgorithm.AES, Mode.OFB), key);
+        return new SK( new Transformation(SymmetricAlgorithm.AES, Mode.OFB), key);
     }
     
     /**
@@ -377,7 +377,7 @@ final public class CryptoFactory {
      * @see SK
      */
     final static public SK newEncryptorAES128WithOFB() throws CryptoException {
-        return new SK( new Transformation(SymetricAlgorithm.AES, Mode.OFB));
+        return new SK( new Transformation(SymmetricAlgorithm.AES, Mode.OFB));
     }
     
     /**
@@ -391,7 +391,7 @@ final public class CryptoFactory {
      */
     final static public SK newEncryptorAES128WithCTR(final byte[] key) throws CryptoException {
         return new SK(
-            new Transformation(SymetricAlgorithm.AES, Mode.CTR),key);
+            new Transformation(SymmetricAlgorithm.AES, Mode.CTR),key);
     }
 
     /**
@@ -404,7 +404,7 @@ final public class CryptoFactory {
      */
     final static public SK newEncryptorAES128WithCTR() throws CryptoException {
         return new SK(
-            new Transformation(SymetricAlgorithm.AES, Mode.CTR));
+            new Transformation(SymmetricAlgorithm.AES, Mode.CTR));
     }    
 
     /**
@@ -418,7 +418,7 @@ final public class CryptoFactory {
      */
     final static public SK newEncryptorAES128WithOCB(final byte[] key) throws CryptoException {
         return new SK(
-            new Transformation(SymetricAlgorithm.AES, Mode.OCB), key);
+            new Transformation(SymmetricAlgorithm.AES, Mode.OCB), key);
     }
 
     /**
@@ -431,7 +431,7 @@ final public class CryptoFactory {
      */
     final static public SK newEncryptorAES128WithOCB() throws CryptoException {
         return new SK(
-            new Transformation(SymetricAlgorithm.AES, Mode.OCB));
+            new Transformation(SymmetricAlgorithm.AES, Mode.OCB));
     }
 
     /**
@@ -445,7 +445,7 @@ final public class CryptoFactory {
      */
     final static public SK newEncryptorAES192WithECB(final byte[] key) throws CryptoException {
         return new SK(
-            new Transformation(SymetricAlgorithm.AES192, Mode.ECB), key);
+            new Transformation(SymmetricAlgorithm.AES192, Mode.ECB), key);
     }    
     
     /**
@@ -458,7 +458,7 @@ final public class CryptoFactory {
      */
     final static public SK newEncryptorAES192WithECB() throws CryptoException {
         return new SK(
-            new Transformation(SymetricAlgorithm.AES192, Mode.ECB));
+            new Transformation(SymmetricAlgorithm.AES192, Mode.ECB));
     }
     
     /**
@@ -471,7 +471,7 @@ final public class CryptoFactory {
      */
     final static public SK newEncryptorAES192WithCBC() throws CryptoException {
         return new SK(
-            new Transformation(SymetricAlgorithm.AES192, Mode.ECB));
+            new Transformation(SymmetricAlgorithm.AES192, Mode.ECB));
     }
 
     /**
@@ -485,7 +485,7 @@ final public class CryptoFactory {
      */
     final static public SK newEncryptorAES192WithCBC(final byte[] key) throws CryptoException {
         return new SK(
-            new Transformation(SymetricAlgorithm.AES192, Mode.CBC), key);
+            new Transformation(SymmetricAlgorithm.AES192, Mode.CBC), key);
     }
     
     
@@ -501,7 +501,7 @@ final public class CryptoFactory {
      */
     final static public SK newEncryptorPBEWithSHAAnd3KeyTripleDES(String password) throws CryptoException {
         return new SK(
-            new Transformation(DigestAlgorithm.SHA1, SymetricAlgorithm.DESede),
+            new Transformation(DigestAlgorithm.SHA1, SymmetricAlgorithm.DESede),
             password.toCharArray()
         );
     }
@@ -517,7 +517,7 @@ final public class CryptoFactory {
      */
     final static public SK newEncryptorPBEWithMD5AndTripleDES(String password) throws CryptoException {
         return new SK(
-            new Transformation(DigestAlgorithm.MD5, SymetricAlgorithm.DESede),
+            new Transformation(DigestAlgorithm.MD5, SymmetricAlgorithm.DESede),
             password.toCharArray()
         );
     }
@@ -533,7 +533,7 @@ final public class CryptoFactory {
      */
     final static public SK newEncryptorPBEWithMD5AndDES(String password) throws CryptoException {
         return new SK(
-            new Transformation(DigestAlgorithm.MD5, SymetricAlgorithm.DES),
+            new Transformation(DigestAlgorithm.MD5, SymmetricAlgorithm.DES),
             password.toCharArray()
         );
     }
@@ -549,7 +549,7 @@ final public class CryptoFactory {
      */
     final static public SK newEncryptorPBEWithSHA256And256BitAES(String password) throws CryptoException {
         return new SK(
-            new Transformation(DigestAlgorithm.SHA256, SymetricAlgorithm.AES),
+            new Transformation(DigestAlgorithm.SHA256, SymmetricAlgorithm.AES),
             password.toCharArray()
         );
     }
@@ -565,7 +565,7 @@ final public class CryptoFactory {
      */
     final static public SK newEncryptorPBEWithSHA1AndDESede(String password) throws CryptoException {
         return new SK(
-            new Transformation(DigestAlgorithm.SHA1, SymetricAlgorithm.DESede),
+            new Transformation(DigestAlgorithm.SHA1, SymmetricAlgorithm.DESede),
             password.toCharArray()
         );
     }  

@@ -40,7 +40,7 @@ import net.blackhacker.crypto.Validator;
  * 
  * @author ben
  */
-public enum AsymetricAlgorithm {
+public enum AsymmetricAlgorithm {
     /* Cipher*/
     RSA1024(1024, 936, RSAPublicKeySpec.class, RSAPrivateKeySpec.class, "RSA"),
     RSA2048(2048, 1712, RSAPublicKeySpec.class, RSAPrivateKeySpec.class, "RSA"),
@@ -49,7 +49,7 @@ public enum AsymetricAlgorithm {
     //EC(1024, 0, ECPublicKeySpec.class, ECPrivateKeySpec.class, null),
     ;
     
-    AsymetricAlgorithm(
+    AsymmetricAlgorithm(
             int keySize, 
             int blockSize,
             Class <? extends KeySpec> publicKeySpecClass,

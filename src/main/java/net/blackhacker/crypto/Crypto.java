@@ -26,12 +26,8 @@ package net.blackhacker.crypto;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
-import java.util.Arrays;
-import java.util.concurrent.locks.StampedLock;
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.PBEParameterSpec;
 
 /**
  *  Abstract base class for both symmetric and asymmetric encryption algorithms
@@ -127,7 +123,7 @@ public abstract class Crypto implements Encryptor, Decryptor {
     /**
      * Generates a new Initialization Vector (IV) and stores it internally
      * 
-     * @return new IV in the form a byte array
+     * @return new IV in the form a byte target
      */
     final public byte[] generateIV() {        
         byte[] iv = new byte[ transformation.getBlockSizeBytes()];
@@ -135,62 +131,53 @@ public abstract class Crypto implements Encryptor, Decryptor {
         return iv;
     }
     
+    /**
+     * Randomly generates salt bytes
+     * 
+     * @return salt
+     */
     final public byte[] generateSalt() {
         return generateIV();
     }
     
-    protected AlgorithmParameterSpec processParameters(Object[] parameters) {
-        if (parameters != null && parameters.length > 0) {
-            if (transformation.hasIV()) {
-                byte[] iv = null;
-
-                for(Object parameter : parameters) {
-                    if ((parameter!=null) && 
-                        (parameter.getClass().equals(byte[].class))) {
-                        iv = (byte[])parameter;
-                        break;
-                    }
-                }
-            
-                if (iv==null){
-                    iv = generateIV();
-                }
-
-                return new IvParameterSpec(iv);
-            
-            } else if (transformation.isPBE()) {
-                byte[] salt = null;
-
-                for(Object parameter : parameters) {
-                    if (parameter.getClass().equals(Integer.class)){
-                        iterationCount = (Integer)parameter;
-
-                    } else if (parameter.getClass().equals(byte[].class)) {
-                        salt = (byte[])parameter;
-                    }
-                }
-
-                if (salt==null) {
-                    salt = generateSalt();
-                }
-
-                return new PBEParameterSpec(salt, getIterationCount());
-            }
-        }
-        
-        return null;
-    }    
+    /**
+     *  Builds [AlgorithmParameterSpec] based on the Transformation and the
+     * parameters are passed in
+     * 
+     * @param parameters
+     * @return AlgorithmParameterSpec
+     * @throws CryptoException
+     * @see AlgorithmParameterSpec
+     */
+    final public AlgorithmParameterSpec makeParameterSpec(Object... parameters) 
+            throws CryptoException {
+        return transformation.makeParameterSpec(parameters);
+    }
 
     /**
-     *
-     * @return returns true if this is s
+     * Returns the block size for the algorithm described in the internal 
+     * Transformation
+     * 
+     * @return block size
+     */
+    final public int getBlockSizeBytes(){
+        return transformation.getBlockSizeBytes();
+    }
+
+    /**
+     * Returns true if the Mode uses an Initialization Vector (IV), otherwise 
+     * false
+     * 
+     * @return true if the Mode uses an IV, otherwise false
      */
     public boolean hasIV() {
         return transformation.hasIV();
     }
 
     /**
-     *
+     * Returns true if the Transformation describes a Password Based Encryption
+     * (PBE)
+     * 
      * @return true if this is a PBE
      */
     public boolean isPBE() {
@@ -198,43 +185,53 @@ public abstract class Crypto implements Encryptor, Decryptor {
     }
 
     /**
-     * Returns true if this object represents an asymetric algorithm
+     * Returns true if this object represents an asymmetric algorithm
      * 
-     * @return true is the object represents an asymetric algorithm
+     * @return true is the object represents an asymmetric algorithm
      */
     public boolean isAsymetric() {
-        return transformation.isAsymetric();
+        return transformation.isAsymmetric();
     }
     
     /**
+     *  Concatenates multiple byte arrays into a single target
      * 
-     * @param arrays
-     * @return 
+     * @param arrays  a list of byte arrays to be concatenated
+     * @return  the concatenated byte target
      */
     static protected byte[] concat(byte[]... arrays){
         int bufferSize = 0;
-        for(byte[] array : arrays){
-            bufferSize+= array.length;
+        if (arrays!=null) for(byte[] array : arrays) {
+            bufferSize+= array==null ? 0 : array.length;
         }
         
         byte[] buffer = new byte[bufferSize];
-        int i = 0;
-        for (byte[]array : arrays){
-            if (array!=null)
-                for (int a=0 ; a < array.length; a++){
-                    buffer[i++] = array[a];
-                }
+        if (arrays!=null) {
+            int i = 0;
+            for (byte[]array : arrays){
+                if (array!=null)
+                    for (int a=0 ; a < array.length; a++){
+                        buffer[i++] = array[a];
+                    }
+            }
         }
         
         return buffer;
     }
     
-    static protected void split(byte[] data, byte[]... arrays) {
-        int i = 0;
-        for (byte[] array : arrays) {
-            if (array != null)
-                for(int a=0; a < array.length; a++){
-                    array[a] = data[i++];
+    /**
+     * Reverse of the concat method, it copies the contents of one byte array
+     * to multiple arrays
+     * 
+     * @param source source byte array
+     * @param targets target byte arrays
+     */
+    static protected void split(byte[] source, byte[]... targets) {
+        int sx = 0;
+        for (byte[] target : targets) {
+            if (target != null)
+                for(int tx=0; tx < target.length; tx++){
+                    target[tx] = source[sx++];
                 }
         }
     }

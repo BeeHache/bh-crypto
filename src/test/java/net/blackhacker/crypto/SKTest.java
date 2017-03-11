@@ -23,7 +23,7 @@
  */
 package net.blackhacker.crypto;
 
-import net.blackhacker.crypto.algorithm.SymetricAlgorithm;
+import net.blackhacker.crypto.algorithm.SymmetricAlgorithm;
 import net.blackhacker.crypto.algorithm.Mode;
 import net.blackhacker.crypto.algorithm.DigestAlgorithm;
 
@@ -70,43 +70,40 @@ public class SKTest {
     @Parameterized.Parameters
     public static Collection<Transformation[]> data() throws CryptoException {
         
-        List<Transformation[]> l = new ArrayList<>(Arrays.asList(
-            new Transformation[][] {
-                //{ new Transformation(SymetricAlgorithm.DES, Mode.ECB) },
-                { new Transformation(SymetricAlgorithm.DES, Mode.CBC) },
-                { new Transformation(SymetricAlgorithm.DES, Mode.CFB) },
-                { new Transformation(SymetricAlgorithm.DES, Mode.OFB) },
+        List<Transformation[]> l = new ArrayList<>(Arrays.asList(new Transformation[][] {
+                //{ new Transformation(SymmetricAlgorithm.DES, Mode.ECB) },
+                { new Transformation(SymmetricAlgorithm.DES, Mode.CBC) },
+                { new Transformation(SymmetricAlgorithm.DES, Mode.CFB) },
+                { new Transformation(SymmetricAlgorithm.DES, Mode.OFB) },
                 
-                { new Transformation(SymetricAlgorithm.DESede, Mode.ECB) },
-                { new Transformation(SymetricAlgorithm.DESede, Mode.CBC) },
-                { new Transformation(SymetricAlgorithm.DESede, Mode.CFB) },
-                { new Transformation(SymetricAlgorithm.DESede, Mode.OFB) },
+                { new Transformation(SymmetricAlgorithm.DESede, Mode.ECB) },
+                { new Transformation(SymmetricAlgorithm.DESede, Mode.CBC) },
+                { new Transformation(SymmetricAlgorithm.DESede, Mode.CFB) },
+                { new Transformation(SymmetricAlgorithm.DESede, Mode.OFB) },
                 
-                { new Transformation(SymetricAlgorithm.AES, Mode.ECB) },
-                { new Transformation(SymetricAlgorithm.AES, Mode.CBC) },
-                { new Transformation(SymetricAlgorithm.AES, Mode.CFB) },
-                { new Transformation(SymetricAlgorithm.AES, Mode.OFB) },
-                { new Transformation(SymetricAlgorithm.AES, Mode.CTR) },
+                { new Transformation(SymmetricAlgorithm.AES, Mode.ECB) },
+                { new Transformation(SymmetricAlgorithm.AES, Mode.CBC) },
+                { new Transformation(SymmetricAlgorithm.AES, Mode.CFB) },
+                { new Transformation(SymmetricAlgorithm.AES, Mode.OFB) },
+                { new Transformation(SymmetricAlgorithm.AES, Mode.CTR) },
                 
                 /*PBE */
-                { new Transformation(DigestAlgorithm.MD5, SymetricAlgorithm.DES) },
-                { new Transformation(DigestAlgorithm.MD5, SymetricAlgorithm.DESede) },
+                { new Transformation(DigestAlgorithm.MD5, SymmetricAlgorithm.DES) },
+                { new Transformation(DigestAlgorithm.MD5, SymmetricAlgorithm.DESede) },
             }
         ));
         
         if (jce()) {
-            l.addAll(
-                Arrays.asList(
-                    new Transformation[][] {
-                        { new Transformation(SymetricAlgorithm.AES192, Mode.ECB) },
-                        { new Transformation(SymetricAlgorithm.AES192, Mode.CBC) },
-                        { new Transformation(SymetricAlgorithm.AES192, Mode.CFB) },
-                        { new Transformation(SymetricAlgorithm.AES192, Mode.OFB) },
-                        { new Transformation(SymetricAlgorithm.AES192, Mode.CTR) },
+            l.addAll(Arrays.asList(new Transformation[][] {
+                        { new Transformation(SymmetricAlgorithm.AES192, Mode.ECB) },
+                        { new Transformation(SymmetricAlgorithm.AES192, Mode.CBC) },
+                        { new Transformation(SymmetricAlgorithm.AES192, Mode.CFB) },
+                        { new Transformation(SymmetricAlgorithm.AES192, Mode.OFB) },
+                        { new Transformation(SymmetricAlgorithm.AES192, Mode.CTR) },
                         
                         /* PBE */
-                        { new Transformation(DigestAlgorithm.SHA1, SymetricAlgorithm.DESede) },
-                        { new Transformation(DigestAlgorithm.SHA256, SymetricAlgorithm.AES256) },
+                        { new Transformation(DigestAlgorithm.SHA1, SymmetricAlgorithm.DESede) },
+                        { new Transformation(DigestAlgorithm.SHA256, SymmetricAlgorithm.AES256) },
                         
                     }));
         }

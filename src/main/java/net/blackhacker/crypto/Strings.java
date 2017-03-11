@@ -23,10 +23,9 @@
  */
 package net.blackhacker.crypto;
 
-/**
- *
+/** 
+ * Messages and message formats
  * 
- *
  * @author Benjamin King aka Blackhacker<bh@blackhacker.net>
  */
 final public class Strings {

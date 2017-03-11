@@ -42,7 +42,7 @@ import net.blackhacker.crypto.Validator;
  * 
  * @author ben
  */
-public enum SymetricAlgorithm {
+public enum SymmetricAlgorithm {
     AES(128, SecretKeySpec.class, IvParameterSpec.class),
     AES192(192, SecretKeySpec.class, IvParameterSpec.class, "AES"),
     AES256(256, SecretKeySpec.class, IvParameterSpec.class, "AES"),
@@ -61,24 +61,24 @@ public enum SymetricAlgorithm {
     ;
 
     /*
-    SymetricAlgorithm(){
+    SymmetricAlgorithm(){
         this(64, null, null, null);
     }
     */
 
-    SymetricAlgorithm(
+    SymmetricAlgorithm(
             Class <? extends KeySpec> keySpecClass, 
             Class <? extends AlgorithmParameterSpec> algorParamSpecClass) {
         this(64, keySpecClass, algorParamSpecClass, null);
     }
 
-    SymetricAlgorithm(int s,
+    SymmetricAlgorithm(int s,
             Class <? extends KeySpec> keySpecClass, 
             Class <? extends AlgorithmParameterSpec> algorParamSpecClass) {
         this(s, keySpecClass, algorParamSpecClass, null);
     }
     
-    SymetricAlgorithm(
+    SymmetricAlgorithm(
             int s, 
             Class <? extends KeySpec> keySpecClass, 
             Class <? extends AlgorithmParameterSpec> algorParamSpecClass,

@@ -24,12 +24,10 @@
 package net.blackhacker.crypto;
 
 import net.blackhacker.crypto.algorithm.Padding;
-import net.blackhacker.crypto.algorithm.SymetricAlgorithm;
+import net.blackhacker.crypto.algorithm.SymmetricAlgorithm;
 import net.blackhacker.crypto.algorithm.Mode;
 import net.blackhacker.crypto.algorithm.DigestAlgorithm;
-import net.blackhacker.crypto.algorithm.AsymetricAlgorithm;
-import java.io.IOException;
-import java.io.InputStream;
+import net.blackhacker.crypto.algorithm.AsymmetricAlgorithm;
 import java.lang.reflect.InvocationTargetException;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.KeySpec;
@@ -43,168 +41,208 @@ import javax.crypto.spec.PBEParameterSpec;
  */
 public class Transformation {
         
-        final private SymetricAlgorithm symetricAlgorithm;
-        final private AsymetricAlgorithm asymetricAlgorithm;
-        final private DigestAlgorithm digestAlgorithm;
-        final private Mode mode;
-        final private Padding padding;
+    final private SymmetricAlgorithm symmetricAlgorithm;
+    final private AsymmetricAlgorithm asymmetricAlgorithm;
+    final private DigestAlgorithm digestAlgorithm;
+    final private Mode mode;
+    final private Padding padding;
         
-        private Transformation(
-                DigestAlgorithm digestAlgorithm,
-                SymetricAlgorithm symetricAlgorithm,
-                AsymetricAlgorithm asymetricAlgorithm,
-                Mode mode, 
-                Padding padding, 
-                boolean isPBE) {
-            this.digestAlgorithm = digestAlgorithm;
-            this.symetricAlgorithm = symetricAlgorithm;
-            this.asymetricAlgorithm = asymetricAlgorithm;
-            this.mode = mode;
-            this.padding = padding;
-        }
+    private Transformation(
+            DigestAlgorithm digestAlgorithm,
+            SymmetricAlgorithm symmetricAlgorithm,
+            AsymmetricAlgorithm asymmetricAlgorithm,
+            Mode mode, 
+            Padding padding, 
+            boolean isPBE) {
+        this.digestAlgorithm = digestAlgorithm;
+        this.symmetricAlgorithm = symmetricAlgorithm;
+        this.asymmetricAlgorithm = asymmetricAlgorithm;
+        this.mode = mode;
+        this.padding = padding;
+    }
+        
+    public Transformation(final SymmetricAlgorithm encryptionAlgorithm, final Mode mode) {
+        this(null, encryptionAlgorithm, null, mode, Padding.PKCS5Padding, false);
+    }
+        
+    public Transformation(final DigestAlgorithm digestAlgorithm, final SymmetricAlgorithm symetricAlgorithm) {
+        this(digestAlgorithm, symetricAlgorithm, null, null, null, true);
+    }
+        
+    public Transformation(final AsymmetricAlgorithm asymetricAlgorithm, final Mode mode) {
+        this(null, null, asymetricAlgorithm, mode, Padding.PKCS5Padding, false);
+    }
+        
+    public Transformation(final AsymmetricAlgorithm asymetricAlgorithm, final Mode mode, final Padding padding) {
+        this(null, null, asymetricAlgorithm, mode, padding, false);
+    }
+        
+    /**
+     * Block size in bits
+     * 
+     * @return block size in bits
+     */
+    public int getBlockSize() {
+        return isSymmetric()
+            ? symmetricAlgorithm.getBlockSize()
+            : asymmetricAlgorithm.getBlockSize();
+    }
+        
+    public int getKeySize() {
+        return isSymmetric()
+            ? -1
+            : asymmetricAlgorithm.getKeySize();
+    }
+        
+    /**
+     * Block size in bytes
+     * 
+     * @return block size in bytes
+     */
+    public int getBlockSizeBytes() {
+        return (int) Math.ceil((double)getBlockSize() / 8.0);
+    }
 
-        public Transformation(final SymetricAlgorithm encryptionAlgorithm, final Mode mode, final Padding padding) {
-            this(null, encryptionAlgorithm, null, mode, padding, false);
-        }
+    /**
+     * Returns true if the mode uses an Initialization Vector (IV)
+     * 
+     * @return true if the mode uses an IV
+     */
+    public boolean hasIV() {
+        return mode!= null && mode.hasIV();
+    }
         
-        public Transformation(final SymetricAlgorithm encryptionAlgorithm, final Mode mode) {
-            this(null, encryptionAlgorithm, null, mode, Padding.PKCS5Padding, false);
-        }
+    /**
+     * Returns true if this Transformation describes a Password Based Encryption
+     * (PBE)
+     * 
+     * @return true if this Transformation describes a PBE
+     */
+    final public boolean isPBE() {
+        return digestAlgorithm !=null;
+    }
         
-        public Transformation(final DigestAlgorithm digestAlgorithm, final SymetricAlgorithm symetricAlgorithm) {
-            this(digestAlgorithm, symetricAlgorithm, null, null, null, true);
-        }
+    /**
+     * Returns true if this Transformation describes an Asymmetric Algorithm
+     * 
+     * @return true is THIS is asymmetric
+     */
+    final public boolean isAsymmetric() {
+        return asymmetricAlgorithm != null;
+    }
         
-        public Transformation(final AsymetricAlgorithm asymetricAlgorithm, final Mode mode) {
-            this(null, null, asymetricAlgorithm, mode, Padding.PKCS5Padding, false);
-        }
+    /**
+     * Returns true is this is Transformation describes a Symmetric 
+     * @return
+     */
+    final public boolean isSymmetric() {
+        return symmetricAlgorithm != null;
+    }
         
-        public Transformation(final AsymetricAlgorithm asymetricAlgorithm, final Mode mode, final Padding padding) {
-            this(null, null, asymetricAlgorithm, mode, padding, false);
-        }
+    final public SymmetricAlgorithm getSymmetricAlgorithm() {
+        return symmetricAlgorithm;
+    }
         
-        public int getBlockSize() {
-            return isSymetric()
-                    ? symetricAlgorithm.getBlockSize()
-                    : asymetricAlgorithm.getBlockSize();
-        }
-        
-        public int getKeySize() {
-            return isSymetric()
-                    ? -1
-                    : asymetricAlgorithm.getKeySize();
-        }
-        
-        public int getBlockSizeBytes() {
-            return (int) Math.ceil((double)getBlockSize() / 8.0);
-        }
+    final public DigestAlgorithm getDigestAlgorithm() {
+        return digestAlgorithm;
+    }
 
-        public boolean hasIV() {
-            return mode!= null && mode.hasIV();
-        }
-        
-        final public boolean isPBE() {
-            return digestAlgorithm !=null;
-        }
-        
-        final public boolean isAsymetric() {
-            return asymetricAlgorithm != null;
-        }
-        
-        final public boolean isSymetric() {
-            return symetricAlgorithm != null;
-        }
-        
-        final public SymetricAlgorithm getSymetricAlgorithm() {
-            return symetricAlgorithm;
-        }
-        
-        final public DigestAlgorithm getDigestAlgorithm() {
-            return digestAlgorithm;
-        }
-
-        public KeySpec makeKeySpec(Object... params) throws CryptoException {
-            if (isSymetric())
-                return symetricAlgorithm.makeKeySpec(params);
+    public KeySpec makeKeySpec(Object... params) throws CryptoException {
+        if (isSymmetric())
+            return symmetricAlgorithm.makeKeySpec(params);
             
-            throw new CryptoException(Strings.NOT_SYMETRIC_MSG);
-        }
+        throw new CryptoException(Strings.NOT_SYMETRIC_MSG);
+    }
 
-        public KeySpec makePublicKeySpec(Object... params) throws CryptoException{
-            if (isAsymetric())
-                return asymetricAlgorithm.makePublicKeySpec(params);
+    public KeySpec makePublicKeySpec(Object... params) throws CryptoException{
+        if (isAsymmetric())
+            return asymmetricAlgorithm.makePublicKeySpec(params);
             
-            throw new CryptoException(Strings.NOT_ASYMETRIC_MSG);
-        }
+        throw new CryptoException(Strings.NOT_ASYMETRIC_MSG);
+    }
         
-        public KeySpec makePrivateKeySpec(Object... params) throws CryptoException {
-            if (isAsymetric())
-                return asymetricAlgorithm.makePrivateKeySpec(params);
+    public KeySpec makePrivateKeySpec(Object... params) throws CryptoException {
+        if (isAsymmetric())
+            return asymmetricAlgorithm.makePrivateKeySpec(params);
             
-            throw new CryptoException(Strings.NOT_ASYMETRIC_MSG);
-        }
+        throw new CryptoException(Strings.NOT_ASYMETRIC_MSG);
+    }
         
-        public AlgorithmParameterSpec makeParameterSpec(Object...params) throws CryptoException {
-            try {
-                if (params.length==0) {
-                    return null;
+    /**
+     * Builds AlgorithmParameterSpec based on the this Transformation object and 
+     *  the parameters passed in
+     * 
+     * @param params
+     * @return AlgorithmParameterSpec
+     * @throws CryptoException
+     * @see AlgorithmParameterSpec
+     */
+    public AlgorithmParameterSpec makeParameterSpec(Object...params) throws CryptoException {
+        try {
+            if (params.length==0) {
+                return null;
 
-                } else if (isPBE()) {
-                    return PBEParameterSpec.class
-                        .getConstructor(byte[].class, int.class)
+            } else if (isPBE()) {
+                return PBEParameterSpec.class
+                    .getConstructor(byte[].class, int.class)
+                    .newInstance(params);
+
+            } else if (isSymmetric()) {
+                return symmetricAlgorithm
+                        .getAlgorParamSpecClass()
+                        .getConstructor(getClasses(params))
                         .newInstance(params);
-
-                } else if (isSymetric()) {
-                    return symetricAlgorithm
-                            .getAlgorParamSpecClass()
-                            .getConstructor(getClasses(params))
-                            .newInstance(params);
-
-                }
-            } catch (NoSuchMethodException | SecurityException | 
-                     InstantiationException | IllegalAccessException | 
-                     IllegalArgumentException | InvocationTargetException ex) {
-                throw new CryptoException("Couldn't build parameterspec :" + ex.getLocalizedMessage(), ex);
             }
-            throw new CryptoException("Unsupported parameters");
+        } catch (NoSuchMethodException | SecurityException |
+                    InstantiationException | IllegalAccessException | 
+                    IllegalArgumentException | InvocationTargetException ex) {
+            throw new CryptoException("Couldn't build parameterspec :" + ex.getLocalizedMessage(), ex);
         }
         
-        static private Class<?>[] getClasses(Object[] objs) {
-            Class<?>[] classes = new Class<?>[objs.length]; 
-            for(int i = 0; i< objs.length; i++) {
-                classes[i] = objs[i].getClass();
-            }
+        throw new CryptoException("Unsupported parameters");
+    }
         
-            return classes;
+    static private Class<?>[] getClasses(Object[] objs) {
+        Class<?>[] classes = new Class<?>[objs.length]; 
+        for(int i = 0; i< objs.length; i++) {
+            classes[i] = objs[i].getClass();
         }
         
-        @Override
-        public String toString() {
-            if(isPBE())
-                return String.format("PBEWith%sAnd%s", 
-                        digestAlgorithm.name(), 
-                        symetricAlgorithm.getPBEName());
+        return classes;
+    }
+        
+    @Override
+    public String toString() {
+        if(isPBE())
+            return String.format("PBEWith%sAnd%s", 
+                digestAlgorithm.name(), 
+                symmetricAlgorithm.getPBEName());
             
-            else if (isSymetric())
-                return String.format("%s/%s/%s", 
-                        symetricAlgorithm, 
-                        mode, 
-                        padding);
-            else
-                return String.format("%s/%s/%s", 
-                        asymetricAlgorithm, 
-                        mode, 
-                        padding);
-        }
+        else if (isSymmetric())
+            return String.format("%s/%s/%s", 
+                symmetricAlgorithm, 
+                mode, 
+                padding);
+        else
+            return String.format("%s/%s/%s", 
+                asymmetricAlgorithm, 
+                mode, 
+                padding);
+    }
         
-        public String getAlgorithmString() {
-            if (isPBE())
-                return String.format("PBEWith%sAnd%s", 
-                    digestAlgorithm.name(), 
-                    symetricAlgorithm.getPBEName());
-            else if (isSymetric())
-                return symetricAlgorithm.toString();
-            else
-                return asymetricAlgorithm.toString();
+    /**
+     *  Algorithm String
+     * 
+     * @return Algorithm String
+     */
+    public String getAlgorithmString() {
+        if (isPBE())
+            return String.format("PBEWith%sAnd%s", 
+                digestAlgorithm.name(), 
+                symmetricAlgorithm.getPBEName());
+        else if (isSymmetric())
+            return symmetricAlgorithm.toString();
+        else
+            return asymmetricAlgorithm.toString();
         }
     }

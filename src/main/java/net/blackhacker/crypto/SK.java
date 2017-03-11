@@ -39,7 +39,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
- * Factory for class for Symmetric or SecretKey algorithms.
+ * Object that implements for class for Symmetric or SecretKey algorithms
  *
  * @author Benjamin King aka Blackhacker(bh@blackhacker.net)
  */
@@ -75,15 +75,15 @@ public class SK extends Crypto {
     }
     
     /**
-     *
-     * @param data
+     * encrypts byte arrays
+     * 
+     * @param data to be encrypted
      * @return encrypted version data
      * @throws CryptoException
      */
     @Override
     public byte[] encrypt(final byte[] data) throws CryptoException {
         Validator.notNull(data, "data");
-        Transformation transformation = getTransformation();
         Cipher cipher = getCipher();
         AlgorithmParameterSpec aps=null;
         byte[] iv = null;
@@ -93,12 +93,12 @@ public class SK extends Crypto {
         if (isPBE()) {
             salt = generateSalt();
             iterationCount = getIterationCount();
-            aps = transformation.makeParameterSpec(salt, iterationCount);
+            aps = makeParameterSpec(salt, iterationCount);
         }
         
-        if (transformation.hasIV()) {
+        if (hasIV()) {
             iv = generateIV();
-            aps = transformation.makeParameterSpec(iv);
+            aps = makeParameterSpec(iv);
         }
         
         try {
@@ -130,9 +130,9 @@ public class SK extends Crypto {
     }
     
     /**
+     * Decrypts an encrypted byte array
      * 
-     * @param data
-     * @param parameters
+     * @param data encrypted byte array
      * @return clear version of data
      * @throws CryptoException 
      */
@@ -140,22 +140,21 @@ public class SK extends Crypto {
     public byte[] decrypt(final byte[] data) throws CryptoException {
         Validator.notNull(data, "data");
         Cipher cipher = getCipher();
-        Transformation transformation = getTransformation();
         AlgorithmParameterSpec aps = null;
-        byte[] iv = null;
-        byte[] salt = null;
+        byte[] iv;
+        byte[] salt;
         byte[] cipherBytes = data;
         
-        if (transformation.isPBE()) {
-            salt = new byte[ transformation.getBlockSizeBytes() ];
+        if (isPBE()) {
+            salt = new byte[ getBlockSizeBytes() ];
             cipherBytes = new byte[data.length - salt.length];
             split(data, salt, cipherBytes);
-            aps = transformation.makeParameterSpec(salt, getIterationCount());
-        } else if (transformation.hasIV()) {
-            iv = new byte[transformation.getBlockSizeBytes()];
+            aps = makeParameterSpec(salt, getIterationCount());
+        } else if (hasIV()) {
+            iv = new byte[getBlockSizeBytes()];
             cipherBytes = new byte[data.length - iv.length];
             split(data, iv, cipherBytes);
-            aps = transformation.makeParameterSpec(iv);  
+            aps = makeParameterSpec(iv);  
         } 
         
         try {
@@ -173,12 +172,13 @@ public class SK extends Crypto {
                 IllegalBlockSizeException | BadPaddingException  ex) {
             throw new CryptoException(
                 String.format(Strings.COULDNT_DECRYPT_MSG_FMT,
-                transformation,
+                getTransformation(),
                 ex.getLocalizedMessage()),ex);
         }
     }
     
     /**
+     * Key object used to encrypt and decrypt messages
      * 
      * @return internal Key object
      * @throws CryptoException 
@@ -189,6 +189,7 @@ public class SK extends Crypto {
     }
     
     /**
+     * Key encoded as an array of bytes
      * 
      * @return Key in bytes
      */
