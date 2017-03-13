@@ -32,11 +32,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import static net.blackhacker.crypto.TestUtils.jce;
+
+import static net.blackhacker.crypto.Utils.jce;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -71,7 +75,7 @@ public class SKTest {
     public static Collection<Transformation[]> data() throws CryptoException {
         
         List<Transformation[]> l = new ArrayList<>(Arrays.asList(new Transformation[][] {
-                //{ new Transformation(SymmetricAlgorithm.DES, Mode.ECB) },
+                { new Transformation(SymmetricAlgorithm.DES, Mode.ECB) },
                 { new Transformation(SymmetricAlgorithm.DES, Mode.CBC) },
                 { new Transformation(SymmetricAlgorithm.DES, Mode.CFB) },
                 { new Transformation(SymmetricAlgorithm.DES, Mode.OFB) },
@@ -155,6 +159,11 @@ public class SKTest {
         byte[] friendCipherBytes = friend.encrypt(message);
         assertNotNull(algorithm + ":friend.encrypt: failed", friendCipherBytes);
         
+        if(friend.hasIV()){
+            assertThat(algorithm + ":friend.encrypt: weak", 
+                    friend.encrypt(message), not(equalTo(friendCipherBytes)));
+        }
+        
         byte[] friendClearBytes = friend.decrypt(friendCipherBytes);
         assertNotNull(algorithm + ":friend.decrypt: failed", friendClearBytes);
         assertArrayEquals(algorithm + ":friend doesn't decrypt itself", 
@@ -162,7 +171,7 @@ public class SKTest {
         
         byte[] meCipherBytes = me.encrypt(message);
         assertNotNull(algorithm + ":me.encrypt: failed", meCipherBytes); 
-        
+               
         byte[] meClearBytes = me.decrypt(meCipherBytes);
         assertNotNull(algorithm + ":me.encrypt: failed", meClearBytes);
         assertArrayEquals(algorithm + ":me doesn't decrypt itself",

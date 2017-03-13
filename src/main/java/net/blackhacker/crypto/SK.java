@@ -88,11 +88,11 @@ public class SK extends Crypto {
         AlgorithmParameterSpec aps=null;
         byte[] iv = null;
         byte[] salt = null;
-        int iterationCount;
+        int iterationCount=0;
         
         if (isPBE()) {
             salt = generateSalt();
-            iterationCount = getIterationCount();
+            iterationCount = generateIterationCount();
             aps = makeParameterSpec(salt, iterationCount);
         }
         
@@ -113,10 +113,13 @@ public class SK extends Crypto {
                 
                 byte[] cipherbytes = cipher.doFinal(data);
                 if (iv!=null) {
-                    return concat(iv, cipherbytes);
+                    return Utils.concat(iv, cipherbytes);
                 }
                 if (salt!=null){
-                    return concat(salt, cipherbytes);
+                    return Utils.concat(
+                        salt, 
+                        Utils.toBytes(iterationCount), 
+                        cipherbytes);
                 }
                 return cipherbytes;
             }
@@ -146,14 +149,15 @@ public class SK extends Crypto {
         byte[] cipherBytes = data;
         
         if (isPBE()) {
+            byte[] icBuffer = new byte[Integer.BYTES];
             salt = new byte[ getBlockSizeBytes() ];
-            cipherBytes = new byte[data.length - salt.length];
-            split(data, salt, cipherBytes);
-            aps = makeParameterSpec(salt, getIterationCount());
+            cipherBytes = new byte[data.length - salt.length - icBuffer.length];
+            Utils.split(data, salt, icBuffer, cipherBytes);
+            aps = makeParameterSpec(salt, Utils.toInt(icBuffer));
         } else if (hasIV()) {
             iv = new byte[getBlockSizeBytes()];
             cipherBytes = new byte[data.length - iv.length];
-            split(data, iv, cipherBytes);
+            Utils.split(data, iv, cipherBytes);
             aps = makeParameterSpec(iv);  
         } 
         

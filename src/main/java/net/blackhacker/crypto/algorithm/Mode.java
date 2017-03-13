@@ -24,8 +24,9 @@
 package net.blackhacker.crypto.algorithm;
 
 /**
- *
- * @author ben
+ * Supported Modes
+ * 
+ * @author Benjamin King aka Blackhacker<bh@blackhacker.net>
  */
 public enum Mode {
     NONE(false), CBC(true), CFB(true), CTR(true), CTS(true), ECB(false),
@@ -35,6 +36,10 @@ public enum Mode {
         this.hasIV = s;
     }
 
+    /**
+     * True if this mode uses an Initialization Vector (IV), false otherwise
+     * @return true this mode uses an IV
+     */
     public boolean hasIV() {
         return hasIV;
     }

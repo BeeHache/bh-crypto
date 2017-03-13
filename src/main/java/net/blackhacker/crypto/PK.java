@@ -51,15 +51,11 @@ public class PK extends Crypto {
     final private PublicKey publicKey;
     final private PrivateKey privateKey;
     
-    static final public Digester DEFAULT_DIGESTER;
-    
-    static {
-        DEFAULT_DIGESTER = DigesterFactory.newDigesterMD5();
-    }
+    static final public Digester DEFAULT_DIGESTER 
+        = DigesterFactory.newDigesterMD5();
     
     /**
-     * Constructor build public and private keys from the parameterSpec, and the
-     * encoded keys
+     * Constructor initializes from from the encoded keys
      * 
      * @param transformation
      * @param publicKeyEncoded
@@ -76,19 +72,19 @@ public class PK extends Crypto {
         
         try {
             KeyFactory kf = KeyFactory
-                    .getInstance(transformation.getAlgorithmString());
+                .getInstance(transformation.getAlgorithmString());
             
             pu = publicKeyEncoded!=null 
-                    ? kf.generatePublic(transformation.makePublicKeySpec(publicKeyEncoded)) 
-                    : null;
+                ? kf.generatePublic(transformation.makePublicKeySpec(publicKeyEncoded)) 
+                : null;
             
             pr = privateKeyEncoded!=null 
-                    ? kf.generatePrivate(transformation.makePrivateKeySpec(privateKeyEncoded)) 
-                    : null;
+                ? kf.generatePrivate(transformation.makePrivateKeySpec(privateKeyEncoded)) 
+                : null;
             
             if (pu==null && pr==null) {
                 KeyPairGenerator kpg = KeyPairGenerator
-                        .getInstance(transformation.getAlgorithmString());
+                    .getInstance(transformation.getAlgorithmString());
                 kpg.initialize(transformation.getKeySize(), getSecureRandom());
                 KeyPair kp = kpg.generateKeyPair();
                 pu = kp.getPublic();
@@ -104,8 +100,8 @@ public class PK extends Crypto {
     }
 
     /**
-     * Constructor build public and private keys from the parameterSpec, and the
-     * encoded keys
+     * Initializes from an encoded public key. Object initialized this was can 
+     * only encrypt data, and not decrypt 
      * 
      * @param transformation
      * @param publicKeyEncoded
@@ -150,7 +146,6 @@ public class PK extends Crypto {
             aps = makeParameterSpec(iv);
         }
         
-        
         try {
             synchronized (cipher) {
                 if (aps!=null) {
@@ -161,17 +156,17 @@ public class PK extends Crypto {
                 
                 byte[] cipherbytes = cipher.doFinal(clearBytes);
                 if (iv!=null) {
-                    return concat(iv, cipherbytes);
+                    return Utils.concat(iv, cipherbytes);
                 }
                 return cipherbytes;
             }
         } catch (InvalidKeyException | IllegalBlockSizeException | 
-                InvalidAlgorithmParameterException |
-                BadPaddingException ex) {
+                InvalidAlgorithmParameterException | BadPaddingException ex) {
             throw new CryptoException(
                     String.format(Strings.COULDNT_ENCRYPT_MSG_FMT, 
                             getTransformation(),
-                            ex.getLocalizedMessage()) ,ex);
+                            ex.getLocalizedMessage()), 
+                    ex);
         }
     }
     
@@ -198,7 +193,7 @@ public class PK extends Crypto {
         if (hasIV()) {
             iv = new byte[getBlockSizeBytes()];
             cipherBytes = new byte[data.length - iv.length];
-            split(data, iv, cipherBytes);
+            Utils.split(data, iv, cipherBytes);
             aps = makeParameterSpec(iv);  
         }
         
@@ -241,36 +236,36 @@ public class PK extends Crypto {
     public Verifier getVerifier(final Digester digester) {
         Validator.notNull(digester, "digester");
         
-        final Transformation transformation = getTransformation();
         final Cipher cipher = getCipher();
         
         return (final byte[] data, final byte[] signature) -> {
             AlgorithmParameterSpec aps = null;
             byte[] cipherBytes = data;
             
-            if (transformation.hasIV()) {
-                byte[] iv = new byte[transformation.getBlockSizeBytes()];
+            if (hasIV()) {
+                byte[] iv = new byte[getBlockSizeBytes()];
                 cipherBytes = new byte[data.length - iv.length];
-                Crypto.split(data, iv, cipherBytes);
+                Utils.split(data, iv, cipherBytes); //seperate iv from cipherbytes
                 aps = new IvParameterSpec(iv);
             }
             
-            synchronized(cipher) {
-                byte[] digest = digester.digest(data);
-                try {
-                    if (aps!=null) {
-                        cipher.init(Cipher.DECRYPT_MODE, publicKey, aps);
-                    } else {
-                        cipher.init(Cipher.DECRYPT_MODE, publicKey);
-                    }
-                
-                    byte[]clearSig = cipher.doFinal(signature);
-                    return Arrays.equals(clearSig, digest);
-                } catch (InvalidKeyException | InvalidAlgorithmParameterException |
-                        IllegalBlockSizeException | BadPaddingException ex) {
-                    return false;
+            try {
+                synchronized(cipher) {
+                if (aps!=null) {
+                    cipher.init(Cipher.DECRYPT_MODE, publicKey, aps);
+                } else {
+                    cipher.init(Cipher.DECRYPT_MODE, publicKey);
                 }
+
+                return Arrays.equals(
+                        cipher.doFinal(signature), 
+                        digester.digest(data));
+
+                }
+            } catch (InvalidKeyException | InvalidAlgorithmParameterException |
+                    IllegalBlockSizeException | BadPaddingException ex) {
             }
+            return false;
         };
     }
 
@@ -278,10 +273,10 @@ public class PK extends Crypto {
      * Builds a new Signer based on this PK object and the DEAULT_DIGESTER
      * 
      * @return Signer
-     * @throws CryptoException
+     * @throws net.blackhacker.crypto.SignerException
      * @see Signer
      */
-    public Signer getSigner() throws CryptoException {
+    public Signer getSigner() throws SignerException {
         return getSigner(DEFAULT_DIGESTER);
     }
     
@@ -290,11 +285,14 @@ public class PK extends Crypto {
      * 
      * @param digester
      * @return a new Signer object
-     * @throws CryptoException
+     * @throws net.blackhacker.crypto.SignerException
      */
-    public Signer getSigner(final Digester digester) throws CryptoException {
+    public Signer getSigner(final Digester digester) throws SignerException {
         Validator.notNull(digester, "digester");
-        Validator.notNull(privateKey, "privateKey");
+        
+        if (privateKey==null){
+            throw new SignerException("No PrivateKey defined");
+        }
         
         final Cipher cipher = getCipher();
         
@@ -303,7 +301,7 @@ public class PK extends Crypto {
             AlgorithmParameterSpec aps = null;
             byte[] iv = null;
             
-            if (getTransformation().hasIV()){
+            if (hasIV()){
                 aps = new IvParameterSpec(generateIV());
             }
             
@@ -318,7 +316,7 @@ public class PK extends Crypto {
                     }
 
                     byte[] cipherBytes = cipher.doFinal(digest);
-                    return Crypto.concat(iv, cipherBytes);                    
+                    return Utils.concat(iv, cipherBytes);                    
                     
                 } catch (InvalidKeyException | InvalidAlgorithmParameterException |
                         IllegalBlockSizeException | BadPaddingException ex) {

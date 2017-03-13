@@ -26,6 +26,7 @@ package net.blackhacker.crypto;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
+import java.security.spec.KeySpec;
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 
@@ -37,7 +38,7 @@ import javax.crypto.NoSuchPaddingException;
 public abstract class Crypto implements Encryptor, Decryptor {
     
     final private Transformation transformation;
-    
+        
     /**
      * Cipher
      */
@@ -47,8 +48,6 @@ public abstract class Crypto implements Encryptor, Decryptor {
      * SecureRandom
      */
     final private SecureRandom secureRandom = new SecureRandom();
-
-    private int iterationCount = 100;
     
     /**
      * Constructor
@@ -103,21 +102,9 @@ public abstract class Crypto implements Encryptor, Decryptor {
         return transformation;
     }
 
-    /**
-     * Iteration count
-     * 
-     * @return iteration count
-     */
-    public int getIterationCount(){
-        return iterationCount;
-    }
     
-    /**
-     *
-     * @param iterationCount
-     */
-    final public void setIterationCount(int iterationCount) {
-        this.iterationCount = iterationCount;
+    public int generateIterationCount(){
+        return (1024 * 5) + secureRandom.nextInt(1024);
     }
     
     /**
@@ -137,11 +124,13 @@ public abstract class Crypto implements Encryptor, Decryptor {
      * @return salt
      */
     final public byte[] generateSalt() {
-        return generateIV();
+        byte[] salt = new byte[transformation.getSaltSizeBytes()];
+        secureRandom.nextBytes(salt);
+        return salt;
     }
     
     /**
-     *  Builds [AlgorithmParameterSpec] based on the Transformation and the
+     *  Builds {@link AlgorithmParameterSpec} based on the Transformation and the
      * parameters are passed in
      * 
      * @param parameters
@@ -152,6 +141,16 @@ public abstract class Crypto implements Encryptor, Decryptor {
     final public AlgorithmParameterSpec makeParameterSpec(Object... parameters) 
             throws CryptoException {
         return transformation.makeParameterSpec(parameters);
+    }
+    
+    /**
+     *
+     * @param parameters
+     * @return
+     */
+    final public KeySpec makeKeySpec(Object... parameters)
+            throws CryptoException {
+        return transformation.makeKeySpec(parameters);
     }
 
     /**
@@ -191,50 +190,5 @@ public abstract class Crypto implements Encryptor, Decryptor {
      */
     public boolean isAsymetric() {
         return transformation.isAsymmetric();
-    }
-    
-    /**
-     *  Concatenates multiple byte arrays into a single target
-     * 
-     * @param arrays  a list of byte arrays to be concatenated
-     * @return  the concatenated byte target
-     */
-    static protected byte[] concat(byte[]... arrays){
-        int bufferSize = 0;
-        if (arrays!=null) for(byte[] array : arrays) {
-            bufferSize+= array==null ? 0 : array.length;
-        }
-        
-        byte[] buffer = new byte[bufferSize];
-        if (arrays!=null) {
-            int i = 0;
-            for (byte[]array : arrays){
-                if (array!=null)
-                    for (int a=0 ; a < array.length; a++){
-                        buffer[i++] = array[a];
-                    }
-            }
-        }
-        
-        return buffer;
-    }
-    
-    /**
-     * Reverse of the concat method, it copies the contents of one byte array
-     * to multiple arrays
-     * 
-     * @param source source byte array
-     * @param targets target byte arrays
-     */
-    static protected void split(byte[] source, byte[]... targets) {
-        int sx = 0;
-        for (byte[] target : targets) {
-            if (target != null)
-                for(int tx=0; tx < target.length; tx++){
-                    target[tx] = source[sx++];
-                }
-        }
-    }
-    
-    
+    }    
 }

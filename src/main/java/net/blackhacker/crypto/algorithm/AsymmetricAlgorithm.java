@@ -29,16 +29,15 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.RSAPrivateKeySpec;
 import java.security.spec.RSAPublicKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.ArrayList;
-import java.util.List;
 import net.blackhacker.crypto.CryptoException;
 import net.blackhacker.crypto.Strings;
+import net.blackhacker.crypto.Utils;
 import net.blackhacker.crypto.Validator;
 
 /**
  * Represents each of the supported asymetric algorithms
  * 
- * @author ben
+ * @author Benjamin King aka Blackhacker(bh@blackhacker.net)
  */
 public enum AsymmetricAlgorithm {
     /* Cipher*/
@@ -62,28 +61,45 @@ public enum AsymmetricAlgorithm {
         this.name = name;
     }
     
+    /**
+     * The size of key in bits
+     * 
+     * @return The size of keys in bits
+     */
     public int getKeySize() {
         return keySize;
     }
 
+    /**
+     * Size of block in bits
+     * 
+     * @return size of block in bits
+     */
     public int getBlockSize() {
         return blockSize;
     }
 
+    /**
+     * Builds a KeySpec for a PubliceKey based THIS and the parameters given
+     * 
+     * @param parameters
+     * @return KeySpec
+     * @throws CryptoException
+     */
     public KeySpec makePublicKeySpec(Object... parameters) throws CryptoException {
-        Validator.isTrue(parameters.length > 0, "");
+        Validator.isTrue(parameters.length > 0, "Must give parameters");
         
         try {
             try{
                 return publicKeySpecClass
-                    .getConstructor(getClasses(parameters))
+                    .getConstructor(Utils.getClasses(parameters))
                     .newInstance(parameters);
             } catch (NoSuchMethodException e){
             }
 
             try{
                 return X509EncodedKeySpec.class
-                    .getConstructor(getClasses(parameters))
+                    .getConstructor(Utils.getClasses(parameters))
                     .newInstance(parameters);
             } catch (NoSuchMethodException e) {
             }
@@ -101,21 +117,27 @@ public enum AsymmetricAlgorithm {
         }
     }
     
-
+    /**
+     * Builds a KeySpec for a PrivateKey based THIS and the parameters given
+     * 
+     * @param parameters
+     * @return PrivateKeySpec
+     * @throws CryptoException
+     */
     public KeySpec makePrivateKeySpec(Object... parameters) throws CryptoException {
         Validator.isTrue(parameters.length > 0, "");
         
         try {
             try {
             return privateKeySpecClass
-                .getConstructor(getClasses(parameters))
+                .getConstructor(Utils.getClasses(parameters))
                 .newInstance(parameters);
             } catch(NoSuchMethodException e){
             }
             
             try {
             return PKCS8EncodedKeySpec.class
-                .getConstructor(getClasses(parameters))
+                .getConstructor(Utils.getClasses(parameters))
                 .newInstance(parameters);
             } catch(NoSuchMethodException e) {
             }
@@ -131,18 +153,12 @@ public enum AsymmetricAlgorithm {
                         ex.getLocalizedMessage()), 
                     ex);
         }
-    }
+    }    
     
-    static private Class<?>[] getClasses(Object[] objs) {
-        List<Class<?>> classes = new ArrayList<>();
-        for(Object obj : objs) {
-            classes.add(obj.getClass());
-        }
-        
-        return classes.toArray(new Class<?>[0]);
-    }
-    
-    
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
         return name == null ? name() : name;

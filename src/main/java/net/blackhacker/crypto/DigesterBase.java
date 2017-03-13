@@ -32,6 +32,7 @@ import net.blackhacker.crypto.algorithm.DigestAlgorithm;
  * @author Benjamin King aka Blackhacker(bh@blackhacker.net)
  */
 public class DigesterBase implements Digester {
+    final private DigestAlgorithm digestAlgorithm;
     final private MessageDigest messageDigest;
     
     /**
@@ -40,32 +41,15 @@ public class DigesterBase implements Digester {
      * @param digestAlgorithm
      * @throws net.blackhacker.crypto.DigesterException
      */
-    protected DigesterBase(final DigestAlgorithm digestAlgorithm) throws DigesterException {
+    protected DigesterBase(final DigestAlgorithm digestAlgorithm) 
+            throws DigesterException {
         Validator.notNull(digestAlgorithm, "digestAlgorithm");
+        this.digestAlgorithm = digestAlgorithm;
     	try {
             messageDigest = MessageDigest.getInstance(digestAlgorithm.name());
     	} catch(NoSuchAlgorithmException e) {
             throw new DigesterException(e);
     	}
-    }
-    
-    /**
-     * Constructor
-     * 
-     * @param messageDigest
-     * @see MessageDigest
-     */
-    protected DigesterBase(final MessageDigest messageDigest){
-        Validator.notNull(messageDigest, "messageDigest");        
-        this.messageDigest = messageDigest;
-    }
-
-    /**
-     *
-     * @return algorithm name
-     */
-    public String getAlgorithm() {
-        return messageDigest.getAlgorithm();
     }
     
     /**
@@ -78,7 +62,7 @@ public class DigesterBase implements Digester {
         Validator.notNull(data, "data");
         synchronized(messageDigest) {
             byte[] digest =  messageDigest.digest(data);
-            messageDigest.reset();        	
+            messageDigest.reset();
             return digest;
         }
     }

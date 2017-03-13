@@ -35,6 +35,7 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import net.blackhacker.crypto.CryptoException;
 import net.blackhacker.crypto.Strings;
+import net.blackhacker.crypto.Utils;
 import net.blackhacker.crypto.Validator;
 
 /**
@@ -60,12 +61,6 @@ public enum SymmetricAlgorithm {
     //RC5
     ;
 
-    /*
-    SymmetricAlgorithm(){
-        this(64, null, null, null);
-    }
-    */
-
     SymmetricAlgorithm(
             Class <? extends KeySpec> keySpecClass, 
             Class <? extends AlgorithmParameterSpec> algorParamSpecClass) {
@@ -89,21 +84,21 @@ public enum SymmetricAlgorithm {
         this.PBEName = PBEName;
     }
 
+    /**
+     * Size of block in bits
+     * 
+     * @return size of block in bits
+     */
     public int getBlockSize() {
         return blockSize;
     }
     
+    /**
+     * PBE Name
+     * @return PBE Name
+     */
     public String getPBEName() {
         return PBEName == null ? name() : PBEName;
-    }
-    
-    static private Class<?>[] getClasses(Object[] objs) {
-        List<Class<?>> classes = new ArrayList<>();
-        for(Object obj : objs) {
-            classes.add(obj.getClass());
-        }
-        
-        return classes.toArray(new Class<?>[0]);
     }
     
     /**
@@ -117,7 +112,7 @@ public enum SymmetricAlgorithm {
      */
     public KeySpec makeKeySpec(Object... parameters) throws CryptoException {
         Validator.isTrue(parameters.length > 0, "parameters are empty");
-        Class<?>[] classes = getClasses(parameters);
+        Class<?>[] classes = Utils.getClasses(parameters);
         try {
             try {
                 return keySpecClass
@@ -167,7 +162,7 @@ public enum SymmetricAlgorithm {
         Validator.isTrue(parameters.length > 0, "");
         try {
             return algorParamSpecClass
-                .getConstructor(getClasses(parameters))
+                .getConstructor(Utils.getClasses(parameters))
                 .newInstance(parameters);
         } catch (NoSuchMethodException ex) {
             throw new CryptoException("Unsupported parameters");

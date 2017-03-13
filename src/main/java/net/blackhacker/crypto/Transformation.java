@@ -52,8 +52,7 @@ public class Transformation {
             SymmetricAlgorithm symmetricAlgorithm,
             AsymmetricAlgorithm asymmetricAlgorithm,
             Mode mode, 
-            Padding padding, 
-            boolean isPBE) {
+            Padding padding) {
         this.digestAlgorithm = digestAlgorithm;
         this.symmetricAlgorithm = symmetricAlgorithm;
         this.asymmetricAlgorithm = asymmetricAlgorithm;
@@ -62,19 +61,19 @@ public class Transformation {
     }
         
     public Transformation(final SymmetricAlgorithm encryptionAlgorithm, final Mode mode) {
-        this(null, encryptionAlgorithm, null, mode, Padding.PKCS5Padding, false);
+        this(null, encryptionAlgorithm, null, mode, Padding.PKCS5Padding);
     }
         
     public Transformation(final DigestAlgorithm digestAlgorithm, final SymmetricAlgorithm symetricAlgorithm) {
-        this(digestAlgorithm, symetricAlgorithm, null, null, null, true);
+        this(digestAlgorithm, symetricAlgorithm, null, null, null);
     }
         
     public Transformation(final AsymmetricAlgorithm asymetricAlgorithm, final Mode mode) {
-        this(null, null, asymetricAlgorithm, mode, Padding.PKCS5Padding, false);
+        this(null, null, asymetricAlgorithm, mode, Padding.PKCS5Padding);
     }
         
     public Transformation(final AsymmetricAlgorithm asymetricAlgorithm, final Mode mode, final Padding padding) {
-        this(null, null, asymetricAlgorithm, mode, padding, false);
+        this(null, null, asymetricAlgorithm, mode, padding);
     }
         
     /**
@@ -100,7 +99,7 @@ public class Transformation {
      * @return block size in bytes
      */
     public int getBlockSizeBytes() {
-        return (int) Math.ceil((double)getBlockSize() / 8.0);
+        return Utils.bitsToBytes(getBlockSize());
     }
 
     /**
@@ -120,6 +119,15 @@ public class Transformation {
      */
     final public boolean isPBE() {
         return digestAlgorithm !=null;
+    }
+    
+    /**
+     * Randomly generates salt bytes
+     * 
+     * @return salt
+     */
+    final public int getSaltSizeBytes() {
+        return digestAlgorithm.getSaltSizeBytes();
     }
         
     /**

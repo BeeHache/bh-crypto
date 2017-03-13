@@ -24,11 +24,15 @@
 package net.blackhacker.crypto.algorithm;
 
 /**
- *
- * @author ben
+ * Padding algorithms supported
+ * 
+ * @author Benjamin King aka Blackhacker<bh@blackhacker.net>
  */
 public enum Padding {
-    /* Cipher */
-    NOpADDING, ISO10126Padding, OAEPPadding, PKCS1Padding, PKCS5Padding, 
+    NOpADDING, 
+    ISO10126Padding, 
+    OAEPPadding, 
+    PKCS1Padding, 
+    PKCS5Padding, 
     SSL3Padding
 }

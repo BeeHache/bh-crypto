@@ -31,7 +31,7 @@ package net.blackhacker.crypto;
 public interface Decryptor {
     
     /**
-     * Must be implemented by subclass
+     * Decrypts encrypted bytes and returns the value in the clear
      * 
      * @param cipherBytes bytes to be decrypted
      * @return bytes in the clear

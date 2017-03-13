@@ -23,7 +23,9 @@
  */
 package net.blackhacker.crypto;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -72,7 +74,7 @@ public class Utils {
      * @param arrays  a list of byte arrays to be concatenated
      * @return  the concatenated byte target
      */
-    static protected byte[] concat(byte[]... arrays){
+    static public byte[] concat(byte[]... arrays){
         int bufferSize = 0;
         if (arrays!=null) for(byte[] array : arrays) {
             bufferSize+= array==null ? 0 : array.length;
@@ -99,13 +101,46 @@ public class Utils {
      * @param source source byte array
      * @param targets target byte arrays
      */
-    static protected void split(byte[] source, byte[]... targets) {
+    static public void split(byte[] source, byte[]... targets) {
         int sx = 0;
         for (byte[] target : targets) {
-            if (target != null)
-                for(int tx=0; tx < target.length; tx++){
+            if (target != null)                
+                for(int tx=0; tx < target.length; tx++) {
                     target[tx] = source[sx++];
                 }
         }
+    }
+    
+    /**
+     * Converts integer to a byte array
+     * 
+     * @param i integer to be converted
+     * @return byte[] representation of given integer
+     */
+    static public byte[] toBytes(int i){
+        ByteBuffer bb = ByteBuffer.allocate(Integer.BYTES);
+        bb.putInt(i);
+        return bb.array();
+    }
+    
+    /**
+     *  Reads bytes from an array and converts them to an integer
+     * 
+     * @param b byte array
+     * @return integer
+     */
+    static public int toInt(byte[] b){
+        ByteBuffer bb = ByteBuffer.wrap(b);
+        return bb.getInt();
+    }
+    
+    /**
+     * Calculates the number of bytes needed to contain a given number of bits.
+     * 
+     * @param bits
+     * @return  byte count
+     */
+    static public int bitsToBytes(int bits) {
+        return (int) Math.ceil((double)bits / 8.0);
     }
 }

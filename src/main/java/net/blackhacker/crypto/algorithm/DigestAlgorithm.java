@@ -23,10 +23,27 @@
  */
 package net.blackhacker.crypto.algorithm;
 
+import net.blackhacker.crypto.Utils;
+
 /**
- *
+ * All supported Digest Algorithms
+ * 
  * @author Benjamin King aka Blackhacker<bh@blackhacker.net>
  */
 public enum DigestAlgorithm {
-        MD2, MD5, SHA1, SHA256, SHA384, SHA512;
+        MD5(64), SHA1(160), SHA256(160), SHA384(160), SHA512(120);
+        
+        DigestAlgorithm(int saltSize){
+            this.saltSize = saltSize;
+        }
+        
+        public int getSaltSize(){
+            return saltSize;
+        }
+        
+        public int getSaltSizeBytes(){
+            return Utils.bitsToBytes(saltSize);
+        }
+        
+        private final int saltSize;
 }

@@ -34,6 +34,7 @@ import org.junit.Test;
  */
 
 public class UtilsTest {
+    private Random random = new Random();
     
     @Test
     public void splitConcatTest() {
@@ -43,22 +44,23 @@ public class UtilsTest {
         a0 = Utils.concat(null);
         assertArrayEquals(new byte[0], a0);
         
-        Random r = new Random();
+        byte[] a1 = new byte[ random.nextInt(100)];
+        byte[] a2 = new byte[ random.nextInt(100)];
+        byte[] a3 = new byte[ random.nextInt(100)];
+        byte[] a4 = null;
+        byte[] a5 = new byte[ random.nextInt(100)];
         
-        byte[] a1 = new byte[ r.nextInt(100)];
-        byte[] a2 = new byte[ r.nextInt(100)];
-        byte[] a3 = new byte[ r.nextInt(100)];
+        random.nextBytes(a1);
+        random.nextBytes(a2);
+        random.nextBytes(a3);
+        random.nextBytes(a5);
         
-        r.nextBytes(a1);
-        r.nextBytes(a2);
-        r.nextBytes(a3);
+        byte[] data = Utils.concat(a1, a2, a3, a4, a5);
         
-        byte[] data = Utils.concat(a1, a2, a3);
-        
-        assertEquals(a1.length + a2.length + a3.length, data.length);
+        assertEquals(a1.length + a2.length + a3.length + a5.length, data.length);
         int dx=0;
-        for (byte[] aix : new byte[][]{a1,a2,a3}) {
-            for (byte b : aix) {
+        for (byte[] aix : new byte[][]{a1,a2,a3,a4,a5}) {
+            if (aix!=null) for (byte b : aix) {
                 assertEquals(b, data[dx++]);
             }
         }
@@ -66,12 +68,26 @@ public class UtilsTest {
         byte[] b1 = new byte[a1.length];
         byte[] b2 = new byte[a2.length];
         byte[] b3 = new byte[a3.length];
+        byte[] b4 = null;
+        byte[] b5 = new byte[a5.length];
         
-        Utils.split(data, b1, b2, b3);
+        Utils.split(data, b1, b2, b3, b4, b5);
         
         assertArrayEquals(a1, b1);
         assertArrayEquals(a2, b2);
         assertArrayEquals(a3, b3);
+        assertArrayEquals(a5, b5);
+    }
+    
+    @Test
+    public void toIntToBytesTest(){
+        int ri = random.nextInt();
+        assertEquals(ri, Utils.toInt(Utils.toBytes(ri)));
+        
+        byte[] rb = new byte[4];
+        random.nextBytes(rb);
+        assertArrayEquals(rb, Utils.toBytes(Utils.toInt(rb)));
+        
     }
     
 }

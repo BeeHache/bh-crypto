@@ -28,7 +28,7 @@ package net.blackhacker.crypto;
  * @author Benjamin King aka Blackhacker(bh@blackhacker.net)
  */
 public interface Digester {
-
+    
     /**
      * Returns an digest of the given byte array
      * 

@@ -28,13 +28,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+
 import net.blackhacker.crypto.algorithm.AsymmetricAlgorithm;
 import net.blackhacker.crypto.algorithm.Mode;
 import net.blackhacker.crypto.algorithm.Padding;
+import static org.hamcrest.MatcherAssert.assertThat;
 
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -43,6 +49,8 @@ import org.junit.Test;
 import org.junit.rules.ErrorCollector;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+
 
 /**
  *
@@ -82,7 +90,7 @@ public class PKTest {
     }
     
     @Before
-    public void setupTest() throws CryptoException {
+    public void setup() throws CryptoException {
         friend = new PK(transformation);
         me = new PK(transformation, friend.getPublicKeyEncoded());
         foe = new PK(transformation);
@@ -97,6 +105,11 @@ public class PKTest {
         
         byte[] friendCipherBytes = friend.encrypt(message);
         assertNotNull(algorithm + ":friend.encrypt: failed", friendCipherBytes);
+        
+        if(friend.hasIV()) {
+            assertThat(algorithm + ":friend.encrypt: weak", 
+                friend.encrypt(message), not(equalTo(friendCipherBytes)));
+        }
         
         byte[] friendClearBytes = friend.decrypt(friendCipherBytes);
         assertNotNull(algorithm + ":friend.decrypt: failed", friendClearBytes);
@@ -128,5 +141,21 @@ public class PKTest {
         } catch (CryptoException e) {
             // 
         }
+    }
+
+    @Test
+    public void signVerifyTest() throws SignerException {
+        try{
+            me.getSigner();
+            fail("Signer without private key");
+        } catch(SignerException e){
+        }
+        
+        Signer friendSigner = friend.getSigner();
+        Verifier meVerifier = me.getVerifier();
+        
+        byte[] friendSig = friendSigner.sign(message);
+        assertNotNull("", friendSig);
+        assertTrue("", meVerifier.verify(message, friendSig));
     }
 }
