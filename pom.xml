@@ -43,7 +43,7 @@
     <readme.page>README.html</readme.page>
 
     <license.header.file>misc/license_header.txt</license.header.file>
-    <license.src.file>LICENSE.txt</license.src.file>
+    <license.src.file>LICENSE</license.src.file>
     <license.tgt.file>LICENSE.xhtml</license.tgt.file>
     <license.name>MIT License</license.name>
     <license.page>LICENSE.html</license.page>
@@ -201,7 +201,7 @@
                   <includes>
                     <include>src/main/**/*</include>
                     <include>src/test/**/*</include>
-                    <include>${license.src.file}</include>
+                    <!--include>${license.src.file}</include -->
                   </includes>
                   <aggregate>true</aggregate>
                </configuration>
