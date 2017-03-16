@@ -45,24 +45,27 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class SK extends Crypto {
     final private Key key;
-    
+        
     protected SK(Transformation transformation, Object... parameters) throws CryptoException{
-        super(transformation);
+        super(transformation, parameters);
         try {
-            if (parameters.length==0){
-                KeyGenerator kg = KeyGenerator
-                    .getInstance(transformation.getAlgorithmString());                
-                kg.init(getSecureRandom());
-                key = kg.generateKey();
-            } else {
-                KeySpec spec = transformation.makeKeySpec(parameters);
-                if(spec instanceof SecretKeySpec) {
-                    key = (Key)spec;
-                } else {
-                    SecretKeyFactory kf = SecretKeyFactory
-                        .getInstance(transformation.getAlgorithmString());
-                    key = kf.generateSecret(spec);
-                }
+            switch(parameters.length) {
+                case 0:
+                    KeyGenerator kg = KeyGenerator
+                        .getInstance(transformation.getAlgorithmString());                
+                    kg.init(getSecureRandom());
+                    key = kg.generateKey();
+                    break;
+                    
+                default:
+                    KeySpec spec = makeKeySpec(parameters);
+                    if(spec instanceof SecretKeySpec) {
+                        key = (Key)spec;
+                    } else {
+                        SecretKeyFactory kf = SecretKeyFactory
+                            .getInstance(transformation.getAlgorithmString());
+                        key = kf.generateSecret(spec);
+                    }
             }
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new CryptoException(
@@ -87,16 +90,10 @@ public class SK extends Crypto {
         Cipher cipher = getCipher();
         AlgorithmParameterSpec aps=null;
         byte[] iv = null;
-        byte[] salt = null;
-        int iterationCount=0;
         
-        if (isPBE()) {
-            salt = generateSalt();
-            iterationCount = generateIterationCount();
-            aps = makeParameterSpec(salt, iterationCount);
-        }
-        
-        if (hasIV()) {
+        if(hasParameters()){
+            aps = makeParameterSpec(getParameters());
+        } else if (hasIV()) {
             iv = generateIV();
             aps = makeParameterSpec(iv);
         }
@@ -114,12 +111,6 @@ public class SK extends Crypto {
                 byte[] cipherbytes = cipher.doFinal(data);
                 if (iv!=null) {
                     return Utils.concat(iv, cipherbytes);
-                }
-                if (salt!=null){
-                    return Utils.concat(
-                        salt, 
-                        Utils.toBytes(iterationCount), 
-                        cipherbytes);
                 }
                 return cipherbytes;
             }
@@ -145,30 +136,25 @@ public class SK extends Crypto {
         Cipher cipher = getCipher();
         AlgorithmParameterSpec aps = null;
         byte[] iv;
-        byte[] salt;
         byte[] cipherBytes = data;
         
-        if (isPBE()) {
-            byte[] icBuffer = new byte[Integer.BYTES];
-            salt = new byte[ getBlockSizeBytes() ];
-            cipherBytes = new byte[data.length - salt.length - icBuffer.length];
-            Utils.split(data, salt, icBuffer, cipherBytes);
-            aps = makeParameterSpec(salt, Utils.toInt(icBuffer));
+        if (hasParameters()){
+            aps = makeParameterSpec(getParameters());
+            
         } else if (hasIV()) {
             iv = new byte[getBlockSizeBytes()];
             cipherBytes = new byte[data.length - iv.length];
             Utils.split(data, iv, cipherBytes);
-            aps = makeParameterSpec(iv);  
-        } 
+            aps = makeParameterSpec(iv);
+        }
         
         try {
             synchronized(cipher) {
-                
                 if (aps!=null) {
-                    cipher.init(Cipher.DECRYPT_MODE, key, aps);
+                    cipher.init(Cipher.DECRYPT_MODE, key, aps, getSecureRandom());
                 } else {
-                    cipher.init(Cipher.DECRYPT_MODE, key);
-                }                
+                    cipher.init(Cipher.DECRYPT_MODE, key, getSecureRandom());
+                }
                 
                 return cipher.doFinal(cipherBytes);
             }

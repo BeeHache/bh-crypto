@@ -67,6 +67,8 @@ public class SKTest {
     static private char[] foePassphrase;
     static private byte[] message;
     
+    static private SecureRandom secureRandom = new SecureRandom();
+    
     public SKTest(Transformation t) {
         transformation = t;
     }
@@ -75,7 +77,8 @@ public class SKTest {
     public static Collection<Transformation[]> data() throws CryptoException {
         
         List<Transformation[]> l = new ArrayList<>(Arrays.asList(new Transformation[][] {
-                { new Transformation(SymmetricAlgorithm.DES, Mode.ECB) },
+/*
+            { new Transformation(SymmetricAlgorithm.DES, Mode.ECB) },
                 { new Transformation(SymmetricAlgorithm.DES, Mode.CBC) },
                 { new Transformation(SymmetricAlgorithm.DES, Mode.CFB) },
                 { new Transformation(SymmetricAlgorithm.DES, Mode.OFB) },
@@ -90,7 +93,7 @@ public class SKTest {
                 { new Transformation(SymmetricAlgorithm.AES, Mode.CFB) },
                 { new Transformation(SymmetricAlgorithm.AES, Mode.OFB) },
                 { new Transformation(SymmetricAlgorithm.AES, Mode.CTR) },
-                
+*/                
                 /*PBE */
                 { new Transformation(DigestAlgorithm.MD5, SymmetricAlgorithm.DES) },
                 { new Transformation(DigestAlgorithm.MD5, SymmetricAlgorithm.DESede) },
@@ -120,33 +123,35 @@ public class SKTest {
 
     @BeforeClass
     static public void setupClass() throws CryptoException {
-        SecureRandom sr = new SecureRandom();
         
-        passphrase = new char[ sr.nextInt(30) + 1];
+        passphrase = new char[ secureRandom.nextInt(30) + 1];
         for (int p = 0; p < passphrase.length; p++) {
-            passphrase[p] = (char) (sr.nextInt(94) + 32);
+            passphrase[p] = (char) (secureRandom.nextInt(94) + 32);
         }
 
-        foePassphrase = new char[ sr.nextInt(30) + 1];
+        foePassphrase = new char[ secureRandom.nextInt(30) + 1];
         for (int p = 0; p < foePassphrase.length; p++) {
-            foePassphrase[p] = (char) (sr.nextInt(94) + 32);
+            foePassphrase[p] = (char) (secureRandom.nextInt(94) + 32);
         }
         
-        message = new byte[sr.nextInt(1024)];
+        message = new byte[secureRandom.nextInt(1024)];
         
-        sr.nextBytes(message);
+        secureRandom.nextBytes(message);
     }
     
     @Before
     public void setupTest() throws CryptoException {
         if (transformation.isPBE()) {
-            friend = new SK(transformation, passphrase);
-            me = new SK(transformation, passphrase);
+            byte[] salt = new byte[transformation.getSaltSizeBytes()];
+            secureRandom.nextBytes(salt);
+            int cnt = 1024;
+            friend = new SK(transformation, passphrase, salt, cnt);
+            me = new SK(transformation, passphrase, salt, cnt);
             foe = new SK(transformation, foePassphrase);
             
         } else {
             friend = new SK(transformation);
-            me = new SK(transformation, friend.getKeyEncoded());
+            me = new SK(transformation);
             foe = new SK(transformation);
         }
     }

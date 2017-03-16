@@ -24,8 +24,12 @@
 package net.blackhacker.crypto;
 
 import java.util.Random;
+import org.junit.After;
+import org.junit.AfterClass;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -35,6 +39,22 @@ import org.junit.Test;
 
 public class UtilsTest {
     private Random random = new Random();
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+    }
+
+    @Before
+    public void setUp() throws Exception {
+    }
+
+    @After
+    public void tearDown() throws Exception {
+    }
     
     @Test
     public void splitConcatTest() {
@@ -44,11 +64,11 @@ public class UtilsTest {
         a0 = Utils.concat(null);
         assertArrayEquals(new byte[0], a0);
         
-        byte[] a1 = new byte[ random.nextInt(100)];
-        byte[] a2 = new byte[ random.nextInt(100)];
-        byte[] a3 = new byte[ random.nextInt(100)];
+        byte[] a1 = new byte[ random.nextInt(20)];
+        byte[] a2 = new byte[ random.nextInt(20)];
+        byte[] a3 = new byte[ random.nextInt(20)];
         byte[] a4 = null;
-        byte[] a5 = new byte[ random.nextInt(100)];
+        byte[] a5 = new byte[ random.nextInt(20)];
         
         random.nextBytes(a1);
         random.nextBytes(a2);
@@ -88,6 +108,19 @@ public class UtilsTest {
         random.nextBytes(rb);
         assertArrayEquals(rb, Utils.toBytes(Utils.toInt(rb)));
         
+    }
+
+    /**
+     * Test of getClasses method, of class Utils.
+     */
+    @Test
+    public void testGetClasses() {
+        System.out.println("getClasses");
+        Object[] objs = {1,(long)1 ,(float)1.0, (double)1.0, "ONE"};
+        Class[] expResult = {int.class, long.class, float.class, double.class,
+            String.class};
+        Class[] result = Utils.getClasses(objs);
+        assertArrayEquals(expResult, result);
     }
     
 }

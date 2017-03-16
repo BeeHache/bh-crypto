@@ -27,6 +27,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.KeySpec;
+import java.util.Arrays;
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 
@@ -49,14 +50,18 @@ public abstract class Crypto implements Encryptor, Decryptor {
      */
     final private SecureRandom secureRandom = new SecureRandom();
     
+    final private Object[] parameters;
+    
     /**
      * Constructor
      * 
      * @param transformation
+     * @param parameters
      * @throws CryptoException
      */
-    public  Crypto(Transformation transformation) throws CryptoException {
+    public  Crypto(Transformation transformation, Object... parameters) throws CryptoException {
         this.transformation = transformation;
+        this.parameters = parameters;
         
         try {
             cipher = Cipher.getInstance(transformation.toString());
@@ -101,11 +106,6 @@ public abstract class Crypto implements Encryptor, Decryptor {
     final public Transformation getTransformation() {
         return transformation;
     }
-
-    
-    public int generateIterationCount(){
-        return (1024 * 5) + secureRandom.nextInt(1024);
-    }
     
     /**
      * Generates a new Initialization Vector (IV) and stores it internally
@@ -147,6 +147,8 @@ public abstract class Crypto implements Encryptor, Decryptor {
      *
      * @param parameters
      * @return
+     * @throws net.blackhacker.crypto.CryptoException
+     * @see KeySpec
      */
     final public KeySpec makeKeySpec(Object... parameters)
             throws CryptoException {
@@ -190,5 +192,13 @@ public abstract class Crypto implements Encryptor, Decryptor {
      */
     public boolean isAsymetric() {
         return transformation.isAsymmetric();
-    }    
+    }
+
+    public Object[] getParameters() {
+        return Arrays.copyOf(parameters, parameters.length);
+    }
+    
+    public boolean hasParameters(){
+        return parameters.length > 0;
+    }
 }

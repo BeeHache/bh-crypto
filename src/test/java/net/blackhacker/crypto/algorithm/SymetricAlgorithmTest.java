@@ -60,7 +60,7 @@ public class SymetricAlgorithmTest {
     @Test
     public void gettersTest() {
         assertTrue("block size", algorithm.getBlockSize() > 0);
-        assertNotNull("PBE name", algorithm.getPBEName());
+        assertNotNull("PBE name", algorithm.getTransformationName());
         assertNotNull("KeySpec Class", algorithm.getKeySpecClass());
         assertNotNull("AlgorithmParameterSpec Class", 
                 algorithm.getAlgorParamSpecClass());

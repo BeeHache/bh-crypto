@@ -26,8 +26,6 @@ package net.blackhacker.crypto.algorithm;
 import java.lang.reflect.InvocationTargetException;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.KeySpec;
-import java.util.ArrayList;
-import java.util.List;
 import javax.crypto.spec.DESKeySpec;
 import javax.crypto.spec.DESedeKeySpec;
 import javax.crypto.spec.IvParameterSpec;
@@ -77,11 +75,11 @@ public enum SymmetricAlgorithm {
             int s, 
             Class <? extends KeySpec> keySpecClass, 
             Class <? extends AlgorithmParameterSpec> algorParamSpecClass,
-            String PBEName ){
+            String transformationName ){
         this.blockSize = s;
         this.keySpecClass = keySpecClass;
         this.algorParamSpecClass = algorParamSpecClass;
-        this.PBEName = PBEName;
+        this.transformationName = transformationName;
     }
 
     /**
@@ -91,14 +89,6 @@ public enum SymmetricAlgorithm {
      */
     public int getBlockSize() {
         return blockSize;
-    }
-    
-    /**
-     * PBE Name
-     * @return PBE Name
-     */
-    public String getPBEName() {
-        return PBEName == null ? name() : PBEName;
     }
     
     /**
@@ -115,6 +105,13 @@ public enum SymmetricAlgorithm {
         Class<?>[] classes = Utils.getClasses(parameters);
         try {
             try {
+                return PBEKeySpec.class
+                    .getConstructor(classes)
+                    .newInstance(parameters);
+            } catch(NoSuchMethodException ex) {
+            }
+            
+            try {
                 return keySpecClass
                     .getConstructor(classes)
                     .newInstance(parameters);
@@ -125,13 +122,6 @@ public enum SymmetricAlgorithm {
                 return keySpecClass
                     .getConstructor(parameters[0].getClass(), String.class)
                     .newInstance(parameters[0], name());
-            } catch (NoSuchMethodException ex) {
-            }
-            
-            try {
-                return PBEKeySpec.class
-                    .getConstructor(classes)
-                    .newInstance(parameters);
             } catch (NoSuchMethodException ex) {
             }
             
@@ -181,9 +171,14 @@ public enum SymmetricAlgorithm {
     public Class<? extends AlgorithmParameterSpec> getAlgorParamSpecClass() {
         return algorParamSpecClass;
     }
+    
+    public final String getTransformationName() {
+        return transformationName==null ? name() : transformationName;
+    }
+    
 
+    final private String transformationName;
     final private int blockSize;
-    final private String PBEName;
     final private Class <? extends KeySpec> keySpecClass;
     final private Class <? extends AlgorithmParameterSpec> algorParamSpecClass;
 }

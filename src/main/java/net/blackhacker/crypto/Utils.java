@@ -27,6 +27,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -61,7 +62,17 @@ public class Utils {
     static final public Class<?>[] getClasses(Object... objs) {
         List<Class<?>> classes = new ArrayList<>();
         for(Object obj : objs) {
-            classes.add(obj.getClass());
+            Class<?> aClass = obj.getClass();
+            if (aClass.equals(Integer.class)) {
+                aClass = int.class;
+            } else if (aClass.equals(Long.class)){
+                aClass = long.class;
+            } else if (aClass.equals(Float.class)){
+                aClass = float.class;
+            } else if (aClass.equals(Double.class)){
+                aClass = double.class;
+            }
+            classes.add(aClass);
         }
         
         return classes.toArray(new Class<?>[0]);
@@ -85,9 +96,8 @@ public class Utils {
             int i = 0;
             for (byte[]array : arrays){
                 if (array!=null)
-                    for (int a=0 ; a < array.length; a++){
+                    for (int a=0 ; a < array.length; a++)
                         buffer[i++] = array[a];
-                    }
             }
         }
         
@@ -103,11 +113,14 @@ public class Utils {
      */
     static public void split(byte[] source, byte[]... targets) {
         int sx = 0;
-        for (byte[] target : targets) {
-            if (target != null)                
-                for(int tx=0; tx < target.length; tx++) {
-                    target[tx] = source[sx++];
-                }
+        if (source != null) try {
+            for (byte[] target : targets) {
+                if (target != null)
+                    for(int tx=0; tx < target.length; tx++) {
+                        target[tx] = source[sx++];
+                    }
+            }
+        }catch(IndexOutOfBoundsException e) {
         }
     }
     
