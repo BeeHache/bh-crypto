@@ -40,6 +40,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Before;
@@ -77,42 +78,41 @@ public class SKTest {
     public static Collection<Transformation[]> data() throws CryptoException {
         
         List<Transformation[]> l = new ArrayList<>(Arrays.asList(new Transformation[][] {
-/*
             { new Transformation(SymmetricAlgorithm.DES, Mode.ECB) },
-                { new Transformation(SymmetricAlgorithm.DES, Mode.CBC) },
-                { new Transformation(SymmetricAlgorithm.DES, Mode.CFB) },
-                { new Transformation(SymmetricAlgorithm.DES, Mode.OFB) },
-                
-                { new Transformation(SymmetricAlgorithm.DESede, Mode.ECB) },
-                { new Transformation(SymmetricAlgorithm.DESede, Mode.CBC) },
-                { new Transformation(SymmetricAlgorithm.DESede, Mode.CFB) },
-                { new Transformation(SymmetricAlgorithm.DESede, Mode.OFB) },
-                
-                { new Transformation(SymmetricAlgorithm.AES, Mode.ECB) },
-                { new Transformation(SymmetricAlgorithm.AES, Mode.CBC) },
-                { new Transformation(SymmetricAlgorithm.AES, Mode.CFB) },
-                { new Transformation(SymmetricAlgorithm.AES, Mode.OFB) },
-                { new Transformation(SymmetricAlgorithm.AES, Mode.CTR) },
-*/                
-                /*PBE */
-                { new Transformation(DigestAlgorithm.MD5, SymmetricAlgorithm.DES) },
-                { new Transformation(DigestAlgorithm.MD5, SymmetricAlgorithm.DESede) },
+            { new Transformation(SymmetricAlgorithm.DES, Mode.CBC) },
+            { new Transformation(SymmetricAlgorithm.DES, Mode.CFB) },
+            { new Transformation(SymmetricAlgorithm.DES, Mode.OFB) },
+
+            { new Transformation(SymmetricAlgorithm.DESede, Mode.ECB) },
+            { new Transformation(SymmetricAlgorithm.DESede, Mode.CBC) },
+            { new Transformation(SymmetricAlgorithm.DESede, Mode.CFB) },
+            { new Transformation(SymmetricAlgorithm.DESede, Mode.OFB) },
+
+            { new Transformation(SymmetricAlgorithm.AES, Mode.ECB) },
+            { new Transformation(SymmetricAlgorithm.AES, Mode.CBC) },
+            { new Transformation(SymmetricAlgorithm.AES, Mode.CFB) },
+            { new Transformation(SymmetricAlgorithm.AES, Mode.OFB) },
+            { new Transformation(SymmetricAlgorithm.AES, Mode.CTR) },
+
+            /*PBE */
+            { new Transformation(DigestAlgorithm.MD5, SymmetricAlgorithm.DES) },
+            { new Transformation(DigestAlgorithm.MD5, SymmetricAlgorithm.DESede) },
             }
         ));
         
         if (jce()) {
             l.addAll(Arrays.asList(new Transformation[][] {
-                        { new Transformation(SymmetricAlgorithm.AES192, Mode.ECB) },
-                        { new Transformation(SymmetricAlgorithm.AES192, Mode.CBC) },
-                        { new Transformation(SymmetricAlgorithm.AES192, Mode.CFB) },
-                        { new Transformation(SymmetricAlgorithm.AES192, Mode.OFB) },
-                        { new Transformation(SymmetricAlgorithm.AES192, Mode.CTR) },
-                        
-                        /* PBE */
-                        { new Transformation(DigestAlgorithm.SHA1, SymmetricAlgorithm.DESede) },
-                        { new Transformation(DigestAlgorithm.SHA256, SymmetricAlgorithm.AES256) },
-                        
-                    }));
+                { new Transformation(SymmetricAlgorithm.AES192, Mode.ECB) },
+                { new Transformation(SymmetricAlgorithm.AES192, Mode.CBC) },
+                { new Transformation(SymmetricAlgorithm.AES192, Mode.CFB) },
+                { new Transformation(SymmetricAlgorithm.AES192, Mode.OFB) },
+                { new Transformation(SymmetricAlgorithm.AES192, Mode.CTR) },
+
+                /* PBE */
+                { new Transformation(DigestAlgorithm.SHA1, SymmetricAlgorithm.DESede) },
+                { new Transformation(DigestAlgorithm.SHA256, SymmetricAlgorithm.AES256) },
+
+            }));
         }
         
         return l;
@@ -142,23 +142,20 @@ public class SKTest {
     @Before
     public void setupTest() throws CryptoException {
         if (transformation.isPBE()) {
-            byte[] salt = new byte[transformation.getSaltSizeBytes()];
-            secureRandom.nextBytes(salt);
-            int cnt = 1024;
-            friend = new SK(transformation, passphrase, salt, cnt);
-            me = new SK(transformation, passphrase, salt, cnt);
+            friend = new SK(transformation, passphrase);
+            me = new SK(transformation, passphrase);
             foe = new SK(transformation, foePassphrase);
             
         } else {
             friend = new SK(transformation);
-            me = new SK(transformation);
+            me = new SK(transformation, friend.getKeyEncoded());
             foe = new SK(transformation);
         }
     }
     
     @Test
     public void encryptDecryptTest() throws CryptoException {
-        byte[] clearbytes2;
+        byte[] foeClearBytes;
         String algorithm = me.getTransformation().toString();
         
         byte[] friendCipherBytes = friend.encrypt(message);
@@ -192,22 +189,12 @@ public class SKTest {
         assertArrayEquals(algorithm + ":me doesn't decrypt friend", 
                 message, friendClearBytes);
         
-        try {
-            clearbytes2 = foe.decrypt(friendCipherBytes);
-            assertFalse(
-                algorithm + ":foe.decrypt: foe decrypted friend's message", 
-                Arrays.equals(friendClearBytes, clearbytes2));
-        } catch(CryptoException e) {
-            // this is good. foes shouldn't be able to decrypt friend bytes
-        }
+        foeClearBytes = foe.decrypt(friendCipherBytes);
+        assertFalse(algorithm + ":foe.decrypt: foe decrypted friend's message",
+            Arrays.equals(message, foeClearBytes));
         
-        try {
-            clearbytes2 = foe.decrypt(meCipherBytes);
-            assertFalse(
-                algorithm + ":foe.decrypt: foe decrypted me's message", 
-                Arrays.equals(friendClearBytes, clearbytes2));
-        } catch (CryptoException e) {
-            // this is good. foes shouldn't be able to decrypt friend bytes
-        }
+        foeClearBytes = foe.decrypt(meCipherBytes);
+        assertFalse(algorithm + ":foe.decrypt: foe decrypted me's message", 
+            Arrays.equals(message, foeClearBytes));
     }
 }

@@ -161,10 +161,28 @@ public class Transformation {
     }
 
     public KeySpec makeKeySpec(Object... params) throws CryptoException {
-            if (isSymmetric())
-                return symmetricAlgorithm.makeKeySpec(params);
-            
-        throw new CryptoException(Strings.NOT_SYMETRIC_MSG);
+        try {
+            for(int copySize = params.length; copySize> 0; copySize-- ) {
+                Object[] paramsCopy = new Object[copySize];
+                System.arraycopy(params, 0, paramsCopy, 0, copySize);
+                try {
+                    if(isPBE()) 
+                        return PBEKeySpec.class
+                                .getConstructor(getClasses(paramsCopy))
+                                .newInstance(paramsCopy);
+
+                    if (isSymmetric())
+                        return symmetricAlgorithm.makeKeySpec(params);
+
+                } catch(NoSuchMethodException ex) {
+                }
+            }
+            throw new CryptoException(Strings.NOT_SYMETRIC_MSG);
+        }  catch (SecurityException | InstantiationException | 
+                IllegalAccessException | IllegalArgumentException | 
+                InvocationTargetException ex) {
+            throw new CryptoException("Couldn't build parameterspec :" + ex.getLocalizedMessage(), ex);
+        }        
     }
 
     public KeySpec makePublicKeySpec(Object... params) throws CryptoException{
@@ -191,11 +209,7 @@ public class Transformation {
      * @see AlgorithmParameterSpec
      */
     public AlgorithmParameterSpec makeParameterSpec(Object...params) throws CryptoException {
-        try {
-            if (params.length==0) {
-                return null;
-            }
-            
+        try {            
             for(int copySize = params.length; copySize> 0; copySize-- ) try {
                 
                 Object[] paramsCopy = new Object[copySize];

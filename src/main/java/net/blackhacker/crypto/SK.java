@@ -90,9 +90,14 @@ public class SK extends Crypto {
         Cipher cipher = getCipher();
         AlgorithmParameterSpec aps=null;
         byte[] iv = null;
+        byte[] salt = null;
+        byte[] iterationCountBytes = null;
         
-        if(hasParameters()){
-            aps = makeParameterSpec(getParameters());
+        if (isPBE()) {
+            salt = generateSalt();
+            iterationCountBytes = Utils.toBytes(5000 + getSecureRandom().nextInt(1000));
+            aps = makeParameterSpec(salt, Utils.toInt(iterationCountBytes));
+            
         } else if (hasIV()) {
             iv = generateIV();
             aps = makeParameterSpec(iv);
@@ -109,10 +114,8 @@ public class SK extends Crypto {
                 }
                 
                 byte[] cipherbytes = cipher.doFinal(data);
-                if (iv!=null) {
-                    return Utils.concat(iv, cipherbytes);
-                }
-                return cipherbytes;
+                
+                return Utils.concat(salt, iterationCountBytes, iv, cipherbytes);
             }
         } catch (InvalidKeyException | InvalidAlgorithmParameterException | 
                 IllegalBlockSizeException | BadPaddingException  ex) {
@@ -135,16 +138,27 @@ public class SK extends Crypto {
         Validator.notNull(data, "data");
         Cipher cipher = getCipher();
         AlgorithmParameterSpec aps = null;
-        byte[] iv;
+        byte[] iv = null;
+        byte[] salt = null;
+        byte[] iterationCountBytes = null;
         byte[] cipherBytes = data;
         
-        if (hasParameters()){
-            aps = makeParameterSpec(getParameters());
+        if (isPBE()){
+            iterationCountBytes = new byte[Integer.BYTES];
+            salt = new byte[getTransformation().getSaltSizeBytes()];
+            cipherBytes = new byte[data.length - salt.length - iterationCountBytes.length];
             
         } else if (hasIV()) {
             iv = new byte[getBlockSizeBytes()];
             cipherBytes = new byte[data.length - iv.length];
-            Utils.split(data, iv, cipherBytes);
+        }
+        
+        if (cipherBytes != data)
+            Utils.split(data, salt, iterationCountBytes, iv, cipherBytes);
+        
+        if (salt!=null){
+            aps = makeParameterSpec(salt, Utils.toInt(iterationCountBytes));
+        } else if (iv!=null) {
             aps = makeParameterSpec(iv);
         }
         
@@ -158,8 +172,11 @@ public class SK extends Crypto {
                 
                 return cipher.doFinal(cipherBytes);
             }
+        }catch(BadPaddingException ex) {
+            //decryption failed
+            return null;
         } catch (InvalidKeyException | InvalidAlgorithmParameterException |
-                IllegalBlockSizeException | BadPaddingException  ex) {
+                IllegalBlockSizeException  ex) {
             throw new CryptoException(
                 String.format(Strings.COULDNT_DECRYPT_MSG_FMT,
                 getTransformation(),

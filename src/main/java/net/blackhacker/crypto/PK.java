@@ -160,8 +160,10 @@ public class PK extends Crypto {
                 }
                 return cipherbytes;
             }
+        } catch (BadPaddingException ex) {
+            return null;
         } catch (InvalidKeyException | IllegalBlockSizeException | 
-                InvalidAlgorithmParameterException | BadPaddingException ex) {
+                InvalidAlgorithmParameterException ex) {
             throw new CryptoException(
                     String.format(Strings.COULDNT_ENCRYPT_MSG_FMT, 
                             getTransformation(),

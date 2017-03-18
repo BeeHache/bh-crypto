@@ -104,7 +104,7 @@ public class UtilsTest {
         int ri = random.nextInt();
         assertEquals(ri, Utils.toInt(Utils.toBytes(ri)));
         
-        byte[] rb = new byte[4];
+        byte[] rb = new byte[Integer.BYTES];
         random.nextBytes(rb);
         assertArrayEquals(rb, Utils.toBytes(Utils.toInt(rb)));
         
@@ -115,7 +115,6 @@ public class UtilsTest {
      */
     @Test
     public void testGetClasses() {
-        System.out.println("getClasses");
         Object[] objs = {1,(long)1 ,(float)1.0, (double)1.0, "ONE"};
         Class[] expResult = {int.class, long.class, float.class, double.class,
             String.class};
