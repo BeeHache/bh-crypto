@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<additionalHeaders>
+    <text_style>
+        <firstLine></firstLine>
+        <beforeEachLine></beforeEachLine>
+        <endLine></endLine>
+        <firstLineDetectionPattern></firstLineDetectionPattern>
+        <lastLineDetectionPattern></lastLineDetectionPattern>
+        <allowBlankLines>true</allowBlankLines>
+        <isMultiline>true</isMultiline>
+    </text_style>
+</additionalHeaders>
