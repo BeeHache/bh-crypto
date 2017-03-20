@@ -181,8 +181,26 @@
                 <artifactId>maven-release-plugin</artifactId>
                 <version>2.5.3</version>
                 <configuration>
-                    <releaseProfiles>sign-artifacts,deploy-site</releaseProfiles>
+                    <releaseProfiles>sign-artifacts</releaseProfiles>
                 </configuration>                
+            </plugin>
+            <plugin>
+                <groupId>com.github.github</groupId>
+                <artifactId>site-maven-plugin</artifactId>
+                <version>0.12</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>site</goal>
+                        </goals>
+                        <phase>site-deploy</phase>
+                        <configuration>
+                            <server>github</server>
+                            <message>Creating site for ${project.version}</message>
+                            <merge>false</merge>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                <groupId>com.mycila</groupId>
@@ -215,15 +233,6 @@
                    </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-                <version>3.6</version>
-                <configuration>
-                    <skipDeploy>true</skipDeploy>
-                    <generateSitemap>true</generateSitemap>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
     <reporting>
@@ -233,6 +242,7 @@
                 <artifactId>maven-site-plugin</artifactId>
                 <version>3.6</version>
                 <configuration>
+                    <skipDeploy>true</skipDeploy>
                     <reports>
                       <!-- report>dependencies</report -->
                       <!-- report>project-team</report -->
@@ -295,7 +305,7 @@
         <connection>scm:git:https://github.com/BeeHache/bh-crypto.git</connection>
         <developerConnection>scm:git:https://github.com/BeeHache/bh-crypto.git</developerConnection>
         <url>git+ssh://git@github.com/BeeHache/bh-crypto.git</url>
-      <tag>bh-crypto-0.5.4</tag>
+      <tag>bh-crypto-${version}</tag>
     </scm>
     <issueManagement>
       <system>GitHub</system>
@@ -312,30 +322,6 @@
       </repository>
     </distributionManagement>
     <profiles>
-        <profile>
-            <id>deploy-site</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>com.github.github</groupId>
-                        <artifactId>site-maven-plugin</artifactId>
-                        <version>0.12</version>
-                        <configuration>
-                            <message>Creating site for ${project.version}</message>
-                            <merge>false</merge>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>site</goal>
-                                </goals>
-                                <phase>site-deploy</phase>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
         <profile>
             <id>sign-artifacts</id>
             <build>
