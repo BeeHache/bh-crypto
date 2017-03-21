@@ -3,7 +3,7 @@
 
   <groupId>net.blackhacker</groupId>
   <artifactId>bh-crypto</artifactId>
-  <version>0.5.10</version>
+  <version>0.5.11-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>${project.groupId}:${project.artifactId}</name>
@@ -297,7 +297,7 @@
         <connection>scm:git:https://github.com/BeeHache/bh-crypto.git</connection>
         <developerConnection>scm:git:https://github.com/BeeHache/bh-crypto.git</developerConnection>
         <url>git+ssh://git@github.com/BeeHache/bh-crypto.git</url>
-      <tag>bh-crypto-0.5.10</tag>
+      <tag>bh-crypto-${version}</tag>
     </scm>
     <issueManagement>
       <system>GitHub</system>
