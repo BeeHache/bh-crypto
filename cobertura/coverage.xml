@@ -1,0 +1,2553 @@
+<?xml version="1.0"?>
+<!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
+
+<coverage line-rate="0.6735751295336787" branch-rate="0.7945205479452054" lines-covered="390" lines-valid="579" branches-covered="116" branches-valid="146" complexity="1.8592592592592592" version="2.1.1" timestamp="1490069571767">
+	<sources>
+		<source>--source</source>
+		<source>/home/ben/Projects/bh-crypto/src/main/java</source>
+	</sources>
+	<packages>
+		<package name="net.blackhacker.crypto" line-rate="0.6387096774193548" branch-rate="0.7835820895522388" complexity="1.761061946902655">
+			<classes>
+				<class name="net.blackhacker.crypto.Crypto" filename="net/blackhacker/crypto/Crypto.java" line-rate="0.7241379310344828" branch-rate="0.0" complexity="1.1428571428571428">
+					<methods>
+						<method name="&lt;init&gt;" signature="(Lnet/blackhacker/crypto/Transformation;[Ljava/lang/Object;)V" line-rate="0.5833333333333334" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="51" hits="171" branch="false"/>
+								<line number="62" hits="171" branch="false"/>
+								<line number="63" hits="171" branch="false"/>
+								<line number="64" hits="171" branch="false"/>
+								<line number="67" hits="171" branch="false"/>
+								<line number="68" hits="0" branch="false"/>
+								<line number="69" hits="0" branch="false"/>
+								<line number="70" hits="0" branch="false"/>
+								<line number="71" hits="0" branch="false"/>
+								<line number="72" hits="0" branch="false"/>
+								<line number="73" hits="171" branch="false"/>
+								<line number="74" hits="171" branch="false"/>
+							</lines>
+						</method>
+						<method name="generateIV" signature="()[B" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="116" hits="90" branch="false"/>
+								<line number="117" hits="90" branch="false"/>
+								<line number="118" hits="90" branch="false"/>
+							</lines>
+						</method>
+						<method name="generateSalt" signature="()[B" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="127" hits="12" branch="false"/>
+								<line number="128" hits="12" branch="false"/>
+								<line number="129" hits="12" branch="false"/>
+							</lines>
+						</method>
+						<method name="getBlockSizeBytes" signature="()I" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="165" hits="180" branch="false"/>
+							</lines>
+						</method>
+						<method name="getCipher" signature="()Ljavax/crypto/Cipher;" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="87" hits="438" branch="false"/>
+							</lines>
+						</method>
+						<method name="getParameters" signature="()[Ljava/lang/Object;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="198" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="getSecureRandom" signature="()Ljava/security/SecureRandom;" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="97" hits="540" branch="false"/>
+							</lines>
+						</method>
+						<method name="getTransformation" signature="()Lnet/blackhacker/crypto/Transformation;" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="107" hits="99" branch="false"/>
+							</lines>
+						</method>
+						<method name="hasIV" signature="()Z" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="175" hits="441" branch="false"/>
+							</lines>
+						</method>
+						<method name="hasParameters" signature="()Z" line-rate="0.0" branch-rate="0.0" complexity="0">
+							<lines>
+								<line number="202" hits="0" branch="true" condition-coverage="0% (0/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="0%"/>
+									</conditions>
+								</line>
+							</lines>
+						</method>
+						<method name="isAsymetric" signature="()Z" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="194" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="isPBE" signature="()Z" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="185" hits="390" branch="false"/>
+							</lines>
+						</method>
+						<method name="makeKeySpec" signature="([Ljava/lang/Object;)Ljava/security/spec/KeySpec;" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="155" hits="57" branch="false"/>
+							</lines>
+						</method>
+						<method name="makeParameterSpec" signature="([Ljava/lang/Object;)Ljava/security/spec/AlgorithmParameterSpec;" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="143" hits="318" branch="false"/>
+							</lines>
+						</method>
+					</methods>
+					<lines>
+						<line number="51" hits="171" branch="false"/>
+						<line number="62" hits="171" branch="false"/>
+						<line number="63" hits="171" branch="false"/>
+						<line number="64" hits="171" branch="false"/>
+						<line number="67" hits="171" branch="false"/>
+						<line number="68" hits="0" branch="false"/>
+						<line number="69" hits="0" branch="false"/>
+						<line number="70" hits="0" branch="false"/>
+						<line number="71" hits="0" branch="false"/>
+						<line number="72" hits="0" branch="false"/>
+						<line number="73" hits="171" branch="false"/>
+						<line number="74" hits="171" branch="false"/>
+						<line number="87" hits="438" branch="false"/>
+						<line number="97" hits="540" branch="false"/>
+						<line number="107" hits="99" branch="false"/>
+						<line number="116" hits="90" branch="false"/>
+						<line number="117" hits="90" branch="false"/>
+						<line number="118" hits="90" branch="false"/>
+						<line number="127" hits="12" branch="false"/>
+						<line number="128" hits="12" branch="false"/>
+						<line number="129" hits="12" branch="false"/>
+						<line number="143" hits="318" branch="false"/>
+						<line number="155" hits="57" branch="false"/>
+						<line number="165" hits="180" branch="false"/>
+						<line number="175" hits="441" branch="false"/>
+						<line number="185" hits="390" branch="false"/>
+						<line number="194" hits="0" branch="false"/>
+						<line number="198" hits="0" branch="false"/>
+						<line number="202" hits="0" branch="true" condition-coverage="0% (0/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="0%"/>
+							</conditions>
+						</line>
+					</lines>
+				</class>
+				<class name="net.blackhacker.crypto.CryptoException" filename="net/blackhacker/crypto/CryptoException.java" line-rate="0.4" branch-rate="1.0" complexity="1.0">
+					<methods>
+						<method name="&lt;init&gt;" signature="()V" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="37" hits="0" branch="false"/>
+								<line number="38" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="&lt;init&gt;" signature="(Ljava/lang/String;)V" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="66" hits="42" branch="false"/>
+								<line number="67" hits="42" branch="false"/>
+							</lines>
+						</method>
+						<method name="&lt;init&gt;" signature="(Ljava/lang/String;Ljava/lang/Throwable;)V" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="58" hits="12" branch="false"/>
+								<line number="59" hits="12" branch="false"/>
+							</lines>
+						</method>
+						<method name="&lt;init&gt;" signature="(Ljava/lang/String;Ljava/lang/Throwable;ZZ)V" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="49" hits="0" branch="false"/>
+								<line number="50" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="&lt;init&gt;" signature="(Ljava/lang/Throwable;)V" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="74" hits="0" branch="false"/>
+								<line number="75" hits="0" branch="false"/>
+							</lines>
+						</method>
+					</methods>
+					<lines>
+						<line number="37" hits="0" branch="false"/>
+						<line number="38" hits="0" branch="false"/>
+						<line number="49" hits="0" branch="false"/>
+						<line number="50" hits="0" branch="false"/>
+						<line number="58" hits="12" branch="false"/>
+						<line number="59" hits="12" branch="false"/>
+						<line number="66" hits="42" branch="false"/>
+						<line number="67" hits="42" branch="false"/>
+						<line number="74" hits="0" branch="false"/>
+						<line number="75" hits="0" branch="false"/>
+					</lines>
+				</class>
+				<class name="net.blackhacker.crypto.CryptoFactory" filename="net/blackhacker/crypto/CryptoFactory.java" line-rate="0.0" branch-rate="1.0" complexity="1.0">
+					<methods>
+						<method name="&lt;init&gt;" signature="()V" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="35" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorAES128WithCBC" signature="()Lnet/blackhacker/crypto/SK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="314" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorAES128WithCBC" signature="([B)Lnet/blackhacker/crypto/SK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="327" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorAES128WithCFB" signature="()Lnet/blackhacker/crypto/SK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="355" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorAES128WithCFB" signature="([B)Lnet/blackhacker/crypto/SK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="341" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorAES128WithCTR" signature="()Lnet/blackhacker/crypto/SK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="406" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorAES128WithCTR" signature="([B)Lnet/blackhacker/crypto/SK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="393" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorAES128WithECB" signature="()Lnet/blackhacker/crypto/SK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="302" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorAES128WithECB" signature="([B)Lnet/blackhacker/crypto/SK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="290" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorAES128WithOCB" signature="()Lnet/blackhacker/crypto/SK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="433" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorAES128WithOCB" signature="([B)Lnet/blackhacker/crypto/SK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="420" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorAES128WithOFB" signature="()Lnet/blackhacker/crypto/SK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="380" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorAES128WithOFB" signature="([B)Lnet/blackhacker/crypto/SK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="369" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorAES192WithCBC" signature="()Lnet/blackhacker/crypto/SK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="473" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorAES192WithCBC" signature="([B)Lnet/blackhacker/crypto/SK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="487" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorAES192WithECB" signature="()Lnet/blackhacker/crypto/SK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="460" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorAES192WithECB" signature="([B)Lnet/blackhacker/crypto/SK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="447" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorDESWithCBC" signature="()Lnet/blackhacker/crypto/SK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="115" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorDESWithCBC" signature="([B)Lnet/blackhacker/crypto/SK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="128" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorDESWithCFB" signature="()Lnet/blackhacker/crypto/SK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="139" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorDESWithCFB" signature="([B)Lnet/blackhacker/crypto/SK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="151" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorDESWithECB" signature="()Lnet/blackhacker/crypto/SK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="90" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorDESWithECB" signature="([B)Lnet/blackhacker/crypto/SK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="103" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorDESWithOFB" signature="()Lnet/blackhacker/crypto/SK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="162" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorDESWithOFB" signature="([B)Lnet/blackhacker/crypto/SK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="174" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorDESedeWithCBC" signature="()Lnet/blackhacker/crypto/SK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="211" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorDESedeWithCBC" signature="([B)Lnet/blackhacker/crypto/SK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="224" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorDESedeWithCFB" signature="()Lnet/blackhacker/crypto/SK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="236" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorDESedeWithCFB" signature="([B)Lnet/blackhacker/crypto/SK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="249" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorDESedeWithECB" signature="()Lnet/blackhacker/crypto/SK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="186" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorDESedeWithECB" signature="([B)Lnet/blackhacker/crypto/SK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="199" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorDESedeWithOFB" signature="()Lnet/blackhacker/crypto/SK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="262" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorDESedeWithOFB" signature="([B)Lnet/blackhacker/crypto/SK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="276" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorPBEWithMD5AndDES" signature="(Ljava/lang/String;)Lnet/blackhacker/crypto/SK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="535" hits="0" branch="false"/>
+								<line number="537" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorPBEWithMD5AndTripleDES" signature="(Ljava/lang/String;)Lnet/blackhacker/crypto/SK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="519" hits="0" branch="false"/>
+								<line number="521" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorPBEWithSHA1AndDESede" signature="(Ljava/lang/String;)Lnet/blackhacker/crypto/SK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="567" hits="0" branch="false"/>
+								<line number="569" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorPBEWithSHA256And256BitAES" signature="(Ljava/lang/String;)Lnet/blackhacker/crypto/SK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="551" hits="0" branch="false"/>
+								<line number="553" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorPBEWithSHAAnd3KeyTripleDES" signature="(Ljava/lang/String;)Lnet/blackhacker/crypto/SK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="503" hits="0" branch="false"/>
+								<line number="505" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorRSAWithECB" signature="()Lnet/blackhacker/crypto/PK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="45" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorRSAWithECB" signature="([B)Lnet/blackhacker/crypto/PK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="77" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newEncryptorRSAWithECB" signature="([B[B)Lnet/blackhacker/crypto/PK;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="62" hits="0" branch="false"/>
+							</lines>
+						</method>
+					</methods>
+					<lines>
+						<line number="35" hits="0" branch="false"/>
+						<line number="45" hits="0" branch="false"/>
+						<line number="62" hits="0" branch="false"/>
+						<line number="77" hits="0" branch="false"/>
+						<line number="90" hits="0" branch="false"/>
+						<line number="103" hits="0" branch="false"/>
+						<line number="115" hits="0" branch="false"/>
+						<line number="128" hits="0" branch="false"/>
+						<line number="139" hits="0" branch="false"/>
+						<line number="151" hits="0" branch="false"/>
+						<line number="162" hits="0" branch="false"/>
+						<line number="174" hits="0" branch="false"/>
+						<line number="186" hits="0" branch="false"/>
+						<line number="199" hits="0" branch="false"/>
+						<line number="211" hits="0" branch="false"/>
+						<line number="224" hits="0" branch="false"/>
+						<line number="236" hits="0" branch="false"/>
+						<line number="249" hits="0" branch="false"/>
+						<line number="262" hits="0" branch="false"/>
+						<line number="276" hits="0" branch="false"/>
+						<line number="290" hits="0" branch="false"/>
+						<line number="302" hits="0" branch="false"/>
+						<line number="314" hits="0" branch="false"/>
+						<line number="327" hits="0" branch="false"/>
+						<line number="341" hits="0" branch="false"/>
+						<line number="355" hits="0" branch="false"/>
+						<line number="369" hits="0" branch="false"/>
+						<line number="380" hits="0" branch="false"/>
+						<line number="393" hits="0" branch="false"/>
+						<line number="406" hits="0" branch="false"/>
+						<line number="420" hits="0" branch="false"/>
+						<line number="433" hits="0" branch="false"/>
+						<line number="447" hits="0" branch="false"/>
+						<line number="460" hits="0" branch="false"/>
+						<line number="473" hits="0" branch="false"/>
+						<line number="487" hits="0" branch="false"/>
+						<line number="503" hits="0" branch="false"/>
+						<line number="505" hits="0" branch="false"/>
+						<line number="519" hits="0" branch="false"/>
+						<line number="521" hits="0" branch="false"/>
+						<line number="535" hits="0" branch="false"/>
+						<line number="537" hits="0" branch="false"/>
+						<line number="551" hits="0" branch="false"/>
+						<line number="553" hits="0" branch="false"/>
+						<line number="567" hits="0" branch="false"/>
+						<line number="569" hits="0" branch="false"/>
+					</lines>
+				</class>
+				<class name="net.blackhacker.crypto.Decryptor" filename="net/blackhacker/crypto/Decryptor.java" line-rate="1.0" branch-rate="1.0" complexity="1.0">
+					<methods>
+					</methods>
+					<lines>
+					</lines>
+				</class>
+				<class name="net.blackhacker.crypto.Digester" filename="net/blackhacker/crypto/Digester.java" line-rate="1.0" branch-rate="1.0" complexity="1.0">
+					<methods>
+					</methods>
+					<lines>
+					</lines>
+				</class>
+				<class name="net.blackhacker.crypto.DigesterBase" filename="net/blackhacker/crypto/DigesterBase.java" line-rate="0.7857142857142857" branch-rate="1.0" complexity="2.0">
+					<methods>
+						<method name="&lt;init&gt;" signature="(Lnet/blackhacker/crypto/algorithm/DigestAlgorithm;)V" line-rate="0.75" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="45" hits="3" branch="false"/>
+								<line number="46" hits="3" branch="false"/>
+								<line number="47" hits="3" branch="false"/>
+								<line number="49" hits="3" branch="false"/>
+								<line number="50" hits="0" branch="false"/>
+								<line number="51" hits="0" branch="false"/>
+								<line number="52" hits="3" branch="false"/>
+								<line number="53" hits="3" branch="false"/>
+							</lines>
+						</method>
+						<method name="digest" signature="([B)[B" line-rate="0.8333333333333334" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="62" hits="12" branch="false"/>
+								<line number="63" hits="12" branch="false"/>
+								<line number="64" hits="12" branch="false"/>
+								<line number="65" hits="12" branch="false"/>
+								<line number="66" hits="12" branch="false"/>
+								<line number="67" hits="0" branch="false"/>
+							</lines>
+						</method>
+					</methods>
+					<lines>
+						<line number="45" hits="3" branch="false"/>
+						<line number="46" hits="3" branch="false"/>
+						<line number="47" hits="3" branch="false"/>
+						<line number="49" hits="3" branch="false"/>
+						<line number="50" hits="0" branch="false"/>
+						<line number="51" hits="0" branch="false"/>
+						<line number="52" hits="3" branch="false"/>
+						<line number="53" hits="3" branch="false"/>
+						<line number="62" hits="12" branch="false"/>
+						<line number="63" hits="12" branch="false"/>
+						<line number="64" hits="12" branch="false"/>
+						<line number="65" hits="12" branch="false"/>
+						<line number="66" hits="12" branch="false"/>
+						<line number="67" hits="0" branch="false"/>
+					</lines>
+				</class>
+				<class name="net.blackhacker.crypto.DigesterException" filename="net/blackhacker/crypto/DigesterException.java" line-rate="0.0" branch-rate="1.0" complexity="1.0">
+					<methods>
+						<method name="&lt;init&gt;" signature="()V" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="32" hits="0" branch="false"/>
+								<line number="33" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="&lt;init&gt;" signature="(Ljava/lang/String;)V" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="36" hits="0" branch="false"/>
+								<line number="37" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="&lt;init&gt;" signature="(Ljava/lang/String;Ljava/lang/Throwable;)V" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="43" hits="0" branch="false"/>
+								<line number="44" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="&lt;init&gt;" signature="(Ljava/lang/Throwable;)V" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="40" hits="0" branch="false"/>
+								<line number="41" hits="0" branch="false"/>
+							</lines>
+						</method>
+					</methods>
+					<lines>
+						<line number="32" hits="0" branch="false"/>
+						<line number="33" hits="0" branch="false"/>
+						<line number="36" hits="0" branch="false"/>
+						<line number="37" hits="0" branch="false"/>
+						<line number="40" hits="0" branch="false"/>
+						<line number="41" hits="0" branch="false"/>
+						<line number="43" hits="0" branch="false"/>
+						<line number="44" hits="0" branch="false"/>
+					</lines>
+				</class>
+				<class name="net.blackhacker.crypto.DigesterFactory" filename="net/blackhacker/crypto/DigesterFactory.java" line-rate="0.2" branch-rate="1.0" complexity="3.0">
+					<methods>
+						<method name="&lt;clinit&gt;" signature="()V" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="36" hits="3" branch="false"/>
+							</lines>
+						</method>
+						<method name="&lt;init&gt;" signature="()V" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="34" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newDigesterMD5" signature="()Lnet/blackhacker/crypto/Digester;" line-rate="0.25" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="45" hits="3" branch="false"/>
+								<line number="46" hits="0" branch="false"/>
+								<line number="47" hits="0" branch="false"/>
+								<line number="48" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="newDigesterSHA256" signature="()Lnet/blackhacker/crypto/Digester;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="60" hits="0" branch="false"/>
+								<line number="61" hits="0" branch="false"/>
+								<line number="62" hits="0" branch="false"/>
+								<line number="63" hits="0" branch="false"/>
+							</lines>
+						</method>
+					</methods>
+					<lines>
+						<line number="34" hits="0" branch="false"/>
+						<line number="36" hits="3" branch="false"/>
+						<line number="45" hits="3" branch="false"/>
+						<line number="46" hits="0" branch="false"/>
+						<line number="47" hits="0" branch="false"/>
+						<line number="48" hits="0" branch="false"/>
+						<line number="60" hits="0" branch="false"/>
+						<line number="61" hits="0" branch="false"/>
+						<line number="62" hits="0" branch="false"/>
+						<line number="63" hits="0" branch="false"/>
+					</lines>
+				</class>
+				<class name="net.blackhacker.crypto.Encryptor" filename="net/blackhacker/crypto/Encryptor.java" line-rate="1.0" branch-rate="1.0" complexity="1.0">
+					<methods>
+					</methods>
+					<lines>
+					</lines>
+				</class>
+				<class name="net.blackhacker.crypto.PK" filename="net/blackhacker/crypto/PK.java" line-rate="0.6859504132231405" branch-rate="0.5625" complexity="0.0">
+					<methods>
+						<method name="&lt;clinit&gt;" signature="()V" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="54" hits="3" branch="false"/>
+								<line number="55" hits="3" branch="false"/>
+							</lines>
+						</method>
+						<method name="&lt;init&gt;" signature="(Lnet/blackhacker/crypto/Transformation;)V" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="125" hits="24" branch="false"/>
+								<line number="126" hits="24" branch="false"/>
+							</lines>
+						</method>
+						<method name="&lt;init&gt;" signature="(Lnet/blackhacker/crypto/Transformation;[B)V" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="113" hits="12" branch="false"/>
+								<line number="114" hits="12" branch="false"/>
+							</lines>
+						</method>
+						<method name="&lt;init&gt;" signature="(Lnet/blackhacker/crypto/Transformation;[B[B)V" line-rate="0.85" branch-rate="0.75" complexity="0">
+							<lines>
+								<line number="69" hits="36" branch="false"/>
+								<line number="74" hits="36" branch="false"/>
+								<line number="75" hits="36" branch="false"/>
+								<line number="77" hits="36" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="78" hits="12" branch="false"/>
+								<line number="81" hits="36" branch="true" condition-coverage="50% (1/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="50%"/>
+									</conditions>
+								</line>
+								<line number="82" hits="0" branch="false"/>
+								<line number="85" hits="36" branch="true" condition-coverage="75% (3/4)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+										<condition number="1" type="jump" coverage="50%"/>
+									</conditions>
+								</line>
+								<line number="86" hits="24" branch="false"/>
+								<line number="87" hits="24" branch="false"/>
+								<line number="88" hits="24" branch="false"/>
+								<line number="89" hits="24" branch="false"/>
+								<line number="90" hits="24" branch="false"/>
+								<line number="91" hits="24" branch="false"/>
+								<line number="94" hits="36" branch="false"/>
+								<line number="95" hits="36" branch="false"/>
+								<line number="97" hits="0" branch="false"/>
+								<line number="98" hits="0" branch="false"/>
+								<line number="99" hits="36" branch="false"/>
+								<line number="100" hits="36" branch="false"/>
+							</lines>
+						</method>
+						<method name="decrypt" signature="([B)[B" line-rate="0.75" branch-rate="0.5" complexity="0">
+							<lines>
+								<line number="184" hits="24" branch="false"/>
+								<line number="185" hits="24" branch="true" condition-coverage="50% (1/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="50%"/>
+									</conditions>
+								</line>
+								<line number="186" hits="0" branch="false"/>
+								<line number="189" hits="24" branch="false"/>
+								<line number="190" hits="24" branch="false"/>
+								<line number="191" hits="24" branch="false"/>
+								<line number="192" hits="24" branch="false"/>
+								<line number="193" hits="24" branch="false"/>
+								<line number="195" hits="24" branch="true" condition-coverage="50% (1/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="50%"/>
+									</conditions>
+								</line>
+								<line number="196" hits="0" branch="false"/>
+								<line number="197" hits="0" branch="false"/>
+								<line number="198" hits="0" branch="false"/>
+								<line number="199" hits="0" branch="false"/>
+								<line number="203" hits="24" branch="false"/>
+								<line number="204" hits="24" branch="true" condition-coverage="50% (1/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="50%"/>
+									</conditions>
+								</line>
+								<line number="205" hits="0" branch="false"/>
+								<line number="207" hits="24" branch="false"/>
+								<line number="210" hits="24" branch="false"/>
+								<line number="211" hits="12" branch="false"/>
+								<line number="212" hits="12" branch="false"/>
+								<line number="214" hits="12" branch="false"/>
+								<line number="215" hits="12" branch="false"/>
+								<line number="216" hits="12" branch="false"/>
+								<line number="217" hits="12" branch="false"/>
+							</lines>
+						</method>
+						<method name="encrypt" signature="([B)[B" line-rate="0.5" branch-rate="0.5" complexity="0">
+							<lines>
+								<line number="138" hits="12" branch="false"/>
+								<line number="139" hits="12" branch="false"/>
+								<line number="140" hits="12" branch="false"/>
+								<line number="141" hits="12" branch="false"/>
+								<line number="142" hits="12" branch="false"/>
+								<line number="144" hits="12" branch="true" condition-coverage="50% (1/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="50%"/>
+									</conditions>
+								</line>
+								<line number="145" hits="0" branch="false"/>
+								<line number="146" hits="0" branch="false"/>
+								<line number="150" hits="12" branch="false"/>
+								<line number="151" hits="12" branch="true" condition-coverage="50% (1/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="50%"/>
+									</conditions>
+								</line>
+								<line number="152" hits="0" branch="false"/>
+								<line number="154" hits="12" branch="false"/>
+								<line number="157" hits="12" branch="false"/>
+								<line number="158" hits="12" branch="true" condition-coverage="50% (1/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="50%"/>
+									</conditions>
+								</line>
+								<line number="159" hits="0" branch="false"/>
+								<line number="161" hits="12" branch="false"/>
+								<line number="162" hits="0" branch="false"/>
+								<line number="163" hits="0" branch="false"/>
+								<line number="164" hits="0" branch="false"/>
+								<line number="165" hits="0" branch="false"/>
+								<line number="167" hits="0" branch="false"/>
+								<line number="168" hits="0" branch="false"/>
+								<line number="169" hits="0" branch="false"/>
+								<line number="170" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="getPrivateKey" signature="()Ljava/security/PrivateKey;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="350" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="getPrivateKeyEncoded" signature="()[B" line-rate="0.0" branch-rate="0.0" complexity="0">
+							<lines>
+								<line number="370" hits="0" branch="true" condition-coverage="0% (0/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="0%"/>
+									</conditions>
+								</line>
+							</lines>
+						</method>
+						<method name="getPublicKey" signature="()Ljava/security/PublicKey;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="340" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="getPublicKeyEncoded" signature="()[B" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="360" hits="12" branch="false"/>
+							</lines>
+						</method>
+						<method name="getSigner" signature="()Lnet/blackhacker/crypto/Signer;" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="282" hits="12" branch="false"/>
+							</lines>
+						</method>
+						<method name="getSigner" signature="(Lnet/blackhacker/crypto/Digester;)Lnet/blackhacker/crypto/Signer;" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="293" hits="12" branch="false"/>
+								<line number="295" hits="12" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="296" hits="6" branch="false"/>
+								<line number="299" hits="6" branch="false"/>
+								<line number="301" hits="6" branch="false"/>
+							</lines>
+						</method>
+						<method name="getVerifier" signature="()Lnet/blackhacker/crypto/Verifier;" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="228" hits="6" branch="false"/>
+							</lines>
+						</method>
+						<method name="getVerifier" signature="(Lnet/blackhacker/crypto/Digester;)Lnet/blackhacker/crypto/Verifier;" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="239" hits="6" branch="false"/>
+								<line number="241" hits="6" branch="false"/>
+								<line number="243" hits="6" branch="false"/>
+							</lines>
+						</method>
+						<method name="lambda$getSigner$1" signature="(Lnet/blackhacker/crypto/Digester;Ljavax/crypto/Cipher;[B)[B" line-rate="0.625" branch-rate="0.5" complexity="0">
+							<lines>
+								<line number="302" hits="6" branch="false"/>
+								<line number="303" hits="6" branch="false"/>
+								<line number="304" hits="6" branch="false"/>
+								<line number="306" hits="6" branch="true" condition-coverage="50% (1/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="50%"/>
+									</conditions>
+								</line>
+								<line number="307" hits="0" branch="false"/>
+								<line number="310" hits="6" branch="false"/>
+								<line number="312" hits="6" branch="false"/>
+								<line number="314" hits="6" branch="true" condition-coverage="50% (1/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="50%"/>
+									</conditions>
+								</line>
+								<line number="315" hits="0" branch="false"/>
+								<line number="317" hits="6" branch="false"/>
+								<line number="320" hits="6" branch="false"/>
+								<line number="321" hits="6" branch="false"/>
+								<line number="323" hits="0" branch="false"/>
+								<line number="325" hits="0" branch="false"/>
+								<line number="326" hits="0" branch="false"/>
+								<line number="328" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="lambda$getVerifier$0" signature="(Ljavax/crypto/Cipher;Lnet/blackhacker/crypto/Digester;[B[B)Z" line-rate="0.5294117647058824" branch-rate="0.5" complexity="0">
+							<lines>
+								<line number="244" hits="6" branch="false"/>
+								<line number="245" hits="6" branch="false"/>
+								<line number="247" hits="6" branch="true" condition-coverage="50% (1/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="50%"/>
+									</conditions>
+								</line>
+								<line number="248" hits="0" branch="false"/>
+								<line number="249" hits="0" branch="false"/>
+								<line number="250" hits="0" branch="false"/>
+								<line number="251" hits="0" branch="false"/>
+								<line number="255" hits="6" branch="false"/>
+								<line number="256" hits="6" branch="true" condition-coverage="50% (1/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="50%"/>
+									</conditions>
+								</line>
+								<line number="257" hits="0" branch="false"/>
+								<line number="259" hits="6" branch="false"/>
+								<line number="262" hits="12" branch="false"/>
+								<line number="263" hits="6" branch="false"/>
+								<line number="264" hits="6" branch="false"/>
+								<line number="266" hits="0" branch="false"/>
+								<line number="267" hits="0" branch="false"/>
+								<line number="270" hits="0" branch="false"/>
+							</lines>
+						</method>
+					</methods>
+					<lines>
+						<line number="54" hits="3" branch="false"/>
+						<line number="55" hits="3" branch="false"/>
+						<line number="69" hits="36" branch="false"/>
+						<line number="74" hits="36" branch="false"/>
+						<line number="75" hits="36" branch="false"/>
+						<line number="77" hits="36" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="78" hits="12" branch="false"/>
+						<line number="81" hits="36" branch="true" condition-coverage="50% (1/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="50%"/>
+							</conditions>
+						</line>
+						<line number="82" hits="0" branch="false"/>
+						<line number="85" hits="36" branch="true" condition-coverage="75% (3/4)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+								<condition number="1" type="jump" coverage="50%"/>
+							</conditions>
+						</line>
+						<line number="86" hits="24" branch="false"/>
+						<line number="87" hits="24" branch="false"/>
+						<line number="88" hits="24" branch="false"/>
+						<line number="89" hits="24" branch="false"/>
+						<line number="90" hits="24" branch="false"/>
+						<line number="91" hits="24" branch="false"/>
+						<line number="94" hits="36" branch="false"/>
+						<line number="95" hits="36" branch="false"/>
+						<line number="97" hits="0" branch="false"/>
+						<line number="98" hits="0" branch="false"/>
+						<line number="99" hits="36" branch="false"/>
+						<line number="100" hits="36" branch="false"/>
+						<line number="113" hits="12" branch="false"/>
+						<line number="114" hits="12" branch="false"/>
+						<line number="125" hits="24" branch="false"/>
+						<line number="126" hits="24" branch="false"/>
+						<line number="138" hits="12" branch="false"/>
+						<line number="139" hits="12" branch="false"/>
+						<line number="140" hits="12" branch="false"/>
+						<line number="141" hits="12" branch="false"/>
+						<line number="142" hits="12" branch="false"/>
+						<line number="144" hits="12" branch="true" condition-coverage="50% (1/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="50%"/>
+							</conditions>
+						</line>
+						<line number="145" hits="0" branch="false"/>
+						<line number="146" hits="0" branch="false"/>
+						<line number="150" hits="12" branch="false"/>
+						<line number="151" hits="12" branch="true" condition-coverage="50% (1/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="50%"/>
+							</conditions>
+						</line>
+						<line number="152" hits="0" branch="false"/>
+						<line number="154" hits="12" branch="false"/>
+						<line number="157" hits="12" branch="false"/>
+						<line number="158" hits="12" branch="true" condition-coverage="50% (1/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="50%"/>
+							</conditions>
+						</line>
+						<line number="159" hits="0" branch="false"/>
+						<line number="161" hits="12" branch="false"/>
+						<line number="162" hits="0" branch="false"/>
+						<line number="163" hits="0" branch="false"/>
+						<line number="164" hits="0" branch="false"/>
+						<line number="165" hits="0" branch="false"/>
+						<line number="167" hits="0" branch="false"/>
+						<line number="168" hits="0" branch="false"/>
+						<line number="169" hits="0" branch="false"/>
+						<line number="170" hits="0" branch="false"/>
+						<line number="184" hits="24" branch="false"/>
+						<line number="185" hits="24" branch="true" condition-coverage="50% (1/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="50%"/>
+							</conditions>
+						</line>
+						<line number="186" hits="0" branch="false"/>
+						<line number="189" hits="24" branch="false"/>
+						<line number="190" hits="24" branch="false"/>
+						<line number="191" hits="24" branch="false"/>
+						<line number="192" hits="24" branch="false"/>
+						<line number="193" hits="24" branch="false"/>
+						<line number="195" hits="24" branch="true" condition-coverage="50% (1/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="50%"/>
+							</conditions>
+						</line>
+						<line number="196" hits="0" branch="false"/>
+						<line number="197" hits="0" branch="false"/>
+						<line number="198" hits="0" branch="false"/>
+						<line number="199" hits="0" branch="false"/>
+						<line number="203" hits="24" branch="false"/>
+						<line number="204" hits="24" branch="true" condition-coverage="50% (1/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="50%"/>
+							</conditions>
+						</line>
+						<line number="205" hits="0" branch="false"/>
+						<line number="207" hits="24" branch="false"/>
+						<line number="210" hits="24" branch="false"/>
+						<line number="211" hits="12" branch="false"/>
+						<line number="212" hits="12" branch="false"/>
+						<line number="214" hits="12" branch="false"/>
+						<line number="215" hits="12" branch="false"/>
+						<line number="216" hits="12" branch="false"/>
+						<line number="217" hits="12" branch="false"/>
+						<line number="228" hits="6" branch="false"/>
+						<line number="239" hits="6" branch="false"/>
+						<line number="241" hits="6" branch="false"/>
+						<line number="243" hits="6" branch="false"/>
+						<line number="244" hits="6" branch="false"/>
+						<line number="245" hits="6" branch="false"/>
+						<line number="247" hits="6" branch="true" condition-coverage="50% (1/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="50%"/>
+							</conditions>
+						</line>
+						<line number="248" hits="0" branch="false"/>
+						<line number="249" hits="0" branch="false"/>
+						<line number="250" hits="0" branch="false"/>
+						<line number="251" hits="0" branch="false"/>
+						<line number="255" hits="6" branch="false"/>
+						<line number="256" hits="6" branch="true" condition-coverage="50% (1/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="50%"/>
+							</conditions>
+						</line>
+						<line number="257" hits="0" branch="false"/>
+						<line number="259" hits="6" branch="false"/>
+						<line number="262" hits="12" branch="false"/>
+						<line number="263" hits="6" branch="false"/>
+						<line number="264" hits="6" branch="false"/>
+						<line number="266" hits="0" branch="false"/>
+						<line number="267" hits="0" branch="false"/>
+						<line number="270" hits="0" branch="false"/>
+						<line number="282" hits="12" branch="false"/>
+						<line number="293" hits="12" branch="false"/>
+						<line number="295" hits="12" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="296" hits="6" branch="false"/>
+						<line number="299" hits="6" branch="false"/>
+						<line number="301" hits="6" branch="false"/>
+						<line number="302" hits="6" branch="false"/>
+						<line number="303" hits="6" branch="false"/>
+						<line number="304" hits="6" branch="false"/>
+						<line number="306" hits="6" branch="true" condition-coverage="50% (1/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="50%"/>
+							</conditions>
+						</line>
+						<line number="307" hits="0" branch="false"/>
+						<line number="310" hits="6" branch="false"/>
+						<line number="312" hits="6" branch="false"/>
+						<line number="314" hits="6" branch="true" condition-coverage="50% (1/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="50%"/>
+							</conditions>
+						</line>
+						<line number="315" hits="0" branch="false"/>
+						<line number="317" hits="6" branch="false"/>
+						<line number="320" hits="6" branch="false"/>
+						<line number="321" hits="6" branch="false"/>
+						<line number="323" hits="0" branch="false"/>
+						<line number="325" hits="0" branch="false"/>
+						<line number="326" hits="0" branch="false"/>
+						<line number="328" hits="0" branch="false"/>
+						<line number="340" hits="0" branch="false"/>
+						<line number="350" hits="0" branch="false"/>
+						<line number="360" hits="12" branch="false"/>
+						<line number="370" hits="0" branch="true" condition-coverage="0% (0/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="0%"/>
+							</conditions>
+						</line>
+					</lines>
+				</class>
+				<class name="net.blackhacker.crypto.SK" filename="net/blackhacker/crypto/SK.java" line-rate="0.7926829268292683" branch-rate="1.0" complexity="5.2">
+					<methods>
+						<method name="&lt;init&gt;" signature="(Lnet/blackhacker/crypto/Transformation;[Ljava/lang/Object;)V" line-rate="0.75" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="50" hits="135" branch="false"/>
+								<line number="52" hits="135" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="switch" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="54" hits="78" branch="false"/>
+								<line number="55" hits="78" branch="false"/>
+								<line number="56" hits="78" branch="false"/>
+								<line number="57" hits="78" branch="false"/>
+								<line number="58" hits="78" branch="false"/>
+								<line number="61" hits="57" branch="false"/>
+								<line number="62" hits="57" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="63" hits="15" branch="false"/>
+								<line number="65" hits="42" branch="false"/>
+								<line number="66" hits="42" branch="false"/>
+								<line number="67" hits="42" branch="false"/>
+								<line number="70" hits="0" branch="false"/>
+								<line number="71" hits="0" branch="false"/>
+								<line number="72" hits="0" branch="false"/>
+								<line number="74" hits="0" branch="false"/>
+								<line number="75" hits="0" branch="false"/>
+								<line number="77" hits="135" branch="false"/>
+								<line number="78" hits="135" branch="false"/>
+							</lines>
+						</method>
+						<method name="decrypt" signature="([B)[B" line-rate="0.8484848484848485" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="138" hits="270" branch="false"/>
+								<line number="139" hits="270" branch="false"/>
+								<line number="140" hits="270" branch="false"/>
+								<line number="141" hits="270" branch="false"/>
+								<line number="142" hits="270" branch="false"/>
+								<line number="143" hits="270" branch="false"/>
+								<line number="144" hits="270" branch="false"/>
+								<line number="146" hits="270" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="147" hits="36" branch="false"/>
+								<line number="148" hits="36" branch="false"/>
+								<line number="149" hits="36" branch="false"/>
+								<line number="151" hits="234" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="152" hits="180" branch="false"/>
+								<line number="153" hits="180" branch="false"/>
+								<line number="156" hits="270" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="157" hits="216" branch="false"/>
+								<line number="159" hits="270" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="160" hits="36" branch="false"/>
+								<line number="161" hits="234" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="162" hits="180" branch="false"/>
+								<line number="166" hits="270" branch="false"/>
+								<line number="167" hits="270" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="168" hits="216" branch="false"/>
+								<line number="170" hits="54" branch="false"/>
+								<line number="173" hits="270" branch="false"/>
+								<line number="174" hits="82" branch="false"/>
+								<line number="175" hits="82" branch="false"/>
+								<line number="177" hits="82" branch="false"/>
+								<line number="178" hits="0" branch="false"/>
+								<line number="180" hits="0" branch="false"/>
+								<line number="181" hits="0" branch="false"/>
+								<line number="182" hits="0" branch="false"/>
+								<line number="183" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="encrypt" signature="([B)[B" line-rate="0.7777777777777778" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="89" hits="120" branch="false"/>
+								<line number="90" hits="120" branch="false"/>
+								<line number="91" hits="120" branch="false"/>
+								<line number="92" hits="120" branch="false"/>
+								<line number="93" hits="120" branch="false"/>
+								<line number="94" hits="120" branch="false"/>
+								<line number="96" hits="120" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="97" hits="12" branch="false"/>
+								<line number="98" hits="12" branch="false"/>
+								<line number="99" hits="12" branch="false"/>
+								<line number="101" hits="108" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="102" hits="90" branch="false"/>
+								<line number="103" hits="90" branch="false"/>
+								<line number="107" hits="120" branch="false"/>
+								<line number="108" hits="120" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="109" hits="102" branch="false"/>
+								<line number="110" hits="102" branch="false"/>
+								<line number="112" hits="18" branch="false"/>
+								<line number="113" hits="18" branch="false"/>
+								<line number="116" hits="120" branch="false"/>
+								<line number="118" hits="120" branch="false"/>
+								<line number="119" hits="0" branch="false"/>
+								<line number="120" hits="0" branch="false"/>
+								<line number="122" hits="0" branch="false"/>
+								<line number="123" hits="0" branch="false"/>
+								<line number="124" hits="0" branch="false"/>
+								<line number="125" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="getKey" signature="()Ljava/security/Key;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="195" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="getKeyEncoded" signature="()[B" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="204" hits="39" branch="false"/>
+							</lines>
+						</method>
+					</methods>
+					<lines>
+						<line number="50" hits="135" branch="false"/>
+						<line number="52" hits="135" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="switch" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="54" hits="78" branch="false"/>
+						<line number="55" hits="78" branch="false"/>
+						<line number="56" hits="78" branch="false"/>
+						<line number="57" hits="78" branch="false"/>
+						<line number="58" hits="78" branch="false"/>
+						<line number="61" hits="57" branch="false"/>
+						<line number="62" hits="57" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="63" hits="15" branch="false"/>
+						<line number="65" hits="42" branch="false"/>
+						<line number="66" hits="42" branch="false"/>
+						<line number="67" hits="42" branch="false"/>
+						<line number="70" hits="0" branch="false"/>
+						<line number="71" hits="0" branch="false"/>
+						<line number="72" hits="0" branch="false"/>
+						<line number="74" hits="0" branch="false"/>
+						<line number="75" hits="0" branch="false"/>
+						<line number="77" hits="135" branch="false"/>
+						<line number="78" hits="135" branch="false"/>
+						<line number="89" hits="120" branch="false"/>
+						<line number="90" hits="120" branch="false"/>
+						<line number="91" hits="120" branch="false"/>
+						<line number="92" hits="120" branch="false"/>
+						<line number="93" hits="120" branch="false"/>
+						<line number="94" hits="120" branch="false"/>
+						<line number="96" hits="120" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="97" hits="12" branch="false"/>
+						<line number="98" hits="12" branch="false"/>
+						<line number="99" hits="12" branch="false"/>
+						<line number="101" hits="108" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="102" hits="90" branch="false"/>
+						<line number="103" hits="90" branch="false"/>
+						<line number="107" hits="120" branch="false"/>
+						<line number="108" hits="120" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="109" hits="102" branch="false"/>
+						<line number="110" hits="102" branch="false"/>
+						<line number="112" hits="18" branch="false"/>
+						<line number="113" hits="18" branch="false"/>
+						<line number="116" hits="120" branch="false"/>
+						<line number="118" hits="120" branch="false"/>
+						<line number="119" hits="0" branch="false"/>
+						<line number="120" hits="0" branch="false"/>
+						<line number="122" hits="0" branch="false"/>
+						<line number="123" hits="0" branch="false"/>
+						<line number="124" hits="0" branch="false"/>
+						<line number="125" hits="0" branch="false"/>
+						<line number="138" hits="270" branch="false"/>
+						<line number="139" hits="270" branch="false"/>
+						<line number="140" hits="270" branch="false"/>
+						<line number="141" hits="270" branch="false"/>
+						<line number="142" hits="270" branch="false"/>
+						<line number="143" hits="270" branch="false"/>
+						<line number="144" hits="270" branch="false"/>
+						<line number="146" hits="270" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="147" hits="36" branch="false"/>
+						<line number="148" hits="36" branch="false"/>
+						<line number="149" hits="36" branch="false"/>
+						<line number="151" hits="234" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="152" hits="180" branch="false"/>
+						<line number="153" hits="180" branch="false"/>
+						<line number="156" hits="270" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="157" hits="216" branch="false"/>
+						<line number="159" hits="270" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="160" hits="36" branch="false"/>
+						<line number="161" hits="234" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="162" hits="180" branch="false"/>
+						<line number="166" hits="270" branch="false"/>
+						<line number="167" hits="270" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="168" hits="216" branch="false"/>
+						<line number="170" hits="54" branch="false"/>
+						<line number="173" hits="270" branch="false"/>
+						<line number="174" hits="82" branch="false"/>
+						<line number="175" hits="82" branch="false"/>
+						<line number="177" hits="82" branch="false"/>
+						<line number="178" hits="0" branch="false"/>
+						<line number="180" hits="0" branch="false"/>
+						<line number="181" hits="0" branch="false"/>
+						<line number="182" hits="0" branch="false"/>
+						<line number="183" hits="0" branch="false"/>
+						<line number="195" hits="0" branch="false"/>
+						<line number="204" hits="39" branch="false"/>
+					</lines>
+				</class>
+				<class name="net.blackhacker.crypto.Signer" filename="net/blackhacker/crypto/Signer.java" line-rate="1.0" branch-rate="1.0" complexity="1.0">
+					<methods>
+					</methods>
+					<lines>
+					</lines>
+				</class>
+				<class name="net.blackhacker.crypto.SignerException" filename="net/blackhacker/crypto/SignerException.java" line-rate="0.3333333333333333" branch-rate="1.0" complexity="1.0">
+					<methods>
+						<method name="&lt;init&gt;" signature="()V" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="32" hits="0" branch="false"/>
+								<line number="33" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="&lt;init&gt;" signature="(Ljava/lang/String;)V" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="36" hits="6" branch="false"/>
+								<line number="37" hits="6" branch="false"/>
+							</lines>
+						</method>
+						<method name="&lt;init&gt;" signature="(Ljava/lang/String;Ljava/lang/Throwable;)V" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="40" hits="0" branch="false"/>
+								<line number="41" hits="0" branch="false"/>
+							</lines>
+						</method>
+					</methods>
+					<lines>
+						<line number="32" hits="0" branch="false"/>
+						<line number="33" hits="0" branch="false"/>
+						<line number="36" hits="6" branch="false"/>
+						<line number="37" hits="6" branch="false"/>
+						<line number="40" hits="0" branch="false"/>
+						<line number="41" hits="0" branch="false"/>
+					</lines>
+				</class>
+				<class name="net.blackhacker.crypto.Strings" filename="net/blackhacker/crypto/Strings.java" line-rate="0.0" branch-rate="1.0" complexity="0.0">
+					<methods>
+						<method name="&lt;init&gt;" signature="()V" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="31" hits="0" branch="false"/>
+							</lines>
+						</method>
+					</methods>
+					<lines>
+						<line number="31" hits="0" branch="false"/>
+					</lines>
+				</class>
+				<class name="net.blackhacker.crypto.Transformation" filename="net/blackhacker/crypto/Transformation.java" line-rate="0.7738095238095238" branch-rate="0.775" complexity="2.6363636363636362">
+					<methods>
+						<method name="&lt;init&gt;" signature="(Lnet/blackhacker/crypto/algorithm/AsymmetricAlgorithm;Lnet/blackhacker/crypto/algorithm/Mode;)V" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="77" hits="0" branch="false"/>
+								<line number="78" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="&lt;init&gt;" signature="(Lnet/blackhacker/crypto/algorithm/AsymmetricAlgorithm;Lnet/blackhacker/crypto/algorithm/Mode;Lnet/blackhacker/crypto/algorithm/Padding;)V" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="81" hits="6" branch="false"/>
+								<line number="82" hits="6" branch="false"/>
+							</lines>
+						</method>
+						<method name="&lt;init&gt;" signature="(Lnet/blackhacker/crypto/algorithm/DigestAlgorithm;Lnet/blackhacker/crypto/algorithm/SymmetricAlgorithm;)V" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="73" hits="6" branch="false"/>
+								<line number="74" hits="6" branch="false"/>
+							</lines>
+						</method>
+						<method name="&lt;init&gt;" signature="(Lnet/blackhacker/crypto/algorithm/DigestAlgorithm;Lnet/blackhacker/crypto/algorithm/SymmetricAlgorithm;Lnet/blackhacker/crypto/algorithm/AsymmetricAlgorithm;Lnet/blackhacker/crypto/algorithm/Mode;Lnet/blackhacker/crypto/algorithm/Padding;)V" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="59" hits="51" branch="false"/>
+								<line number="60" hits="51" branch="false"/>
+								<line number="61" hits="51" branch="false"/>
+								<line number="62" hits="51" branch="false"/>
+								<line number="63" hits="51" branch="false"/>
+								<line number="64" hits="51" branch="false"/>
+								<line number="65" hits="51" branch="false"/>
+							</lines>
+						</method>
+						<method name="&lt;init&gt;" signature="(Lnet/blackhacker/crypto/algorithm/SymmetricAlgorithm;Lnet/blackhacker/crypto/algorithm/Mode;)V" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="68" hits="39" branch="false"/>
+								<line number="69" hits="39" branch="false"/>
+							</lines>
+						</method>
+						<method name="getAlgorithmString" signature="()Ljava/lang/String;" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="276" hits="180" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="277" hits="36" branch="false"/>
+								<line number="278" hits="18" branch="false"/>
+								<line number="279" hits="18" branch="false"/>
+								<line number="281" hits="162" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="282" hits="102" branch="false"/>
+								<line number="284" hits="60" branch="false"/>
+							</lines>
+						</method>
+						<method name="getBlockSize" signature="()I" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="90" hits="564" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="91" hits="270" branch="false"/>
+								<line number="92" hits="12" branch="false"/>
+							</lines>
+						</method>
+						<method name="getBlockSizeBytes" signature="()I" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="107" hits="282" branch="false"/>
+							</lines>
+						</method>
+						<method name="getClasses" signature="([Ljava/lang/Object;)[Ljava/lang/Class;" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="243" hits="288" branch="false"/>
+								<line number="244" hits="576" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="245" hits="288" branch="false"/>
+								<line number="248" hits="288" branch="false"/>
+							</lines>
+						</method>
+						<method name="getDigestAlgorithm" signature="()Lnet/blackhacker/crypto/algorithm/DigestAlgorithm;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="160" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="getKeySize" signature="()I" line-rate="1.0" branch-rate="0.5" complexity="0">
+							<lines>
+								<line number="96" hits="48" branch="true" condition-coverage="50% (1/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="50%"/>
+									</conditions>
+								</line>
+								<line number="98" hits="24" branch="false"/>
+							</lines>
+						</method>
+						<method name="getSaltSizeBytes" signature="()I" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="135" hits="48" branch="false"/>
+							</lines>
+						</method>
+						<method name="getSymmetricAlgorithm" signature="()Lnet/blackhacker/crypto/algorithm/SymmetricAlgorithm;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="156" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="hasIV" signature="()Z" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="116" hits="441" branch="true" condition-coverage="100% (4/4)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+										<condition number="1" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+							</lines>
+						</method>
+						<method name="isAsymmetric" signature="()Z" line-rate="1.0" branch-rate="0.5" complexity="0">
+							<lines>
+								<line number="144" hits="12" branch="true" condition-coverage="50% (1/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="50%"/>
+									</conditions>
+								</line>
+							</lines>
+						</method>
+						<method name="isPBE" signature="()Z" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="126" hits="1224" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+							</lines>
+						</method>
+						<method name="isSymmetric" signature="()Z" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="152" hits="987" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+							</lines>
+						</method>
+						<method name="makeKeySpec" signature="([Ljava/lang/Object;)Ljava/security/spec/KeySpec;" line-rate="0.6428571428571429" branch-rate="0.6666666666666666" complexity="0">
+							<lines>
+								<line number="165" hits="57" branch="true" condition-coverage="50% (1/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="50%"/>
+									</conditions>
+								</line>
+								<line number="166" hits="57" branch="false"/>
+								<line number="167" hits="57" branch="false"/>
+								<line number="169" hits="57" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="170" hits="36" branch="false"/>
+								<line number="171" hits="18" branch="false"/>
+								<line number="172" hits="18" branch="false"/>
+								<line number="174" hits="39" branch="true" condition-coverage="50% (1/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="50%"/>
+									</conditions>
+								</line>
+								<line number="175" hits="39" branch="false"/>
+								<line number="177" hits="0" branch="false"/>
+								<line number="178" hits="0" branch="false"/>
+								<line number="180" hits="0" branch="false"/>
+								<line number="181" hits="0" branch="false"/>
+								<line number="184" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="makeParameterSpec" signature="([Ljava/lang/Object;)Ljava/security/spec/AlgorithmParameterSpec;" line-rate="0.6666666666666666" branch-rate="0.6666666666666666" complexity="0">
+							<lines>
+								<line number="213" hits="318" branch="true" condition-coverage="50% (1/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="50%"/>
+									</conditions>
+								</line>
+								<line number="215" hits="318" branch="false"/>
+								<line number="216" hits="318" branch="false"/>
+								<line number="218" hits="318" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="219" hits="96" branch="false"/>
+								<line number="220" hits="48" branch="false"/>
+								<line number="221" hits="48" branch="false"/>
+								<line number="224" hits="270" branch="true" condition-coverage="50% (1/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="50%"/>
+									</conditions>
+								</line>
+								<line number="225" hits="540" branch="false"/>
+								<line number="226" hits="270" branch="false"/>
+								<line number="227" hits="270" branch="false"/>
+								<line number="228" hits="270" branch="false"/>
+								<line number="230" hits="0" branch="false"/>
+								<line number="232" hits="0" branch="false"/>
+								<line number="233" hits="0" branch="false"/>
+								<line number="236" hits="0" branch="false"/>
+								<line number="237" hits="0" branch="false"/>
+								<line number="239" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="makePrivateKeySpec" signature="([Ljava/lang/Object;)Ljava/security/spec/KeySpec;" line-rate="0.0" branch-rate="0.0" complexity="0">
+							<lines>
+								<line number="196" hits="0" branch="true" condition-coverage="0% (0/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="0%"/>
+									</conditions>
+								</line>
+								<line number="197" hits="0" branch="false"/>
+								<line number="199" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="makePublicKeySpec" signature="([Ljava/lang/Object;)Ljava/security/spec/KeySpec;" line-rate="0.6666666666666666" branch-rate="0.5" complexity="0">
+							<lines>
+								<line number="189" hits="12" branch="true" condition-coverage="50% (1/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="50%"/>
+									</conditions>
+								</line>
+								<line number="190" hits="12" branch="false"/>
+								<line number="192" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="toString" signature="()Ljava/lang/String;" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="253" hits="234" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="254" hits="48" branch="false"/>
+								<line number="255" hits="24" branch="false"/>
+								<line number="256" hits="24" branch="false"/>
+								<line number="258" hits="210" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="259" hits="156" branch="false"/>
+								<line number="264" hits="54" branch="false"/>
+							</lines>
+						</method>
+					</methods>
+					<lines>
+						<line number="59" hits="51" branch="false"/>
+						<line number="60" hits="51" branch="false"/>
+						<line number="61" hits="51" branch="false"/>
+						<line number="62" hits="51" branch="false"/>
+						<line number="63" hits="51" branch="false"/>
+						<line number="64" hits="51" branch="false"/>
+						<line number="65" hits="51" branch="false"/>
+						<line number="68" hits="39" branch="false"/>
+						<line number="69" hits="39" branch="false"/>
+						<line number="73" hits="6" branch="false"/>
+						<line number="74" hits="6" branch="false"/>
+						<line number="77" hits="0" branch="false"/>
+						<line number="78" hits="0" branch="false"/>
+						<line number="81" hits="6" branch="false"/>
+						<line number="82" hits="6" branch="false"/>
+						<line number="90" hits="564" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="91" hits="270" branch="false"/>
+						<line number="92" hits="12" branch="false"/>
+						<line number="96" hits="48" branch="true" condition-coverage="50% (1/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="50%"/>
+							</conditions>
+						</line>
+						<line number="98" hits="24" branch="false"/>
+						<line number="107" hits="282" branch="false"/>
+						<line number="116" hits="441" branch="true" condition-coverage="100% (4/4)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+								<condition number="1" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="126" hits="1224" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="135" hits="48" branch="false"/>
+						<line number="144" hits="12" branch="true" condition-coverage="50% (1/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="50%"/>
+							</conditions>
+						</line>
+						<line number="152" hits="987" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="156" hits="0" branch="false"/>
+						<line number="160" hits="0" branch="false"/>
+						<line number="165" hits="57" branch="true" condition-coverage="50% (1/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="50%"/>
+							</conditions>
+						</line>
+						<line number="166" hits="57" branch="false"/>
+						<line number="167" hits="57" branch="false"/>
+						<line number="169" hits="57" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="170" hits="36" branch="false"/>
+						<line number="171" hits="18" branch="false"/>
+						<line number="172" hits="18" branch="false"/>
+						<line number="174" hits="39" branch="true" condition-coverage="50% (1/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="50%"/>
+							</conditions>
+						</line>
+						<line number="175" hits="39" branch="false"/>
+						<line number="177" hits="0" branch="false"/>
+						<line number="178" hits="0" branch="false"/>
+						<line number="180" hits="0" branch="false"/>
+						<line number="181" hits="0" branch="false"/>
+						<line number="184" hits="0" branch="false"/>
+						<line number="189" hits="12" branch="true" condition-coverage="50% (1/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="50%"/>
+							</conditions>
+						</line>
+						<line number="190" hits="12" branch="false"/>
+						<line number="192" hits="0" branch="false"/>
+						<line number="196" hits="0" branch="true" condition-coverage="0% (0/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="0%"/>
+							</conditions>
+						</line>
+						<line number="197" hits="0" branch="false"/>
+						<line number="199" hits="0" branch="false"/>
+						<line number="213" hits="318" branch="true" condition-coverage="50% (1/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="50%"/>
+							</conditions>
+						</line>
+						<line number="215" hits="318" branch="false"/>
+						<line number="216" hits="318" branch="false"/>
+						<line number="218" hits="318" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="219" hits="96" branch="false"/>
+						<line number="220" hits="48" branch="false"/>
+						<line number="221" hits="48" branch="false"/>
+						<line number="224" hits="270" branch="true" condition-coverage="50% (1/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="50%"/>
+							</conditions>
+						</line>
+						<line number="225" hits="540" branch="false"/>
+						<line number="226" hits="270" branch="false"/>
+						<line number="227" hits="270" branch="false"/>
+						<line number="228" hits="270" branch="false"/>
+						<line number="230" hits="0" branch="false"/>
+						<line number="232" hits="0" branch="false"/>
+						<line number="233" hits="0" branch="false"/>
+						<line number="236" hits="0" branch="false"/>
+						<line number="237" hits="0" branch="false"/>
+						<line number="239" hits="0" branch="false"/>
+						<line number="243" hits="288" branch="false"/>
+						<line number="244" hits="576" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="245" hits="288" branch="false"/>
+						<line number="248" hits="288" branch="false"/>
+						<line number="253" hits="234" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="254" hits="48" branch="false"/>
+						<line number="255" hits="24" branch="false"/>
+						<line number="256" hits="24" branch="false"/>
+						<line number="258" hits="210" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="259" hits="156" branch="false"/>
+						<line number="264" hits="54" branch="false"/>
+						<line number="276" hits="180" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="277" hits="36" branch="false"/>
+						<line number="278" hits="18" branch="false"/>
+						<line number="279" hits="18" branch="false"/>
+						<line number="281" hits="162" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="282" hits="102" branch="false"/>
+						<line number="284" hits="60" branch="false"/>
+					</lines>
+				</class>
+				<class name="net.blackhacker.crypto.Utils" filename="net/blackhacker/crypto/Utils.java" line-rate="0.9512195121951219" branch-rate="0.96875" complexity="3.4285714285714284">
+					<methods>
+						<method name="&lt;init&gt;" signature="()V" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="34" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="bitsToBytes" signature="(I)I" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="155" hits="330" branch="false"/>
+							</lines>
+						</method>
+						<method name="concat" signature="([[B)[B" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="87" hits="135" branch="false"/>
+								<line number="88" hits="642" branch="true" condition-coverage="100% (4/4)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+										<condition number="1" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="89" hits="507" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="92" hits="135" branch="false"/>
+								<line number="93" hits="135" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="94" hits="132" branch="false"/>
+								<line number="95" hits="639" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="96" hits="507" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="97" hits="54023" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="98" hits="53771" branch="false"/>
+								<line number="102" hits="135" branch="false"/>
+							</lines>
+						</method>
+						<method name="getClasses" signature="([Ljava/lang/Object;)[Ljava/lang/Class;" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="61" hits="222" branch="false"/>
+								<line number="62" hits="504" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="63" hits="282" branch="false"/>
+								<line number="64" hits="282" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="65" hits="51" branch="false"/>
+								<line number="66" hits="231" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="67" hits="3" branch="false"/>
+								<line number="68" hits="228" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="69" hits="3" branch="false"/>
+								<line number="70" hits="225" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="71" hits="3" branch="false"/>
+								<line number="73" hits="282" branch="false"/>
+								<line number="76" hits="222" branch="false"/>
+							</lines>
+						</method>
+						<method name="jce" signature="()Z" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="42" hits="3" branch="false"/>
+							</lines>
+						</method>
+						<method name="split" signature="([B[[B)V" line-rate="0.8888888888888888" branch-rate="0.875" complexity="0">
+							<lines>
+								<line number="113" hits="219" branch="false"/>
+								<line number="114" hits="219" branch="true" condition-coverage="50% (1/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="50%"/>
+									</conditions>
+								</line>
+								<line number="115" hits="1098" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="116" hits="879" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="117" hits="95437" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="118" hits="94957" branch="false"/>
+								<line number="121" hits="0" branch="false"/>
+								<line number="122" hits="219" branch="false"/>
+								<line number="123" hits="219" branch="false"/>
+							</lines>
+						</method>
+						<method name="toBytes" signature="(I)[B" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="132" hits="18" branch="false"/>
+								<line number="133" hits="18" branch="false"/>
+								<line number="134" hits="18" branch="false"/>
+							</lines>
+						</method>
+						<method name="toInt" signature="([B)I" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="144" hits="54" branch="false"/>
+								<line number="145" hits="54" branch="false"/>
+							</lines>
+						</method>
+					</methods>
+					<lines>
+						<line number="34" hits="0" branch="false"/>
+						<line number="42" hits="3" branch="false"/>
+						<line number="61" hits="222" branch="false"/>
+						<line number="62" hits="504" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="63" hits="282" branch="false"/>
+						<line number="64" hits="282" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="65" hits="51" branch="false"/>
+						<line number="66" hits="231" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="67" hits="3" branch="false"/>
+						<line number="68" hits="228" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="69" hits="3" branch="false"/>
+						<line number="70" hits="225" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="71" hits="3" branch="false"/>
+						<line number="73" hits="282" branch="false"/>
+						<line number="76" hits="222" branch="false"/>
+						<line number="87" hits="135" branch="false"/>
+						<line number="88" hits="642" branch="true" condition-coverage="100% (4/4)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+								<condition number="1" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="89" hits="507" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="92" hits="135" branch="false"/>
+						<line number="93" hits="135" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="94" hits="132" branch="false"/>
+						<line number="95" hits="639" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="96" hits="507" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="97" hits="54023" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="98" hits="53771" branch="false"/>
+						<line number="102" hits="135" branch="false"/>
+						<line number="113" hits="219" branch="false"/>
+						<line number="114" hits="219" branch="true" condition-coverage="50% (1/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="50%"/>
+							</conditions>
+						</line>
+						<line number="115" hits="1098" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="116" hits="879" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="117" hits="95437" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="118" hits="94957" branch="false"/>
+						<line number="121" hits="0" branch="false"/>
+						<line number="122" hits="219" branch="false"/>
+						<line number="123" hits="219" branch="false"/>
+						<line number="132" hits="18" branch="false"/>
+						<line number="133" hits="18" branch="false"/>
+						<line number="134" hits="18" branch="false"/>
+						<line number="144" hits="54" branch="false"/>
+						<line number="145" hits="54" branch="false"/>
+						<line number="155" hits="330" branch="false"/>
+					</lines>
+				</class>
+				<class name="net.blackhacker.crypto.Validator" filename="net/blackhacker/crypto/Validator.java" line-rate="0.38461538461538464" branch-rate="0.5" complexity="2.0">
+					<methods>
+						<method name="&lt;init&gt;" signature="()V" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="30" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="isA" signature="(Ljava/lang/Object;Ljava/lang/Class;Ljava/lang/String;)V" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="47" hits="0" branch="false"/>
+								<line number="48" hits="0" branch="false"/>
+								<line number="49" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="isFalse" signature="(ZLjava/lang/String;)V" line-rate="0.0" branch-rate="0.0" complexity="0">
+							<lines>
+								<line number="43" hits="0" branch="true" condition-coverage="0% (0/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="0%"/>
+									</conditions>
+								</line>
+								<line number="44" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="isTrue" signature="(ZLjava/lang/String;)V" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="38" hits="177" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="39" hits="42" branch="false"/>
+								<line number="40" hits="135" branch="false"/>
+							</lines>
+						</method>
+						<method name="notNull" signature="(Ljava/lang/Object;Ljava/lang/String;)V" line-rate="0.5" branch-rate="0.5" complexity="0">
+							<lines>
+								<line number="32" hits="465" branch="true" condition-coverage="50% (1/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="50%"/>
+									</conditions>
+								</line>
+								<line number="33" hits="0" branch="false"/>
+								<line number="34" hits="0" branch="false"/>
+								<line number="35" hits="465" branch="false"/>
+							</lines>
+						</method>
+					</methods>
+					<lines>
+						<line number="30" hits="0" branch="false"/>
+						<line number="32" hits="465" branch="true" condition-coverage="50% (1/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="50%"/>
+							</conditions>
+						</line>
+						<line number="33" hits="0" branch="false"/>
+						<line number="34" hits="0" branch="false"/>
+						<line number="35" hits="465" branch="false"/>
+						<line number="38" hits="177" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="39" hits="42" branch="false"/>
+						<line number="40" hits="135" branch="false"/>
+						<line number="43" hits="0" branch="true" condition-coverage="0% (0/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="0%"/>
+							</conditions>
+						</line>
+						<line number="44" hits="0" branch="false"/>
+						<line number="47" hits="0" branch="false"/>
+						<line number="48" hits="0" branch="false"/>
+						<line number="49" hits="0" branch="false"/>
+					</lines>
+				</class>
+				<class name="net.blackhacker.crypto.Verifier" filename="net/blackhacker/crypto/Verifier.java" line-rate="1.0" branch-rate="1.0" complexity="1.0">
+					<methods>
+					</methods>
+					<lines>
+					</lines>
+				</class>
+			</classes>
+		</package>
+		<package name="net.blackhacker.crypto.algorithm" line-rate="0.8157894736842105" branch-rate="0.9166666666666666" complexity="2.3636363636363638">
+			<classes>
+				<class name="net.blackhacker.crypto.algorithm.AsymmetricAlgorithm" filename="net/blackhacker/crypto/algorithm/AsymmetricAlgorithm.java" line-rate="0.7333333333333333" branch-rate="0.8333333333333334" complexity="2.875">
+					<methods>
+						<method name="&lt;clinit&gt;" signature="()V" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="42" hits="6" branch="false"/>
+								<line number="44" hits="3" branch="false"/>
+								<line number="45" hits="3" branch="false"/>
+							</lines>
+						</method>
+						<method name="&lt;init&gt;" signature="(Ljava/lang/String;IIILjava/lang/Class;Ljava/lang/Class;Ljava/lang/String;)V" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="56" hits="6" branch="false"/>
+								<line number="57" hits="6" branch="false"/>
+								<line number="58" hits="6" branch="false"/>
+								<line number="59" hits="6" branch="false"/>
+								<line number="60" hits="6" branch="false"/>
+								<line number="61" hits="6" branch="false"/>
+								<line number="62" hits="6" branch="false"/>
+							</lines>
+						</method>
+						<method name="getBlockSize" signature="()I" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="79" hits="30" branch="false"/>
+							</lines>
+						</method>
+						<method name="getKeySize" signature="()I" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="70" hits="24" branch="false"/>
+							</lines>
+						</method>
+						<method name="getPrivateKeySpecClass" signature="()Ljava/lang/Class;" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="172" hits="6" branch="false"/>
+							</lines>
+						</method>
+						<method name="getPublicKeySpecClass" signature="()Ljava/lang/Class;" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="168" hits="6" branch="false"/>
+							</lines>
+						</method>
+						<method name="makePrivateKeySpec" signature="([Ljava/lang/Object;)Ljava/security/spec/KeySpec;" line-rate="0.6" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="128" hits="18" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="132" hits="12" branch="false"/>
+								<line number="133" hits="12" branch="false"/>
+								<line number="134" hits="0" branch="false"/>
+								<line number="135" hits="12" branch="false"/>
+								<line number="139" hits="18" branch="false"/>
+								<line number="140" hits="12" branch="false"/>
+								<line number="141" hits="6" branch="false"/>
+								<line number="142" hits="6" branch="false"/>
+								<line number="145" hits="6" branch="false"/>
+								<line number="147" hits="0" branch="false"/>
+								<line number="150" hits="0" branch="false"/>
+								<line number="151" hits="0" branch="false"/>
+								<line number="152" hits="0" branch="false"/>
+								<line number="153" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="makePublicKeySpec" signature="([Ljava/lang/Object;)Ljava/security/spec/KeySpec;" line-rate="0.6" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="90" hits="30" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="94" hits="24" branch="false"/>
+								<line number="95" hits="24" branch="false"/>
+								<line number="96" hits="0" branch="false"/>
+								<line number="97" hits="24" branch="false"/>
+								<line number="101" hits="42" branch="false"/>
+								<line number="102" hits="24" branch="false"/>
+								<line number="103" hits="18" branch="false"/>
+								<line number="104" hits="6" branch="false"/>
+								<line number="107" hits="6" branch="false"/>
+								<line number="109" hits="0" branch="false"/>
+								<line number="112" hits="0" branch="false"/>
+								<line number="113" hits="0" branch="false"/>
+								<line number="114" hits="0" branch="false"/>
+								<line number="115" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="toString" signature="()Ljava/lang/String;" line-rate="1.0" branch-rate="0.5" complexity="0">
+							<lines>
+								<line number="164" hits="114" branch="true" condition-coverage="50% (1/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="50%"/>
+									</conditions>
+								</line>
+							</lines>
+						</method>
+						<method name="valueOf" signature="(Ljava/lang/String;)Lnet/blackhacker/crypto/algorithm/AsymmetricAlgorithm;" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+							</lines>
+						</method>
+						<method name="values" signature="()[Lnet/blackhacker/crypto/algorithm/AsymmetricAlgorithm;" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+							</lines>
+						</method>
+					</methods>
+					<lines>
+						<line number="42" hits="6" branch="false"/>
+						<line number="44" hits="3" branch="false"/>
+						<line number="45" hits="3" branch="false"/>
+						<line number="56" hits="6" branch="false"/>
+						<line number="57" hits="6" branch="false"/>
+						<line number="58" hits="6" branch="false"/>
+						<line number="59" hits="6" branch="false"/>
+						<line number="60" hits="6" branch="false"/>
+						<line number="61" hits="6" branch="false"/>
+						<line number="62" hits="6" branch="false"/>
+						<line number="70" hits="24" branch="false"/>
+						<line number="79" hits="30" branch="false"/>
+						<line number="90" hits="30" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="94" hits="24" branch="false"/>
+						<line number="95" hits="24" branch="false"/>
+						<line number="96" hits="0" branch="false"/>
+						<line number="97" hits="24" branch="false"/>
+						<line number="101" hits="42" branch="false"/>
+						<line number="102" hits="24" branch="false"/>
+						<line number="103" hits="18" branch="false"/>
+						<line number="104" hits="6" branch="false"/>
+						<line number="107" hits="6" branch="false"/>
+						<line number="109" hits="0" branch="false"/>
+						<line number="112" hits="0" branch="false"/>
+						<line number="113" hits="0" branch="false"/>
+						<line number="114" hits="0" branch="false"/>
+						<line number="115" hits="0" branch="false"/>
+						<line number="128" hits="18" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="132" hits="12" branch="false"/>
+						<line number="133" hits="12" branch="false"/>
+						<line number="134" hits="0" branch="false"/>
+						<line number="135" hits="12" branch="false"/>
+						<line number="139" hits="18" branch="false"/>
+						<line number="140" hits="12" branch="false"/>
+						<line number="141" hits="6" branch="false"/>
+						<line number="142" hits="6" branch="false"/>
+						<line number="145" hits="6" branch="false"/>
+						<line number="147" hits="0" branch="false"/>
+						<line number="150" hits="0" branch="false"/>
+						<line number="151" hits="0" branch="false"/>
+						<line number="152" hits="0" branch="false"/>
+						<line number="153" hits="0" branch="false"/>
+						<line number="164" hits="114" branch="true" condition-coverage="50% (1/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="50%"/>
+							</conditions>
+						</line>
+						<line number="168" hits="6" branch="false"/>
+						<line number="172" hits="6" branch="false"/>
+					</lines>
+				</class>
+				<class name="net.blackhacker.crypto.algorithm.DigestAlgorithm" filename="net/blackhacker/crypto/algorithm/DigestAlgorithm.java" line-rate="0.8571428571428571" branch-rate="1.0" complexity="1.0">
+					<methods>
+						<method name="&lt;clinit&gt;" signature="()V" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="33" hits="3" branch="false"/>
+								<line number="34" hits="3" branch="false"/>
+							</lines>
+						</method>
+						<method name="&lt;init&gt;" signature="(Ljava/lang/String;II)V" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="36" hits="15" branch="false"/>
+								<line number="37" hits="15" branch="false"/>
+								<line number="38" hits="15" branch="false"/>
+							</lines>
+						</method>
+						<method name="getSaltSize" signature="()I" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="41" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="getSaltSizeBytes" signature="()I" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="45" hits="48" branch="false"/>
+							</lines>
+						</method>
+						<method name="valueOf" signature="(Ljava/lang/String;)Lnet/blackhacker/crypto/algorithm/DigestAlgorithm;" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+							</lines>
+						</method>
+						<method name="values" signature="()[Lnet/blackhacker/crypto/algorithm/DigestAlgorithm;" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+							</lines>
+						</method>
+					</methods>
+					<lines>
+						<line number="33" hits="3" branch="false"/>
+						<line number="34" hits="3" branch="false"/>
+						<line number="36" hits="15" branch="false"/>
+						<line number="37" hits="15" branch="false"/>
+						<line number="38" hits="15" branch="false"/>
+						<line number="41" hits="0" branch="false"/>
+						<line number="45" hits="48" branch="false"/>
+					</lines>
+				</class>
+				<class name="net.blackhacker.crypto.algorithm.Mode" filename="net/blackhacker/crypto/algorithm/Mode.java" line-rate="1.0" branch-rate="1.0" complexity="1.0">
+					<methods>
+						<method name="&lt;clinit&gt;" signature="()V" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="31" hits="3" branch="false"/>
+								<line number="32" hits="3" branch="false"/>
+								<line number="33" hits="3" branch="false"/>
+							</lines>
+						</method>
+						<method name="&lt;init&gt;" signature="(Ljava/lang/String;IZ)V" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="35" hits="27" branch="false"/>
+								<line number="36" hits="27" branch="false"/>
+								<line number="37" hits="27" branch="false"/>
+							</lines>
+						</method>
+						<method name="hasIV" signature="()Z" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="44" hits="435" branch="false"/>
+							</lines>
+						</method>
+						<method name="valueOf" signature="(Ljava/lang/String;)Lnet/blackhacker/crypto/algorithm/Mode;" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+							</lines>
+						</method>
+						<method name="values" signature="()[Lnet/blackhacker/crypto/algorithm/Mode;" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+							</lines>
+						</method>
+					</methods>
+					<lines>
+						<line number="31" hits="3" branch="false"/>
+						<line number="32" hits="3" branch="false"/>
+						<line number="33" hits="3" branch="false"/>
+						<line number="35" hits="27" branch="false"/>
+						<line number="36" hits="27" branch="false"/>
+						<line number="37" hits="27" branch="false"/>
+						<line number="44" hits="435" branch="false"/>
+					</lines>
+				</class>
+				<class name="net.blackhacker.crypto.algorithm.Padding" filename="net/blackhacker/crypto/algorithm/Padding.java" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+					<methods>
+						<method name="&lt;clinit&gt;" signature="()V" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="31" hits="21" branch="false"/>
+								<line number="32" hits="3" branch="false"/>
+								<line number="33" hits="3" branch="false"/>
+								<line number="34" hits="3" branch="false"/>
+								<line number="35" hits="3" branch="false"/>
+								<line number="36" hits="3" branch="false"/>
+								<line number="37" hits="3" branch="false"/>
+							</lines>
+						</method>
+						<method name="&lt;init&gt;" signature="(Ljava/lang/String;I)V" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+							</lines>
+						</method>
+						<method name="valueOf" signature="(Ljava/lang/String;)Lnet/blackhacker/crypto/algorithm/Padding;" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+							</lines>
+						</method>
+						<method name="values" signature="()[Lnet/blackhacker/crypto/algorithm/Padding;" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+							</lines>
+						</method>
+					</methods>
+					<lines>
+						<line number="31" hits="21" branch="false"/>
+						<line number="32" hits="3" branch="false"/>
+						<line number="33" hits="3" branch="false"/>
+						<line number="34" hits="3" branch="false"/>
+						<line number="35" hits="3" branch="false"/>
+						<line number="36" hits="3" branch="false"/>
+						<line number="37" hits="3" branch="false"/>
+					</lines>
+				</class>
+				<class name="net.blackhacker.crypto.algorithm.SymmetricAlgorithm" filename="net/blackhacker/crypto/algorithm/SymmetricAlgorithm.java" line-rate="0.8333333333333334" branch-rate="1.0" complexity="2.6666666666666665">
+					<methods>
+						<method name="&lt;clinit&gt;" signature="()V" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="44" hits="6" branch="false"/>
+								<line number="45" hits="3" branch="false"/>
+								<line number="46" hits="3" branch="false"/>
+								<line number="47" hits="3" branch="false"/>
+								<line number="52" hits="3" branch="false"/>
+								<line number="53" hits="3" branch="false"/>
+							</lines>
+						</method>
+						<method name="&lt;init&gt;" signature="(Ljava/lang/String;IILjava/lang/Class;Ljava/lang/Class;)V" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="71" hits="3" branch="false"/>
+								<line number="72" hits="3" branch="false"/>
+							</lines>
+						</method>
+						<method name="&lt;init&gt;" signature="(Ljava/lang/String;IILjava/lang/Class;Ljava/lang/Class;Ljava/lang/String;)V" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="78" hits="15" branch="false"/>
+								<line number="79" hits="15" branch="false"/>
+								<line number="80" hits="15" branch="false"/>
+								<line number="81" hits="15" branch="false"/>
+								<line number="82" hits="15" branch="false"/>
+								<line number="83" hits="15" branch="false"/>
+							</lines>
+						</method>
+						<method name="&lt;init&gt;" signature="(Ljava/lang/String;ILjava/lang/Class;Ljava/lang/Class;)V" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="65" hits="3" branch="false"/>
+								<line number="66" hits="3" branch="false"/>
+							</lines>
+						</method>
+						<method name="getAlgorParamSpecClass" signature="()Ljava/lang/Class;" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="172" hits="285" branch="false"/>
+							</lines>
+						</method>
+						<method name="getBlockSize" signature="()I" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="91" hits="315" branch="false"/>
+							</lines>
+						</method>
+						<method name="getKeySpecClass" signature="()Ljava/lang/Class;" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="168" hits="15" branch="false"/>
+							</lines>
+						</method>
+						<method name="getTransformationName" signature="()Ljava/lang/String;" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="176" hits="57" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+							</lines>
+						</method>
+						<method name="makeKeySpec" signature="([Ljava/lang/Object;)Ljava/security/spec/KeySpec;" line-rate="0.7" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="104" hits="84" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="105" hits="69" branch="false"/>
+								<line number="108" hits="69" branch="false"/>
+								<line number="109" hits="69" branch="false"/>
+								<line number="110" hits="0" branch="false"/>
+								<line number="111" hits="69" branch="false"/>
+								<line number="115" hits="99" branch="false"/>
+								<line number="116" hits="69" branch="false"/>
+								<line number="117" hits="30" branch="false"/>
+								<line number="118" hits="39" branch="false"/>
+								<line number="122" hits="63" branch="false"/>
+								<line number="123" hits="39" branch="false"/>
+								<line number="124" hits="24" branch="false"/>
+								<line number="125" hits="15" branch="false"/>
+								<line number="128" hits="15" branch="false"/>
+								<line number="130" hits="0" branch="false"/>
+								<line number="133" hits="0" branch="false"/>
+								<line number="134" hits="0" branch="false"/>
+								<line number="135" hits="0" branch="false"/>
+								<line number="136" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="makeParameterSpec" signature="([Ljava/lang/Object;)Ljava/security/spec/AlgorithmParameterSpec;" line-rate="0.75" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="152" hits="45" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="154" hits="45" branch="false"/>
+								<line number="155" hits="30" branch="false"/>
+								<line number="156" hits="15" branch="false"/>
+								<line number="157" hits="15" branch="false"/>
+								<line number="158" hits="15" branch="false"/>
+								<line number="160" hits="0" branch="false"/>
+								<line number="163" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="valueOf" signature="(Ljava/lang/String;)Lnet/blackhacker/crypto/algorithm/SymmetricAlgorithm;" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+							</lines>
+						</method>
+						<method name="values" signature="()[Lnet/blackhacker/crypto/algorithm/SymmetricAlgorithm;" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+							</lines>
+						</method>
+					</methods>
+					<lines>
+						<line number="44" hits="6" branch="false"/>
+						<line number="45" hits="3" branch="false"/>
+						<line number="46" hits="3" branch="false"/>
+						<line number="47" hits="3" branch="false"/>
+						<line number="52" hits="3" branch="false"/>
+						<line number="53" hits="3" branch="false"/>
+						<line number="65" hits="3" branch="false"/>
+						<line number="66" hits="3" branch="false"/>
+						<line number="71" hits="3" branch="false"/>
+						<line number="72" hits="3" branch="false"/>
+						<line number="78" hits="15" branch="false"/>
+						<line number="79" hits="15" branch="false"/>
+						<line number="80" hits="15" branch="false"/>
+						<line number="81" hits="15" branch="false"/>
+						<line number="82" hits="15" branch="false"/>
+						<line number="83" hits="15" branch="false"/>
+						<line number="91" hits="315" branch="false"/>
+						<line number="104" hits="84" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="105" hits="69" branch="false"/>
+						<line number="108" hits="69" branch="false"/>
+						<line number="109" hits="69" branch="false"/>
+						<line number="110" hits="0" branch="false"/>
+						<line number="111" hits="69" branch="false"/>
+						<line number="115" hits="99" branch="false"/>
+						<line number="116" hits="69" branch="false"/>
+						<line number="117" hits="30" branch="false"/>
+						<line number="118" hits="39" branch="false"/>
+						<line number="122" hits="63" branch="false"/>
+						<line number="123" hits="39" branch="false"/>
+						<line number="124" hits="24" branch="false"/>
+						<line number="125" hits="15" branch="false"/>
+						<line number="128" hits="15" branch="false"/>
+						<line number="130" hits="0" branch="false"/>
+						<line number="133" hits="0" branch="false"/>
+						<line number="134" hits="0" branch="false"/>
+						<line number="135" hits="0" branch="false"/>
+						<line number="136" hits="0" branch="false"/>
+						<line number="152" hits="45" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="154" hits="45" branch="false"/>
+						<line number="155" hits="30" branch="false"/>
+						<line number="156" hits="15" branch="false"/>
+						<line number="157" hits="15" branch="false"/>
+						<line number="158" hits="15" branch="false"/>
+						<line number="160" hits="0" branch="false"/>
+						<line number="163" hits="0" branch="false"/>
+						<line number="168" hits="15" branch="false"/>
+						<line number="172" hits="285" branch="false"/>
+						<line number="176" hits="57" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+					</lines>
+				</class>
+			</classes>
+		</package>
+	</packages>
+</coverage>
