@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
 
-<coverage line-rate="0.6735751295336787" branch-rate="0.7945205479452054" lines-covered="390" lines-valid="579" branches-covered="116" branches-valid="146" complexity="1.8592592592592592" version="2.1.1" timestamp="1490149895059">
+<coverage line-rate="0.6735751295336787" branch-rate="0.7945205479452054" lines-covered="390" lines-valid="579" branches-covered="116" branches-valid="146" complexity="1.8592592592592592" version="2.1.1" timestamp="1490234691284">
 	<sources>
 		<source>--source</source>
 		<source>/home/ben/Projects/bh-crypto/src/main/java</source>
@@ -1804,12 +1804,12 @@
 										<condition number="0" type="jump" coverage="100%"/>
 									</conditions>
 								</line>
-								<line number="97" hits="16645" branch="true" condition-coverage="100% (2/2)">
+								<line number="97" hits="4059" branch="true" condition-coverage="100% (2/2)">
 									<conditions>
 										<condition number="0" type="jump" coverage="100%"/>
 									</conditions>
 								</line>
-								<line number="98" hits="16561" branch="false"/>
+								<line number="98" hits="3975" branch="false"/>
 								<line number="102" hits="45" branch="false"/>
 							</lines>
 						</method>
@@ -1873,12 +1873,12 @@
 										<condition number="0" type="jump" coverage="100%"/>
 									</conditions>
 								</line>
-								<line number="117" hits="29351" branch="true" condition-coverage="100% (2/2)">
+								<line number="117" hits="6725" branch="true" condition-coverage="100% (2/2)">
 									<conditions>
 										<condition number="0" type="jump" coverage="100%"/>
 									</conditions>
 								</line>
-								<line number="118" hits="29191" branch="false"/>
+								<line number="118" hits="6565" branch="false"/>
 								<line number="121" hits="0" branch="false"/>
 								<line number="122" hits="73" branch="false"/>
 								<line number="123" hits="73" branch="false"/>
@@ -1963,12 +1963,12 @@
 								<condition number="0" type="jump" coverage="100%"/>
 							</conditions>
 						</line>
-						<line number="97" hits="16645" branch="true" condition-coverage="100% (2/2)">
+						<line number="97" hits="4059" branch="true" condition-coverage="100% (2/2)">
 							<conditions>
 								<condition number="0" type="jump" coverage="100%"/>
 							</conditions>
 						</line>
-						<line number="98" hits="16561" branch="false"/>
+						<line number="98" hits="3975" branch="false"/>
 						<line number="102" hits="45" branch="false"/>
 						<line number="113" hits="73" branch="false"/>
 						<line number="114" hits="73" branch="true" condition-coverage="50% (1/2)">
@@ -1986,12 +1986,12 @@
 								<condition number="0" type="jump" coverage="100%"/>
 							</conditions>
 						</line>
-						<line number="117" hits="29351" branch="true" condition-coverage="100% (2/2)">
+						<line number="117" hits="6725" branch="true" condition-coverage="100% (2/2)">
 							<conditions>
 								<condition number="0" type="jump" coverage="100%"/>
 							</conditions>
 						</line>
-						<line number="118" hits="29191" branch="false"/>
+						<line number="118" hits="6565" branch="false"/>
 						<line number="121" hits="0" branch="false"/>
 						<line number="122" hits="73" branch="false"/>
 						<line number="123" hits="73" branch="false"/>
