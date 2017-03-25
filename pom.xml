@@ -40,12 +40,14 @@
     <readme.file>README.md</readme.file>
     <readme.page>README.html</readme.page>
 
+    <site.host>bh-crypto.blackhacker.net</site.host>
+    <site.url>http://${site.host}</site.url>
+
     <license.header.file>misc/license_header.txt</license.header.file>
     <license.src.file>LICENSE</license.src.file>
     <license.tgt.file>LICENSE.xhtml</license.tgt.file>
     <license.name>MIT License</license.name>
     <license.page>LICENSE.html</license.page>
-    <license.url>${project.url}/${license.page}</license.url>
         
     <github.global.server>github</github.global.server>
   </properties>
@@ -137,7 +139,7 @@
                         <configuration>
                             <target>
                                 <!-- CNAME file-->
-                                <echo message="bh-crypto.blackhacker.net" file="${cname.file}" />
+                                <echo message="${site.host}" file="${cname.file}" />
                                 
                                 <!-- README file -->
                                 <mkdir dir="${generated-markdown.dir}" />
@@ -288,7 +290,7 @@
     <licenses>
         <license>
             <name>${license.name}</name>
-            <url>/${license.url}</url>
+            <url>${site.url}/${license.page}</url>
         </license>
     </licenses>
     <scm>
