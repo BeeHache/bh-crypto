@@ -26,8 +26,6 @@ package net.blackhacker.crypto.algorithm;
 import java.lang.reflect.InvocationTargetException;
 import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.RSAPrivateKeySpec;
-import java.security.spec.RSAPublicKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import net.blackhacker.crypto.CryptoException;
 import net.blackhacker.crypto.Strings;
@@ -35,29 +33,24 @@ import net.blackhacker.crypto.Utils;
 import net.blackhacker.crypto.Validator;
 
 /**
- * Represents each of the supported asymetric algorithms
+ * Represents each of the supported asymmetric algorithms
  * 
  * @author Benjamin King aka Blackhacker(bh@blackhacker.net)
  */
 public enum AsymmetricAlgorithm {
     /* Cipher*/
-    RSA1024(1024, 936, RSAPublicKeySpec.class, RSAPrivateKeySpec.class, "RSA"),
-    RSA2048(2048, 1712, RSAPublicKeySpec.class, RSAPrivateKeySpec.class, "RSA"),
+    RSA1024(1024, 936, "RSA"),
+    RSA2048(2048, 1712, "RSA"),
     //DiffieHellman(1024, 0, DHPublicKeySpec.class, DHPrivateKeySpec.class, "DH"),
-    //DSA(1024, 0, DSAPublicKeySpec.class, DSAPrivateKeySpec.class, null),
+    DSA1024(1024, 64, "DSA"),
+    DSA2048(2048, 64, "DSA"),
+    DSA3072(3072, 64, "DSA"),
     //EC(1024, 0, ECPublicKeySpec.class, ECPrivateKeySpec.class, null),
     ;
     
-    AsymmetricAlgorithm(
-            int keySize, 
-            int blockSize,
-            Class <? extends KeySpec> publicKeySpecClass,
-            Class <? extends KeySpec> privateKeySpecClass,
-            String name){
+    AsymmetricAlgorithm(int keySize, int blockSize,String name) {
         this.keySize = keySize;
         this.blockSize = blockSize;
-        this.publicKeySpecClass = publicKeySpecClass;
-        this.privateKeySpecClass = privateKeySpecClass;
         this.name = name;
     }
     
@@ -90,16 +83,11 @@ public enum AsymmetricAlgorithm {
         Validator.isTrue(parameters.length > 0, "Must give parameters");
         
         try {
-            try{
-                return publicKeySpecClass
-                    .getConstructor(Utils.getClasses(parameters))
-                    .newInstance(parameters);
-            } catch (NoSuchMethodException e){
-            }
+            Class<?>[] classes = Utils.getClasses(parameters);
 
-            try{
+            try {
                 return X509EncodedKeySpec.class
-                    .getConstructor(Utils.getClasses(parameters))
+                    .getConstructor(classes)
                     .newInstance(parameters);
             } catch (NoSuchMethodException e) {
             }
@@ -128,17 +116,12 @@ public enum AsymmetricAlgorithm {
         Validator.isTrue(parameters.length > 0, "");
         
         try {
-            try {
-            return privateKeySpecClass
-                .getConstructor(Utils.getClasses(parameters))
-                .newInstance(parameters);
-            } catch(NoSuchMethodException e){
-            }
+            Class<?>[] classes = Utils.getClasses(parameters);
             
             try {
-            return PKCS8EncodedKeySpec.class
-                .getConstructor(Utils.getClasses(parameters))
-                .newInstance(parameters);
+                return PKCS8EncodedKeySpec.class
+                    .getConstructor(classes)
+                    .newInstance(parameters);
             } catch(NoSuchMethodException e) {
             }
             
@@ -161,20 +144,10 @@ public enum AsymmetricAlgorithm {
      */
     @Override
     public String toString() {
-        return name == null ? name() : name;
-    }
-
-    public Class<? extends KeySpec> getPublicKeySpecClass() {
-        return publicKeySpecClass;
-    }
-
-    public Class<? extends KeySpec> getPrivateKeySpecClass() {
-        return privateKeySpecClass;
+        return name;
     }
 
     final int keySize;
     int blockSize;
     final String name;
-    final Class <? extends KeySpec> publicKeySpecClass;
-    final Class <? extends KeySpec> privateKeySpecClass;
 }

@@ -29,8 +29,6 @@ package net.blackhacker.crypto;
  */
 public class SignerException extends Exception {
 
-    public SignerException() {
-    }
 
     public SignerException(String message) {
         super(message);

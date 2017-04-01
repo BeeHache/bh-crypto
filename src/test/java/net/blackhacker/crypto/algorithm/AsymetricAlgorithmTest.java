@@ -60,8 +60,6 @@ public class AsymetricAlgorithmTest {
     @Test
     public void gettersTest() {
         assertTrue("block size", algorithm.getBlockSize() > 0);
-        assertNotNull("Public KeySpec Class", algorithm.getPublicKeySpecClass());
-        assertNotNull("Private KeySpec Class", algorithm.getPrivateKeySpecClass());
     }
     
     @Test
