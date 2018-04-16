@@ -43,11 +43,11 @@ import javax.crypto.spec.SecretKeySpec;
  *
  * @author Benjamin King aka Blackhacker(bh@blackhacker.net)
  */
-public class SK extends Crypto {
+public class SK extends Crypto implements Encryptor, Decryptor {
     final private Key key;
         
     protected SK(Transformation transformation, Object... parameters) throws CryptoException{
-        super(transformation, parameters);
+        super(transformation);
         try {
             switch(parameters.length) {
                 case 0:

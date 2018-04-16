@@ -27,7 +27,7 @@ package net.blackhacker.crypto;
  *
  * @author Benjamin King aka Blackhacker(bh@blackhacker.net)
  */
-public interface Signer {
+public abstract class Signer {
 
     /**
      * Signs given object
@@ -36,6 +36,25 @@ public interface Signer {
      * @return signature
      * @throws SignerException
      */
-    public byte[] sign(final byte[] data) throws SignerException;
+    final public byte[] sign(final byte[] data) throws SignerException {
+        Validator.notNull(data, "data");
+        return signImpl(data, 0, data.length);
+    }
+    /**
+     * 
+     * @param data
+     * @param pos
+     * @param len
+     * @return
+     * @throws SignerException 
+     */
+    final public byte[] sign(final byte[] data, int pos, int len) throws SignerException {
+        Validator.notNull(data, "data");
+        Validator.isPositive(pos, "pos");
+        Validator.isLessThan(len, data.length-pos, "data");
+        return signImpl(data, pos, len);
+    }
+    
+    protected abstract byte[] signImpl(final byte[] data, int pos, int len) throws SignerException;
 
 }

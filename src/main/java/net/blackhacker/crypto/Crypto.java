@@ -36,7 +36,7 @@ import javax.crypto.NoSuchPaddingException;
  * 
  *  @author Benjamin King aka Blackhacker(bh@blackhacker.net)
  */
-public abstract class Crypto implements Encryptor, Decryptor {
+public class Crypto {
     
     final private Transformation transformation;
         
@@ -50,18 +50,14 @@ public abstract class Crypto implements Encryptor, Decryptor {
      */
     final private SecureRandom secureRandom = new SecureRandom();
     
-    final private Object[] parameters;
-    
     /**
      * Constructor
      * 
      * @param transformation
-     * @param parameters
      * @throws CryptoException
      */
-    public  Crypto(Transformation transformation, Object... parameters) throws CryptoException {
+    public  Crypto(Transformation transformation) throws CryptoException {
         this.transformation = transformation;
-        this.parameters = parameters;
         
         try {
             cipher = Cipher.getInstance(transformation.toString());
@@ -192,13 +188,5 @@ public abstract class Crypto implements Encryptor, Decryptor {
      */
     public boolean isAsymetric() {
         return transformation.isAsymmetric();
-    }
-
-    public Object[] getParameters() {
-        return Arrays.copyOf(parameters, parameters.length);
-    }
-    
-    public boolean hasParameters(){
-        return parameters.length > 0;
     }
 }

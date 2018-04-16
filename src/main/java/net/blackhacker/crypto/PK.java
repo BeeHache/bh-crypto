@@ -32,13 +32,18 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.security.Signature;
+import java.security.SignatureException;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.spec.IvParameterSpec;
+import net.blackhacker.crypto.algorithm.DigestAlgorithm;
 
 /**
  * Base class for all implementations of Asymmetric (Public Key) Encryption
@@ -47,12 +52,16 @@ import javax.crypto.spec.IvParameterSpec;
  * @see java.security.PrivateKey
  * @see java.security.PublicKey
  */
-public class PK extends Crypto {
+public class PK extends Crypto implements Encryptor, Decryptor {
     final private PublicKey publicKey;
     final private PrivateKey privateKey;
+    final private DigestAlgorithm digestAlgorithm;
     
     static final public Digester DEFAULT_DIGESTER 
         = DigesterFactory.newDigesterMD5();
+    
+    static final private DigestAlgorithm DEFALT_DIGEST_ALGORYTHM =
+            DigestAlgorithm.MD5;
     
     /**
      * Constructor initializes from from the encoded keys
@@ -63,10 +72,26 @@ public class PK extends Crypto {
      * @throws CryptoException
      * @see AlgorithmParameterSpec
      */
+    
     public PK(final Transformation transformation,
-            final byte[] publicKeyEncoded, final byte[] privateKeyEncoded)
+            final byte[] publicKeyEncoded, final byte[] privateKeyEncoded) throws CryptoException{
+        this(transformation, publicKeyEncoded, privateKeyEncoded, DEFALT_DIGEST_ALGORYTHM);
+    }
+    
+    /**
+     * 
+     * @param transformation
+     * @param publicKeyEncoded
+     * @param privateKeyEncoded
+     * @param digestAlgorithm
+     * @throws CryptoException 
+     */
+    public PK(final Transformation transformation,
+            final byte[] publicKeyEncoded, final byte[] privateKeyEncoded,
+            final DigestAlgorithm digestAlgorithm)
             throws CryptoException {
         super(transformation);
+        this.digestAlgorithm = digestAlgorithm;
         PublicKey pu;
         PrivateKey pr;
         
@@ -105,12 +130,18 @@ public class PK extends Crypto {
      * 
      * @param transformation
      * @param publicKeyEncoded
+     * @param digestAlgorithm
      * @throws CryptoException
      * @see AlgorithmParameterSpec
      */
-    public PK(final Transformation transformation, final byte[] publicKeyEncoded)
+    public PK(final Transformation transformation, final byte[] publicKeyEncoded,
+    DigestAlgorithm digestAlgorithm)
             throws CryptoException {
-        this(transformation, publicKeyEncoded, null);
+        this(transformation, publicKeyEncoded, null, digestAlgorithm);
+    }
+    
+    public PK(final Transformation transformation, final byte[] publicKeyEncoded) throws CryptoException {
+        this(transformation, publicKeyEncoded, null, DEFALT_DIGEST_ALGORYTHM);
     }
     
     /**
@@ -122,7 +153,7 @@ public class PK extends Crypto {
      * @see AlgorithmParameterSpec
      */
     public PK(final Transformation transformation) throws CryptoException {
-        this(transformation, null, null);
+        this(transformation, null, null, DEFALT_DIGEST_ALGORYTHM);
     }
 
     
@@ -270,63 +301,71 @@ public class PK extends Crypto {
             return false;
         };
     }
+    
 
     /**
-     * Builds a new Signer based on this PK object and the DEAULT_DIGESTER
      * 
-     * @return Signer
-     * @throws net.blackhacker.crypto.SignerException
-     * @see Signer
+     * @param data
+     * @return
+     * @throws SignerException 
      */
-    public Signer getSigner() throws SignerException {
-        return getSigner(DEFAULT_DIGESTER);
+    public byte[] sign(byte[] data) throws SignerException{
+        return sign(data, 0, data.length);
     }
     
     /**
-     * Builds a new Signer based on this PK object and the given Digester
      * 
-     * @param digester
-     * @return a new Signer object
-     * @throws net.blackhacker.crypto.SignerException
+     * @param data
+     * @param pos
+     * @param len
+     * @return
+     * @throws SignerException 
      */
-    public Signer getSigner(final Digester digester) throws SignerException {
-        Validator.notNull(digester, "digester");
-        
-        if (privateKey==null){
-            throw new SignerException("No PrivateKey defined");
-        }
-        
-        final Cipher cipher = getCipher();
-        
-        return (final byte[] data) -> {
-            Validator.notNull(data, "data");
-            AlgorithmParameterSpec aps = null;
-            byte[] iv = null;
-            
-            if (hasIV()){
-                aps = new IvParameterSpec(generateIV());
-            }
-            
-            byte[] digest = digester.digest(data);
-            
-            synchronized(cipher) {
-                try {
-                    if (aps!=null) {
-                        cipher.init(Cipher.ENCRYPT_MODE, privateKey, aps);
-                    } else {
-                        cipher.init(Cipher.ENCRYPT_MODE, privateKey);
-                    }
+    public byte[] sign(byte[] data, int pos, int len) throws SignerException {
+        Validator.notNull(data, "data");
+        Validator.isPositive(pos, "pos");
+        Validator.isLessThan(len, data.length-pos, "len");
+        try {
+            Signature sig = Signature.getInstance(digestAlgorithm.name() +"with" + getTransformation().getAsymmetricAlgorithm().name());
 
-                    byte[] cipherBytes = cipher.doFinal(digest);
-                    return Utils.concat(iv, cipherBytes);                    
-                    
-                } catch (InvalidKeyException | InvalidAlgorithmParameterException |
-                        IllegalBlockSizeException | BadPaddingException ex) {
-                    throw new SignerException(
-                            "Could not sign data: " + ex.getLocalizedMessage(),ex);
-                }
-            }
-        };        
+            sig.initSign(privateKey, getSecureRandom());
+            sig.update(data, pos, len);
+            return sig.sign();
+
+        } catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException ex) {
+            throw new SignerException(
+                        "Could not sign data: " + ex.getLocalizedMessage(),ex);
+        }
+    }
+    /**
+     * 
+     * @param signature
+     * @return
+     * @throws SignerException 
+     */
+    public boolean verify(byte[] signature) throws SignerException{
+        return verify(signature,0, signature.length);
+    }
+    /**
+     * 
+     * @param signature
+     * @param pos
+     * @param len
+     * @return
+     * @throws SignerException 
+     */
+    public boolean verify(byte[] signature, int pos, int len) throws SignerException{
+        Validator.notNull(signature, "signature");
+        Validator.isPositive(pos, "pos");
+        Validator.isLessThan(len, signature.length-pos, "len");
+        try {
+            Signature sig = Signature.getInstance(digestAlgorithm.name() +"with" + getTransformation().getAsymmetricAlgorithm().name());
+            sig.initVerify(publicKey);
+            return sig.verify(signature, pos, len);
+        } catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException ex) {
+            throw new SignerException(
+                        "Could not verify signature: " + ex.getLocalizedMessage(),ex);
+        }
     }
     
 

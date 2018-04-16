@@ -155,6 +155,10 @@ public class Transformation {
     final public SymmetricAlgorithm getSymmetricAlgorithm() {
         return symmetricAlgorithm;
     }
+    
+    final public AsymmetricAlgorithm getAsymmetricAlgorithm() {
+        return asymmetricAlgorithm;
+    }
         
     final public DigestAlgorithm getDigestAlgorithm() {
         return digestAlgorithm;
@@ -168,7 +172,7 @@ public class Transformation {
                 try {
                     if(isPBE()) 
                         return PBEKeySpec.class
-                                .getConstructor(getClasses(paramsCopy))
+                                .getConstructor(Utils.getClasses(paramsCopy))
                                 .newInstance(paramsCopy);
 
                     if (isSymmetric())
@@ -224,7 +228,7 @@ public class Transformation {
                 if (isSymmetric()) {
                     return symmetricAlgorithm
                         .getAlgorParamSpecClass()
-                        .getConstructor(getClasses(paramsCopy))
+                        .getConstructor(Utils.getClasses(paramsCopy))
                         .newInstance(paramsCopy);
                 }
             } catch(NoSuchMethodException ex){
@@ -237,15 +241,6 @@ public class Transformation {
         }
         
         throw new CryptoException("Unsupported parameters");
-    }
-        
-    static private Class<?>[] getClasses(Object[] objs) {
-        Class<?>[] classes = new Class<?>[objs.length]; 
-        for(int i = 0; i< objs.length; i++) {
-            classes[i] = objs[i].getClass();
-        }
-        
-        return classes;
     }
         
     @Override

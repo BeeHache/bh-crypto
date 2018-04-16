@@ -43,11 +43,17 @@ final public class Strings {
             = "Could not encrypt data: %s : %s";
     final static public String COULDNT_DECRYPT_MSG_FMT 
             = "Could not decrypt data: %s : %s";
+    final static public String MUST_BE_POSITIVE_MSG_FMT
+            = "%s must be positive";
+    final static public String MUST_BE_LESS_TAHN_MSG_FMT
+            = "%s must be less than %s";
+    
+    
     final static public String NON_PBE_MSG 
             = "This constructor requires a non-PBE Transformation.";
     final static public String PBE_MSG 
             = "This constructor requires a PBE Transformation.";
-    final static public String SHOULD_BE_A 
+    final static public String SHOULD_BE_A_MSG_FMT 
             = "%s should be a %s";
     final static public String NOT_SYMETRIC_MSG 
             = "This Transformation is not for a Symetric Algorithm";

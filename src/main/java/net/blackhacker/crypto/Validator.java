@@ -34,17 +34,66 @@ final public class Validator {
                     String.format(Strings.NOT_NULL_MSG_FMT, parameterName));
     }
     
+    /**
+     * 
+     * @param test
+     * @param message 
+     */
     static public void isTrue(boolean test, String message) {
-        if (!test)
-            throw new RuntimeException(message);
+        _test(test, message);
     }
-    
+    /**
+     * 
+     * @param test
+     * @param message 
+     */
     static public void isFalse(boolean test, String message) {
-        isTrue(!test, message);
+        _test(!test, message);
     }
     
+    /**
+     * Throws RuntimeException when object
+     * 
+     * @param o
+     * @param clazz
+     * @param parameterName 
+     */
     static public void isA(Object o, Class clazz, String parameterName) {
-        isTrue(o.getClass().equals(clazz), 
-               String.format(Strings.SHOULD_BE_A,parameterName, clazz.getName()));
+        _test(
+            clazz.isInstance(o), 
+            Strings.SHOULD_BE_A_MSG_FMT, 
+            parameterName, clazz.getName());
+    }
+    
+    /**
+     * Throws RuntimeException when num less than zero
+     * 
+     * @param num
+     * @param parameterName 
+     */
+    static public void isPositive(int num, String parameterName) {
+        _test(num > 0, Strings.MUST_BE_POSITIVE_MSG_FMT, parameterName);
+    }
+    
+    /**
+     * 
+     * @param num
+     * @param value
+     * @param parameterName 
+     */
+    static public void isLessThan(int num, int value, String parameterName) {
+        _test(num < value, Strings.MUST_BE_LESS_TAHN_MSG_FMT, parameterName, value);
+    }
+    
+    
+    /**
+     * 
+     * @param x
+     * @param msgFormat
+     * @param param 
+     */
+    static private void _test(boolean x, String msgFormat, Object ... param) {
+        if (x) return; 
+        throw new RuntimeException(String.format(msgFormat, param));
     }
 }

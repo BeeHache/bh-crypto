@@ -81,14 +81,16 @@ public enum AsymmetricAlgorithm {
      */
     public KeySpec makePublicKeySpec(Object... parameters) throws CryptoException {
         Validator.isTrue(parameters.length > 0, "Must give parameters");
-        
         try {
             Class<?>[] classes = Utils.getClasses(parameters);
 
             try {
-                return X509EncodedKeySpec.class
-                    .getConstructor(classes)
-                    .newInstance(parameters);
+                
+                return parameters.length == 0 
+                        ? X509EncodedKeySpec.class.newInstance()
+                        : X509EncodedKeySpec.class
+                            .getConstructor(classes)
+                            .newInstance(parameters);
             } catch (NoSuchMethodException e) {
             }
             

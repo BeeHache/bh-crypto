@@ -146,16 +146,13 @@ public class PKTest {
     @Test
     public void signVerifyTest() throws SignerException {
         try{
-            me.getSigner();
+            me.sign(message);
             fail("Signer without private key");
         } catch(SignerException e){
         }
         
-        Signer friendSigner = friend.getSigner();
-        Verifier meVerifier = me.getVerifier();
-        
-        byte[] friendSig = friendSigner.sign(message);
+        byte[] friendSig = friend.sign(message);
         assertNotNull("", friendSig);
-        assertTrue("", meVerifier.verify(message, friendSig));
+        assertTrue("", me.verify(friendSig));
     }
 }

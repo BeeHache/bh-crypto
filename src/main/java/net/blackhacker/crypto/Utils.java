@@ -58,7 +58,9 @@ public class Utils {
      * @see Class
      */
     static final public Class<?>[] getClasses(Object... objs) {
-        List<Class<?>> classes = new ArrayList<>();
+        //List<Class<?>> classes = new ArrayList<>();
+        Class[] classes = new Class[objs.length];
+        int ix = 0;
         for(Object obj : objs) {
             Class<?> aClass = obj.getClass();
             if (aClass.equals(Integer.class)) {
@@ -70,10 +72,10 @@ public class Utils {
             } else if (aClass.equals(Double.class)){
                 aClass = double.class;
             }
-            classes.add(aClass);
+            classes[ix++] = aClass;
         }
         
-        return classes.toArray(new Class<?>[0]);
+        return classes;
     }
 
 
