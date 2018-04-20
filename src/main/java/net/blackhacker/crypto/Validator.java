@@ -28,10 +28,11 @@ package net.blackhacker.crypto;
  * @author Benjamin King aka Blackhacker<bh@blackhacker.net>
  */
 final public class Validator {
-    static public void notNull(Object o, String parameterName) {
-        if (o == null)
+    static public <T> T notNull(T t, String parameterName) {
+        if (t == null)
             throw new NullPointerException(
                     String.format(Strings.NOT_NULL_MSG_FMT, parameterName));
+        return t;
     }
     
     /**
@@ -81,10 +82,25 @@ final public class Validator {
      * @param value
      * @param parameterName 
      */
-    static public void isLessThan(int num, int value, String parameterName) {
-        _test(num < value, Strings.MUST_BE_LESS_TAHN_MSG_FMT, parameterName, value);
+    static public int lt(int num, int value, String parameterName) {
+        _test(num < value, Strings.MUST_BE_LESS_THAN_MSG_FMT, parameterName, value);
+        return num;
     }
     
+    static public int lte(int num, int value, String parameterName) {
+        _test(num <= value, Strings.MUST_BE_LESS_THAN_OR_EQUAL_MSG_FMT, parameterName, value );
+        return num;
+    }
+    
+    static public int gt(int num, int value, String parameterName) {
+        _test(num > value, Strings.MUST_BE_GREATER_THAN_MSG_FMT, parameterName, value);
+        return num;
+    }
+
+    static public int gte(int num, int value, String parameterName) {
+        _test(num >= value, Strings.MUST_BE_GREATER_THAN_OR_EQUAL_TO_MSG_FMT, parameterName, value);
+        return num;
+    }
     
     /**
      * 

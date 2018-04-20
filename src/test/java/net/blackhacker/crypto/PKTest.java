@@ -37,10 +37,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -126,33 +124,31 @@ public class PKTest {
         
         try {
             clearbytes2 = foe.decrypt(friendCipherBytes);
-            assertFalse(
-                algorithm + ":foe.decrypt: foe decrypted friend's message", 
-                Arrays.equals(friendClearBytes, clearbytes2));
+            assertThat(algorithm + ":foe.decrypt: foe decrypted friend's message",
+                    friendClearBytes, not(equalTo(clearbytes2)));
         } catch(CryptoException e) {
             // this is good. foes shouldn't be able to decrypt friend bytes
         }
         
         try {
             clearbytes2 = foe.decrypt(meCipherBytes);
-            assertFalse(
+            assertThat(
                 algorithm + ":foe.decrypt: foe decrypted me's message", 
-                Arrays.equals(friendClearBytes, clearbytes2));
+                friendClearBytes, not(equalTo(clearbytes2)));
         } catch (CryptoException e) {
             // 
         }
     }
+    
+    @Test(expected = CryptoException.class)
+    public void signTest() throws CryptoException {
+        me.sign(message);
+    }
 
     @Test
-    public void signVerifyTest() throws SignerException {
-        try{
-            me.sign(message);
-            fail("Signer without private key");
-        } catch(SignerException e){
-        }
-        
+    public void signVerifyTest() throws CryptoException {        
         byte[] friendSig = friend.sign(message);
-        assertNotNull("", friendSig);
-        assertTrue("", me.verify(friendSig));
+        assertNotNull("friendSig is NULL", friendSig);
+        assertTrue("me couldn't verify friendSig", me.verify(message, friendSig));
     }
 }

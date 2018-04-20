@@ -45,9 +45,14 @@ final public class Strings {
             = "Could not decrypt data: %s : %s";
     final static public String MUST_BE_POSITIVE_MSG_FMT
             = "%s must be positive";
-    final static public String MUST_BE_LESS_TAHN_MSG_FMT
+    final static public String MUST_BE_LESS_THAN_MSG_FMT
             = "%s must be less than %s";
-    
+    final static public String MUST_BE_LESS_THAN_OR_EQUAL_MSG_FMT
+            = "%s must be less than or equal to %s";
+    final static public String MUST_BE_GREATER_THAN_MSG_FMT
+            = "%s must be greater than %s";
+    final static public String MUST_BE_GREATER_THAN_OR_EQUAL_TO_MSG_FMT
+            = "%s must be greater than or equal to %s";
     
     final static public String NON_PBE_MSG 
             = "This constructor requires a non-PBE Transformation.";

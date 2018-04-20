@@ -27,7 +27,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.KeySpec;
-import java.util.Arrays;
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 
@@ -129,9 +128,9 @@ public class Crypto {
      *  Builds {@link AlgorithmParameterSpec} based on the Transformation and the
      * parameters are passed in
      * 
-     * @param parameters
+     * @param parameters inputs to parameterspec
      * @return AlgorithmParameterSpec
-     * @throws CryptoException
+     * @throws CryptoException errors
      * @see AlgorithmParameterSpec
      */
     final public AlgorithmParameterSpec makeParameterSpec(Object... parameters) 
@@ -141,9 +140,9 @@ public class Crypto {
     
     /**
      *
-     * @param parameters
-     * @return
-     * @throws net.blackhacker.crypto.CryptoException
+     * @param parameters inputs
+     * @return KeySpec object
+     * @throws CryptoException errors
      * @see KeySpec
      */
     final public KeySpec makeKeySpec(Object... parameters)

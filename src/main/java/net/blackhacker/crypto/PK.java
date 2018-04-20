@@ -36,13 +36,9 @@ import java.security.Signature;
 import java.security.SignatureException;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.spec.IvParameterSpec;
 import net.blackhacker.crypto.algorithm.DigestAlgorithm;
 
 /**
@@ -55,7 +51,7 @@ import net.blackhacker.crypto.algorithm.DigestAlgorithm;
 public class PK extends Crypto implements Encryptor, Decryptor {
     final private PublicKey publicKey;
     final private PrivateKey privateKey;
-    final private DigestAlgorithm digestAlgorithm;
+    final private Signature signer;
     
     static final public Digester DEFAULT_DIGESTER 
         = DigesterFactory.newDigesterMD5();
@@ -75,7 +71,10 @@ public class PK extends Crypto implements Encryptor, Decryptor {
     
     public PK(final Transformation transformation,
             final byte[] publicKeyEncoded, final byte[] privateKeyEncoded) throws CryptoException{
-        this(transformation, publicKeyEncoded, privateKeyEncoded, DEFALT_DIGEST_ALGORYTHM);
+        this(Validator.notNull(transformation, "transformation"), 
+             Validator.notNull(publicKeyEncoded, "publicKeyEncoded"), 
+             Validator.notNull(privateKeyEncoded, "privateKeyEncoded"), 
+             DEFALT_DIGEST_ALGORYTHM);
     }
     
     /**
@@ -86,12 +85,12 @@ public class PK extends Crypto implements Encryptor, Decryptor {
      * @param digestAlgorithm
      * @throws CryptoException 
      */
-    public PK(final Transformation transformation,
+    private PK(final Transformation transformation,
             final byte[] publicKeyEncoded, final byte[] privateKeyEncoded,
             final DigestAlgorithm digestAlgorithm)
             throws CryptoException {
         super(transformation);
-        this.digestAlgorithm = digestAlgorithm;
+        
         PublicKey pu;
         PrivateKey pr;
         
@@ -117,7 +116,8 @@ public class PK extends Crypto implements Encryptor, Decryptor {
             }
             
             publicKey = pu;
-            privateKey = pr;
+            privateKey = pr;            
+            signer = Signature.getInstance(digestAlgorithm.name() +"with" + transformation.getAsymmetricAlgorithm());
             
         } catch(NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new CryptoException(e);
@@ -137,11 +137,16 @@ public class PK extends Crypto implements Encryptor, Decryptor {
     public PK(final Transformation transformation, final byte[] publicKeyEncoded,
     DigestAlgorithm digestAlgorithm)
             throws CryptoException {
-        this(transformation, publicKeyEncoded, null, digestAlgorithm);
+        this(Validator.notNull(transformation, "transformation"), 
+                Validator.notNull(publicKeyEncoded, "publicKeyEncoded"),
+                null, 
+                Validator.notNull(digestAlgorithm, "digestAlgorithm"));
     }
     
     public PK(final Transformation transformation, final byte[] publicKeyEncoded) throws CryptoException {
-        this(transformation, publicKeyEncoded, null, DEFALT_DIGEST_ALGORYTHM);
+        this(Validator.notNull(transformation, "transformation"), 
+                Validator.notNull(publicKeyEncoded, "publicKeyEncoded"), 
+                null, DEFALT_DIGEST_ALGORYTHM);
     }
     
     /**
@@ -153,7 +158,8 @@ public class PK extends Crypto implements Encryptor, Decryptor {
      * @see AlgorithmParameterSpec
      */
     public PK(final Transformation transformation) throws CryptoException {
-        this(transformation, null, null, DEFALT_DIGEST_ALGORYTHM);
+        this(Validator.notNull(transformation, "transformation"), 
+                null, null, DEFALT_DIGEST_ALGORYTHM);
     }
 
     
@@ -167,6 +173,7 @@ public class PK extends Crypto implements Encryptor, Decryptor {
     @Override
     public byte[] encrypt(final byte[] clearBytes) throws CryptoException {
         Validator.notNull(clearBytes, "clearBytes");
+        
         Cipher cipher = getCipher();
         SecureRandom secureRandom = getSecureRandom();
         AlgorithmParameterSpec aps = null;
@@ -220,11 +227,10 @@ public class PK extends Crypto implements Encryptor, Decryptor {
         Cipher cipher = getCipher();
         SecureRandom secureRandom = getSecureRandom();
         AlgorithmParameterSpec aps = null;
-        byte[] iv = null;
         byte[] cipherBytes = data;
         
         if (hasIV()) {
-            iv = new byte[getBlockSizeBytes()];
+            byte[] iv = new byte[getBlockSizeBytes()];
             cipherBytes = new byte[data.length - iv.length];
             Utils.split(data, iv, cipherBytes);
             aps = makeParameterSpec(iv);  
@@ -247,70 +253,16 @@ public class PK extends Crypto implements Encryptor, Decryptor {
                         getTransformation(),
                         ex.getLocalizedMessage()),ex);
         }
-    }
-    
-    /**
-     * Builds a new Verifier based on this PK object and the DEFAULT_DIGESTER
-     * 
-     * @return new Verifier object
-     * @see Verifier
-     */
-    public Verifier getVerifier() {
-        return getVerifier(DEFAULT_DIGESTER);
-    }
-
-    /**
-     * Builds a new Verifier based on this PK object and the given Digester
-     * 
-     * @param digester
-     * @return new Verifier object
-     * @see Verifier
-     */
-    public Verifier getVerifier(final Digester digester) {
-        Validator.notNull(digester, "digester");
-        
-        final Cipher cipher = getCipher();
-        
-        return (final byte[] data, final byte[] signature) -> {
-            AlgorithmParameterSpec aps = null;
-            byte[] cipherBytes = data;
-            
-            if (hasIV()) {
-                byte[] iv = new byte[getBlockSizeBytes()];
-                cipherBytes = new byte[data.length - iv.length];
-                Utils.split(data, iv, cipherBytes); //seperate iv from cipherbytes
-                aps = new IvParameterSpec(iv);
-            }
-            
-            try {
-                synchronized(cipher) {
-                if (aps!=null) {
-                    cipher.init(Cipher.DECRYPT_MODE, publicKey, aps);
-                } else {
-                    cipher.init(Cipher.DECRYPT_MODE, publicKey);
-                }
-
-                return Arrays.equals(
-                        cipher.doFinal(signature), 
-                        digester.digest(data));
-
-                }
-            } catch (InvalidKeyException | InvalidAlgorithmParameterException |
-                    IllegalBlockSizeException | BadPaddingException ex) {
-            }
-            return false;
-        };
-    }
-    
+    }    
 
     /**
      * 
      * @param data
-     * @return
-     * @throws SignerException 
+     * @return 
+     * @throws net.blackhacker.crypto.CryptoException 
      */
-    public byte[] sign(byte[] data) throws SignerException{
-        return sign(data, 0, data.length);
+    public byte[] sign(byte[] data) throws CryptoException {
+        return _sign(Validator.notNull(data, "data"), 0, data.length);
     }
     
     /**
@@ -319,51 +271,70 @@ public class PK extends Crypto implements Encryptor, Decryptor {
      * @param pos
      * @param len
      * @return
-     * @throws SignerException 
+     * @throws CryptoException 
      */
-    public byte[] sign(byte[] data, int pos, int len) throws SignerException {
-        Validator.notNull(data, "data");
-        Validator.isPositive(pos, "pos");
-        Validator.isLessThan(len, data.length-pos, "len");
+    public byte[] sign(byte[] data, int pos, int len) throws CryptoException {
+        return _sign(Validator.notNull(data, "data"),
+              Validator.gte(pos,0, "pos"),
+              Validator.lte(len, data.length-pos, "len")
+        );
+    }
+    
+    private byte[] _sign(byte[] data, int pos, int len) throws CryptoException {
         try {
-            Signature sig = Signature.getInstance(digestAlgorithm.name() +"with" + getTransformation().getAsymmetricAlgorithm().name());
-
-            sig.initSign(privateKey, getSecureRandom());
-            sig.update(data, pos, len);
-            return sig.sign();
-
-        } catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException ex) {
-            throw new SignerException(
+            synchronized(signer) {
+                signer.initSign(privateKey, getSecureRandom());
+                signer.update(data, pos, len);
+                return signer.sign();
+            }
+        } catch (InvalidKeyException | SignatureException ex) {
+            throw new CryptoException(
                         "Could not sign data: " + ex.getLocalizedMessage(),ex);
         }
     }
     /**
      * 
+     * @param data
      * @param signature
      * @return
-     * @throws SignerException 
+     * @throws CryptoException 
      */
-    public boolean verify(byte[] signature) throws SignerException{
-        return verify(signature,0, signature.length);
+    public boolean verify(byte[] data, byte[] signature) throws CryptoException{
+        return verify(
+                Validator.notNull(data, "data"),0,data.length, 
+                Validator.notNull(signature, "signature"),0, signature.length);
     }
     /**
      * 
+     * @param data
+     * @param dataOffset
+     * @param dataLength
      * @param signature
-     * @param pos
-     * @param len
+     * @param sigOffset
+     * @param sigLength
      * @return
-     * @throws SignerException 
+     * @throws CryptoException 
      */
-    public boolean verify(byte[] signature, int pos, int len) throws SignerException{
-        Validator.notNull(signature, "signature");
-        Validator.isPositive(pos, "pos");
-        Validator.isLessThan(len, signature.length-pos, "len");
+    public boolean verify(byte[] data, int dataOffset, int dataLength, byte[] signature, int sigOffset, int sigLength) throws CryptoException{
+        return _verify(
+            Validator.notNull(data, "data"),
+            Validator.gte(dataOffset,0, "dataOffset"),
+            Validator.lte(dataLength, data.length-dataOffset, "dataLength"),
+            Validator.notNull(signature, "signature"),
+            Validator.gte(sigOffset,0, "sigOffset"),
+            Validator.lte(sigLength, signature.length-sigOffset, "sigLength"));
+    }
+    
+    
+    public boolean _verify(byte[] data, int dataOffset, int dataLength, byte[] signature, int sigOffset, int sigLength) throws CryptoException {
         try {
-            Signature sig = Signature.getInstance(digestAlgorithm.name() +"with" + getTransformation().getAsymmetricAlgorithm().name());
-            sig.initVerify(publicKey);
-            return sig.verify(signature, pos, len);
-        } catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException ex) {
-            throw new SignerException(
+            synchronized(signer) {
+                signer.initVerify(publicKey);
+                signer.update(data, dataOffset, dataLength);
+                return signer.verify(signature, sigOffset, sigLength);
+            }
+        } catch (InvalidKeyException | SignatureException ex) {
+            throw new CryptoException(
                         "Could not verify signature: " + ex.getLocalizedMessage(),ex);
         }
     }
