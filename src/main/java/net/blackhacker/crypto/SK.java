@@ -23,6 +23,8 @@
  */
 package net.blackhacker.crypto;
 
+import net.blackhacker.crypto.utils.Utils;
+import net.blackhacker.crypto.utils.Validator;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
@@ -30,6 +32,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
+import java.util.Arrays;
 import javax.crypto.BadPaddingException;
 
 import javax.crypto.Cipher;
@@ -80,13 +83,14 @@ public class SK extends Crypto implements Encryptor, Decryptor {
     /**
      * encrypts byte arrays
      * 
-     * @param data to be encrypted
+     * @param clearBytes
+     * @param offset
+     * @param length
      * @return encrypted version data
      * @throws CryptoException
      */
     @Override
-    public byte[] encrypt(final byte[] data) throws CryptoException {
-        Validator.notNull(data, "data");
+    final public byte[] _encrypt(final byte[] clearBytes, int offset, int length) throws CryptoException {
         Cipher cipher = getCipher();
         AlgorithmParameterSpec aps=null;
         byte[] iv = null;
@@ -113,7 +117,7 @@ public class SK extends Crypto implements Encryptor, Decryptor {
                         .init(Cipher.ENCRYPT_MODE, key, getSecureRandom());
                 }
                 
-                byte[] cipherbytes = cipher.doFinal(data);
+                byte[] cipherbytes = cipher.doFinal(clearBytes,offset, length);
                 
                 return Utils.concat(salt, iterationCountBytes, iv, cipherbytes);
             }
@@ -126,35 +130,31 @@ public class SK extends Crypto implements Encryptor, Decryptor {
         }
     }
     
-    /**
-     * Decrypts an encrypted byte array
-     * 
-     * @param data encrypted byte array
-     * @return clear version of data
-     * @throws CryptoException 
-     */
+
     @Override
-    public byte[] decrypt(final byte[] data) throws CryptoException {
-        Validator.notNull(data, "data");
+    public byte[] _decrypt(final byte[] data, int offset, int length) throws CryptoException {
+        
         Cipher cipher = getCipher();
         AlgorithmParameterSpec aps = null;
         byte[] iv = null;
         byte[] salt = null;
         byte[] iterationCountBytes = null;
-        byte[] cipherBytes = data;
+        byte[] cipherBytes = Arrays.copyOfRange(data, offset, offset+length);
         
         if (isPBE()){
             iterationCountBytes = new byte[Integer.BYTES];
             salt = new byte[getTransformation().getSaltSizeBytes()];
-            cipherBytes = new byte[data.length - salt.length - iterationCountBytes.length];
+            cipherBytes = new byte[length - salt.length - iterationCountBytes.length];
             
         } else if (hasIV()) {
             iv = new byte[getBlockSizeBytes()];
-            cipherBytes = new byte[data.length - iv.length];
+            cipherBytes = new byte[length - iv.length];
         }
         
-        if (cipherBytes != data)
-            Utils.split(data, salt, iterationCountBytes, iv, cipherBytes);
+        if (iv !=null || salt!=null)
+            Utils.split(Arrays.copyOfRange(data, offset, offset+length), 
+                    salt, iterationCountBytes, iv, cipherBytes);
+         
         
         if (salt!=null){
             aps = makeParameterSpec(salt, Utils.toInt(iterationCountBytes));

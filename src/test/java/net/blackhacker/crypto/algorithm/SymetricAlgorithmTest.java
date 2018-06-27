@@ -67,40 +67,36 @@ public class SymetricAlgorithmTest {
     }
     
     @Test
-    public void makeKeySpecTest() throws CryptoException {
-        int x = 100;
-        byte[] b= new byte[algorithm.getBlockSize()];
-        assertNotNull(algorithm.makeKeySpec(b));
-        
-        try {
-            algorithm.makeKeySpec();
-            fail("empty params");
-        } catch(RuntimeException e){
-        }
-
-        try {
-            algorithm.makeKeySpec(new Object());
-            fail("arbitrary params");
-        } catch(CryptoException e){
-        }
+    public void makeKeySpecNotNullTest() throws CryptoException {
+        assertNotNull(algorithm.makeKeySpec(new byte[algorithm.getBlockSize()]));
+    }
+    
+    @Test(expected=RuntimeException.class)
+    public void makeKeySpecEmptyTest() throws CryptoException {
+        algorithm.makeKeySpec();
+        fail("empty params");
+    }
+    
+    @Test(expected=CryptoException.class)
+    public void makeKeySpecArbitraryTest() throws CryptoException {
+        algorithm.makeKeySpec(new Object());
+        fail("arbitrary params");
+    }
+    
+    @Test
+    public void makeParameterNotNullTest() throws CryptoException {
+        assertNotNull(algorithm.makeParameterSpec(new byte[algorithm.getBlockSize()]));
     }
 
-    @Test
-    public void makeParameterTest() throws CryptoException {
-        int x = 100;
-        byte[] b= new byte[algorithm.getBlockSize()];
-        assertNotNull(algorithm.makeParameterSpec(b));
-        
-        try {
-            algorithm.makeParameterSpec();
-            fail("empty params");
-        } catch(RuntimeException e){
-        }
-        
-        try {
-            algorithm.makeParameterSpec(new Object());
-            fail("arbitrary params");
-        } catch(CryptoException e){
-        }
+    @Test(expected=RuntimeException.class)
+    public void makeParameterEmptyTest() throws CryptoException {        
+        algorithm.makeParameterSpec();
+        fail("empty params");
     }    
+
+    @Test(expected=CryptoException.class)
+    public void makeParameterArbitraryTest() throws CryptoException {
+        algorithm.makeParameterSpec(new Object());
+        fail("arbitrary params");
+    }
 }

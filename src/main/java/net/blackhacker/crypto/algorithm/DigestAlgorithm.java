@@ -23,12 +23,12 @@
  */
 package net.blackhacker.crypto.algorithm;
 
-import net.blackhacker.crypto.Utils;
+import net.blackhacker.crypto.utils.Utils;
 
 /**
  * All supported Digest Algorithms
  * 
- * @author Benjamin King aka Blackhacker<bh@blackhacker.net>
+ * @author Benjamin King aka Blackhacker&lt;bh@blackhacker.net&gt;
  */
 public enum DigestAlgorithm {
         MD5(64), SHA1(160), SHA256(160), SHA384(160), SHA512(120);

@@ -26,7 +26,7 @@ package net.blackhacker.crypto.algorithm;
 /**
  * Supported Modes
  * 
- * @author Benjamin King aka Blackhacker<bh@blackhacker.net>
+ * @author Benjamin King aka Blackhacker&lt;bh@blackhacker.net&gt;
  */
 public enum Mode {
     NONE(false), CBC(true), CFB(true), CTR(true), CTS(true), ECB(false),

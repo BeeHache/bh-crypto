@@ -23,6 +23,8 @@
  */
 package net.blackhacker.crypto;
 
+import net.blackhacker.crypto.utils.Validator;
+
 /**
  *
  * @author Benjamin King aka Blackhacker(bh@blackhacker.net)
@@ -30,12 +32,30 @@ package net.blackhacker.crypto;
 public interface Encryptor {
     
     /**
-     * Must be implemented by subclass
+     * Encrypts array of bytes
      * 
-     * @param clearBytes  array of bytes to be encrypted
-     * @return  cipher bytes
+     * @param clearBytes
+     * @return encrypted version of clearBytes
      * @throws CryptoException
      */
-     public byte[] encrypt(byte[] clearBytes) throws CryptoException;
+    default byte[] encrypt(final byte[] clearBytes) throws CryptoException {
+        return _encrypt(Validator.notNull(clearBytes, "clearBytes"), 0, clearBytes.length);
+    }
     
+    /**
+     * 
+     * @param clearBytes
+     * @param offset
+     * @param length
+     * @return
+     * @throws CryptoException 
+     */
+    default byte[] encrypt(final byte[] clearBytes, int offset, int length) throws CryptoException {
+        return _encrypt(
+                Validator.notNull(clearBytes, "clearBytes"),
+                Validator.gte(offset, 0, "offset"), 
+                Validator.lte(length, clearBytes.length, "length"));
+    }
+    
+    byte[] _encrypt(final byte[] clearBytes, int offset, int length) throws CryptoException;
 }

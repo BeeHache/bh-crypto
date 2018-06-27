@@ -24,35 +24,30 @@
 package net.blackhacker.crypto;
 
 /**
- *
+ * Thrown when errors are detected within BH Crypto
+ * 
  * @author Benjamin King aka Blackhacker(bh@blackhacker.net)
  */
 public class CryptoException extends Exception {
 	private static final long serialVersionUID = 5053734212036543935L;
 
     /**
-     *
-     * @param message
-     * @param cause
+     * Constructor
+     * 
+     * @param message custom message
+     * @param cause wrapped exception
      */
     public CryptoException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
     /**
-     *
-     * @param message
+     * Constructor
+     * 
+     * @param message message
      */
     public CryptoException(String message) {
 		super(message);
-	}
-
-    /**
-     *
-     * @param cause
-     */
-    public CryptoException(Throwable cause) {
-		super(cause);
 	}
 
 }

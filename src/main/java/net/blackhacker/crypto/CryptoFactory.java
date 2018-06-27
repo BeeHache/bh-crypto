@@ -37,13 +37,14 @@ final public class CryptoFactory {
     /**
      * Factory method for generating PK object using RSA
      * 
+     * @param name
      * @return PK object
      * @throws CryptoException
      * @see PK
      */
-    static public PK newEncryptorRSAWithECB() throws CryptoException {
+    static public PK newEncryptorRSAWithECB(String name) throws CryptoException {
         return new PK(
-                new Transformation(AsymmetricAlgorithm.RSA1024, Mode.ECB));
+            new Transformation(AsymmetricAlgorithm.RSA1024, Mode.ECB), name);
     }
     
     /**
@@ -52,31 +53,33 @@ final public class CryptoFactory {
      * 
      * @param publicKeyEncoded
      * @param privateKeyEncoded
+     * @param name
      * @return PK object
      * @throws CryptoException
      * @see PK
      */
     static public PK newEncryptorRSAWithECB(
-            final byte[] publicKeyEncoded, final byte[] privateKeyEncoded) 
+            final byte[] publicKeyEncoded, final byte[] privateKeyEncoded, String name) 
             throws CryptoException {
         return new PK(
                 new Transformation(AsymmetricAlgorithm.RSA1024, Mode.ECB)
-                ,publicKeyEncoded,privateKeyEncoded);
+                ,publicKeyEncoded,privateKeyEncoded, name);
     }
 
     /**
      * Factory method for building PK object from public keys using RSA
      * 
      * @param publicKeyEncoded
+     * @param name
      * @return PK object
      * @throws CryptoException
      * @see PK
      */
-    static public PK newEncryptorRSAWithECB(final byte[] publicKeyEncoded) 
+    static public PK newEncryptorRSAWithECB(final byte[] publicKeyEncoded, String name) 
             throws CryptoException {
         return new PK(
-                new Transformation(AsymmetricAlgorithm.RSA1024, Mode.ECB)
-                ,publicKeyEncoded);
+            new Transformation(AsymmetricAlgorithm.RSA1024, Mode.ECB),
+            publicKeyEncoded, name);
     }  
 
     /**

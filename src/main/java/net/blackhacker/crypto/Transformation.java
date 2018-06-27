@@ -23,6 +23,7 @@
  */
 package net.blackhacker.crypto;
 
+import net.blackhacker.crypto.utils.Utils;
 import net.blackhacker.crypto.algorithm.Padding;
 import net.blackhacker.crypto.algorithm.SymmetricAlgorithm;
 import net.blackhacker.crypto.algorithm.Mode;
@@ -246,17 +247,10 @@ public class Transformation {
             return String.format("PBEWith%sAnd%s", 
                 digestAlgorithm.name(), 
                 symmetricAlgorithm.getTransformationName());
-            
-        if (isSymmetric())
-            return String.format("%s/%s/%s", 
-                symmetricAlgorithm, 
-                mode, 
-                padding);
         
         return String.format("%s/%s/%s", 
-            asymmetricAlgorithm, 
-            mode, 
-            padding);
+            isSymmetric() ? symmetricAlgorithm : asymmetricAlgorithm, 
+            mode, padding);
     }
         
     /**

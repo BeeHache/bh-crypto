@@ -23,6 +23,7 @@
  */
 package net.blackhacker.crypto;
 
+import net.blackhacker.crypto.utils.Validator;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import net.blackhacker.crypto.algorithm.DigestAlgorithm;

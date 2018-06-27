@@ -33,8 +33,8 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import net.blackhacker.crypto.CryptoException;
 import net.blackhacker.crypto.Strings;
-import net.blackhacker.crypto.Utils;
-import net.blackhacker.crypto.Validator;
+import net.blackhacker.crypto.utils.Utils;
+import net.blackhacker.crypto.utils.Validator;
 
 /**
  * Represents each of the supported symetric algorithms

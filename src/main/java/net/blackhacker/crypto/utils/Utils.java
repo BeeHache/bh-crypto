@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.blackhacker.crypto;
+package net.blackhacker.crypto.utils;
 
 import java.nio.ByteBuffer;
 
@@ -56,7 +56,6 @@ public class Utils {
      * @see Class
      */
     static final public Class<?>[] getClasses(Object... objs) {
-        //List<Class<?>> classes = new ArrayList<>();
         Class[] classes = new Class[objs.length];
         int ix = 0;
         for(Object obj : objs) {

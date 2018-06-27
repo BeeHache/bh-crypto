@@ -33,7 +33,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import static net.blackhacker.crypto.Utils.jce;
+import static net.blackhacker.crypto.utils.Utils.jce;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 
@@ -63,6 +63,7 @@ public class SKTest {
     private SK friend;
     private SK me;
     private SK foe;
+    private String algorithm;
     
     static private char[] passphrase;
     static private char[] foePassphrase;
@@ -151,50 +152,27 @@ public class SKTest {
             me = new SK(transformation, friend.getKeyEncoded());
             foe = new SK(transformation);
         }
+        algorithm = me.getTransformation().toString();
     }
     
     @Test
-    public void encryptDecryptTest() throws CryptoException {
-        byte[] foeClearBytes;
-        String algorithm = me.getTransformation().toString();
-        
-        byte[] friendCipherBytes = friend.encrypt(message);
-        assertNotNull(algorithm + ":friend.encrypt: failed", friendCipherBytes);
-        
+    public void encryptNotNullTest() throws CryptoException {
+        assertNotNull(algorithm + ":friend.encrypt: failed", friend.encrypt(message));        
+    }
+    
+    @Test
+    public void encryptNotWeakTest() throws CryptoException {
         if(friend.hasIV()){
             assertThat(algorithm + ":friend.encrypt: weak", 
-                    friend.encrypt(message), not(equalTo(friendCipherBytes)));
-        }
-        
-        byte[] friendClearBytes = friend.decrypt(friendCipherBytes);
+                    friend.encrypt(message), not(equalTo(friend.encrypt(message))));
+        }        
+    }
+    
+    @Test
+    public void decryptTest() throws CryptoException {
+        byte[] friendClearBytes = friend.decrypt(friend.encrypt(message));
         assertNotNull(algorithm + ":friend.decrypt: failed", friendClearBytes);
         assertArrayEquals(algorithm + ":friend doesn't decrypt itself", 
                 message, friendClearBytes);
-        
-        byte[] meCipherBytes = me.encrypt(message);
-        assertNotNull(algorithm + ":me.encrypt: failed", meCipherBytes); 
-               
-        byte[] meClearBytes = me.decrypt(meCipherBytes);
-        assertNotNull(algorithm + ":me.encrypt: failed", meClearBytes);
-        assertArrayEquals(algorithm + ":me doesn't decrypt itself",
-                meClearBytes, message);
-
-        friendClearBytes = friend.decrypt(meCipherBytes);
-        assertNotNull(algorithm + ":friend.decrypt: failed", friendClearBytes);
-        assertArrayEquals(algorithm + ":friend doesn't decrypt me", 
-                message, friendClearBytes);
-        
-        meClearBytes = me.decrypt(friendCipherBytes);
-        assertNotNull(algorithm + ":me.decrypt: failed", meClearBytes);
-        assertArrayEquals(algorithm + ":me doesn't decrypt friend", 
-                message, friendClearBytes);
-        
-        foeClearBytes = foe.decrypt(friendCipherBytes);
-        assertFalse(algorithm + ":foe.decrypt: foe decrypted friend's message",
-            Arrays.equals(message, foeClearBytes));
-        
-        foeClearBytes = foe.decrypt(meCipherBytes);
-        assertFalse(algorithm + ":foe.decrypt: foe decrypted me's message", 
-            Arrays.equals(message, foeClearBytes));
     }
 }

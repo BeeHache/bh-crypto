@@ -23,6 +23,8 @@
  */
 package net.blackhacker.crypto;
 
+import net.blackhacker.crypto.utils.Validator;
+
 /**
  * Implemented by all classes that decrypt encrypted bytes
  * 
@@ -31,12 +33,32 @@ package net.blackhacker.crypto;
 public interface Decryptor {
     
     /**
-     * Decrypts encrypted bytes and returns the value in the clear
+     * Decrypts an encrypted byte array
      * 
-     * @param cipherBytes bytes to be decrypted
-     * @return bytes in the clear
+     * @param data encrypted byte array
+     * @return clear version of data
      * @throws CryptoException 
      */
-     public byte[] decrypt(final byte[] cipherBytes) throws CryptoException;    
+    default byte[] decrypt(final byte[] data) throws CryptoException {
+        Validator.notNull(data, "data");
+        return _decrypt(data, 0, data.length);
+    }
+    
+    /**
+     * 
+     * @param data
+     * @param offset
+     * @param length
+     * @return
+     * @throws CryptoException 
+     */
+    default byte[] decrypt(final byte[] data, int offset, int length) throws CryptoException {
+        Validator.notNull(data, "data");
+        Validator.gte(offset, 0, "offset");
+        Validator.lte(length, data.length, "length");
+        return _decrypt(data, offset, length);
+    }
+    
+    public byte[] _decrypt(final byte[] data, int offset, int length) throws CryptoException;
 
 }

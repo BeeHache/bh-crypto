@@ -26,11 +26,10 @@ package net.blackhacker.crypto;
 /** 
  * Messages and message formats
  * 
- * @author Benjamin King aka Blackhacker<bh@blackhacker.net>
+ * @author Benjamin King aka Blackhacker&lt;bh@blackhacker.net&gt;
  */
 final public class Strings {
-    final static public String NOT_NULL_MSG_FMT 
-            = "%s can't be null";
+    
     final static public String COULDNT_CREATE_CIPHER_MSG_FMT 
             = "Couldn't generate cipher for %s : %s";
     final static public String COULDNT_CREATE_KEY_SPEC_MSG_FMT 
@@ -43,23 +42,11 @@ final public class Strings {
             = "Could not encrypt data: %s : %s";
     final static public String COULDNT_DECRYPT_MSG_FMT 
             = "Could not decrypt data: %s : %s";
-    final static public String MUST_BE_POSITIVE_MSG_FMT
-            = "%s must be positive";
-    final static public String MUST_BE_LESS_THAN_MSG_FMT
-            = "%s must be less than %s";
-    final static public String MUST_BE_LESS_THAN_OR_EQUAL_MSG_FMT
-            = "%s must be less than or equal to %s";
-    final static public String MUST_BE_GREATER_THAN_MSG_FMT
-            = "%s must be greater than %s";
-    final static public String MUST_BE_GREATER_THAN_OR_EQUAL_TO_MSG_FMT
-            = "%s must be greater than or equal to %s";
     
     final static public String NON_PBE_MSG 
             = "This constructor requires a non-PBE Transformation.";
     final static public String PBE_MSG 
             = "This constructor requires a PBE Transformation.";
-    final static public String SHOULD_BE_A_MSG_FMT 
-            = "%s should be a %s";
     final static public String NOT_SYMETRIC_MSG 
             = "This Transformation is not for a Symetric Algorithm";
     final static public String NOT_ASYMETRIC_MSG 

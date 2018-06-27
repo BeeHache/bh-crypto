@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.blackhacker.crypto;
+package net.blackhacker.crypto.utils;
 
 import java.util.Random;
 import org.junit.After;
@@ -57,13 +57,17 @@ public class UtilsTest {
     }
     
     @Test
-    public void splitConcatTest() {
-        byte[] a0 = Utils.concat();
-        assertArrayEquals(new byte[0], a0);
-        
-        a0 = Utils.concat(null);
-        assertArrayEquals(new byte[0], a0);
-        
+    public void concatDefaultTest() {
+        assertArrayEquals(new byte[0], Utils.concat());
+    }
+    
+    @Test
+    public void concatNullTest() {
+        assertArrayEquals(new byte[0], Utils.concat((byte[]) null));
+    }
+    
+    @Test
+    public void splitTest() {
         byte[] a1 = new byte[ random.nextInt(20)];
         byte[] a2 = new byte[ random.nextInt(20)];
         byte[] a3 = new byte[ random.nextInt(20)];
@@ -76,7 +80,6 @@ public class UtilsTest {
         random.nextBytes(a5);
         
         byte[] data = Utils.concat(a1, a2, a3, a4, a5);
-        
         assertEquals(a1.length + a2.length + a3.length + a5.length, data.length);
         int dx=0;
         for (byte[] aix : new byte[][]{a1,a2,a3,a4,a5}) {
@@ -84,6 +87,22 @@ public class UtilsTest {
                 assertEquals(b, data[dx++]);
             }
         }
+    }
+    
+    @Test
+    public void concatTest() {
+        byte[] a1 = new byte[ random.nextInt(20)];
+        byte[] a2 = new byte[ random.nextInt(20)];
+        byte[] a3 = new byte[ random.nextInt(20)];
+        byte[] a4 = null;
+        byte[] a5 = new byte[ random.nextInt(20)];
+        
+        random.nextBytes(a1);
+        random.nextBytes(a2);
+        random.nextBytes(a3);
+        random.nextBytes(a5);
+        
+        byte[] data = Utils.concat(a1, a2, a3, a4, a5);
         
         byte[] b1 = new byte[a1.length];
         byte[] b2 = new byte[a2.length];
@@ -114,7 +133,7 @@ public class UtilsTest {
      * Test of getClasses method, of class Utils.
      */
     @Test
-    public void testGetClasses() {
+    public void getClassesTest() {
         Object[] objs = {1,(long)1 ,(float)1.0, (double)1.0, "ONE"};
         Class[] expResult = {int.class, long.class, float.class, double.class,
             String.class};

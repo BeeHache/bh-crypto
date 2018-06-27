@@ -23,23 +23,45 @@
  */
 package net.blackhacker.crypto;
 
+import java.io.IOException;
+import java.math.BigInteger;
+import net.blackhacker.crypto.utils.Utils;
+import net.blackhacker.crypto.utils.Validator;
+import java.security.cert.Certificate;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Signature;
 import java.security.SignatureException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import net.blackhacker.crypto.algorithm.DigestAlgorithm;
+import sun.security.x509.AlgorithmId;
+import sun.security.x509.CertificateAlgorithmId;
+import sun.security.x509.CertificateIssuerName;
+import sun.security.x509.CertificateSerialNumber;
+import sun.security.x509.CertificateSubjectName;
+import sun.security.x509.CertificateValidity;
+import sun.security.x509.CertificateVersion;
+import sun.security.x509.CertificateX509Key;
+import sun.security.x509.X500Name;
+import sun.security.x509.X509CertImpl;
+import sun.security.x509.X509CertInfo;
 
 /**
  * Base class for all implementations of Asymmetric (Public Key) Encryption
@@ -52,6 +74,7 @@ public class PK extends Crypto implements Encryptor, Decryptor {
     final private PublicKey publicKey;
     final private PrivateKey privateKey;
     final private Signature signer;
+    final private String name;
     
     static final public Digester DEFAULT_DIGESTER 
         = DigesterFactory.newDigesterMD5();
@@ -65,16 +88,19 @@ public class PK extends Crypto implements Encryptor, Decryptor {
      * @param transformation
      * @param publicKeyEncoded
      * @param privateKeyEncoded
+     * @param name
      * @throws CryptoException
      * @see AlgorithmParameterSpec
      */
-    
     public PK(final Transformation transformation,
-            final byte[] publicKeyEncoded, final byte[] privateKeyEncoded) throws CryptoException{
+            final byte[] publicKeyEncoded, 
+            final byte[] privateKeyEncoded,
+            final String name) throws CryptoException{
         this(Validator.notNull(transformation, "transformation"), 
              Validator.notNull(publicKeyEncoded, "publicKeyEncoded"), 
              Validator.notNull(privateKeyEncoded, "privateKeyEncoded"), 
-             DEFALT_DIGEST_ALGORYTHM);
+             DEFALT_DIGEST_ALGORYTHM,
+             name);
     }
     
     /**
@@ -86,11 +112,13 @@ public class PK extends Crypto implements Encryptor, Decryptor {
      * @throws CryptoException 
      */
     private PK(final Transformation transformation,
-            final byte[] publicKeyEncoded, final byte[] privateKeyEncoded,
-            final DigestAlgorithm digestAlgorithm)
+            final byte[] publicKeyEncoded, 
+            final byte[] privateKeyEncoded,
+            final DigestAlgorithm digestAlgorithm,
+            final String name)
             throws CryptoException {
         super(transformation);
-        
+        this.name = name;
         PublicKey pu;
         PrivateKey pr;
         
@@ -120,7 +148,7 @@ public class PK extends Crypto implements Encryptor, Decryptor {
             signer = Signature.getInstance(digestAlgorithm.name() +"with" + transformation.getAsymmetricAlgorithm());
             
         } catch(NoSuchAlgorithmException | InvalidKeySpecException e) {
-            throw new CryptoException(e);
+            throw new CryptoException("", e);
         }
     }
 
@@ -135,18 +163,23 @@ public class PK extends Crypto implements Encryptor, Decryptor {
      * @see AlgorithmParameterSpec
      */
     public PK(final Transformation transformation, final byte[] publicKeyEncoded,
-    DigestAlgorithm digestAlgorithm)
+    DigestAlgorithm digestAlgorithm,  String name)
             throws CryptoException {
         this(Validator.notNull(transformation, "transformation"), 
-                Validator.notNull(publicKeyEncoded, "publicKeyEncoded"),
-                null, 
-                Validator.notNull(digestAlgorithm, "digestAlgorithm"));
+             Validator.notNull(publicKeyEncoded, "publicKeyEncoded"),
+             null, 
+             Validator.notNull(digestAlgorithm, "digestAlgorithm"),
+             name);
     }
     
-    public PK(final Transformation transformation, final byte[] publicKeyEncoded) throws CryptoException {
+    public PK(final Transformation transformation, 
+              final byte[] publicKeyEncoded,
+              final String name) throws CryptoException {
         this(Validator.notNull(transformation, "transformation"), 
-                Validator.notNull(publicKeyEncoded, "publicKeyEncoded"), 
-                null, DEFALT_DIGEST_ALGORYTHM);
+             Validator.notNull(publicKeyEncoded, "publicKeyEncoded"), 
+             null, 
+             DEFALT_DIGEST_ALGORYTHM,
+             name);
     }
     
     /**
@@ -157,23 +190,25 @@ public class PK extends Crypto implements Encryptor, Decryptor {
      * @throws CryptoException
      * @see AlgorithmParameterSpec
      */
-    public PK(final Transformation transformation) throws CryptoException {
+    public PK(final Transformation transformation, final String name) throws CryptoException {
         this(Validator.notNull(transformation, "transformation"), 
-                null, null, DEFALT_DIGEST_ALGORYTHM);
+             null, 
+             null, 
+             DEFALT_DIGEST_ALGORYTHM,
+             name);
     }
-
     
-    /**
-     * Encrypts array of bytes
-     * 
-     * @param clearBytes
-     * @return encrypted version of clearBytes
-     * @throws CryptoException
-     */
-    @Override
-    public byte[] encrypt(final byte[] clearBytes) throws CryptoException {
-        Validator.notNull(clearBytes, "clearBytes");
-        
+    
+/**
+ * 
+ * @param clearBytes
+ * @param offset
+ * @param length
+ * @return
+ * @throws CryptoException 
+ */       
+@Override        
+final public byte[] _encrypt(final byte[] clearBytes, int offset, int length) throws CryptoException {
         Cipher cipher = getCipher();
         SecureRandom secureRandom = getSecureRandom();
         AlgorithmParameterSpec aps = null;
@@ -192,7 +227,7 @@ public class PK extends Crypto implements Encryptor, Decryptor {
                     cipher.init(Cipher.ENCRYPT_MODE, publicKey, secureRandom);
                 }
                 
-                byte[] cipherbytes = cipher.doFinal(clearBytes);
+                byte[] cipherbytes = cipher.doFinal(clearBytes,offset, length);
                 if (iv!=null) {
                     return Utils.concat(iv, cipherbytes);
                 }
@@ -214,12 +249,14 @@ public class PK extends Crypto implements Encryptor, Decryptor {
      * Decrypts array of bytes
      * 
      * @param data
+     * @param offset
+     * @param length
      * @return clear version of cipherBytes
      * @throws CryptoException 
      */
     @Override
-    public byte[] decrypt(final byte[] data) throws CryptoException {
-        Validator.notNull(data, "cipherBytes");
+    public byte[] _decrypt(final byte[] data, int offset, int length) throws CryptoException {
+
         if (privateKey==null){
             throw new CryptoException("No PrivateKey defined");
         }
@@ -231,8 +268,8 @@ public class PK extends Crypto implements Encryptor, Decryptor {
         
         if (hasIV()) {
             byte[] iv = new byte[getBlockSizeBytes()];
-            cipherBytes = new byte[data.length - iv.length];
-            Utils.split(data, iv, cipherBytes);
+            cipherBytes = new byte[length - iv.length];
+            Utils.split(Arrays.copyOfRange(data, offset, offset + length), iv, cipherBytes);
             aps = makeParameterSpec(iv);  
         }
         
@@ -336,6 +373,73 @@ public class PK extends Crypto implements Encryptor, Decryptor {
         } catch (InvalidKeyException | SignatureException ex) {
             throw new CryptoException(
                         "Could not verify signature: " + ex.getLocalizedMessage(),ex);
+        }
+    }
+    
+    public Certificate signCertificate(Certificate cert) throws CryptoException {
+        if("X509".equals(cert.getType())) {
+            X509Certificate x509 = (X509Certificate)cert;
+            String subject = x509.getSubjectX500Principal().getName();
+            Date from = x509.getNotAfter();
+            Date to = x509.getNotAfter();
+            PublicKey publicKey = x509.getPublicKey();
+            return _issueCertificate(subject, from, to, publicKey);
+        }
+        
+        
+        throw new RuntimeException();
+    }
+    
+    
+    public Certificate issueCertificate(String subject, int seconds, PublicKey publicKey) throws CryptoException {
+        Date from = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(from);
+        calendar.add(Calendar.SECOND, seconds); // <-- 1 Yr validity
+        Date to = calendar.getTime();
+        
+        return _issueCertificate(subject, from, to, publicKey);
+    }
+    
+    /**
+     * 
+     * @param days 
+     */
+    private  Certificate _issueCertificate(String subject, Date from, Date to, PublicKey publicKey) throws CryptoException {
+        try {
+            BigInteger sn = new BigInteger(64, getSecureRandom());
+
+            X509CertInfo info = new X509CertInfo();            
+            info.set(X509CertInfo.VALIDITY, new CertificateValidity(from, to));
+            info.set(X509CertInfo.SERIAL_NUMBER, new CertificateSerialNumber(sn));
+            info.set(X509CertInfo.SUBJECT, new CertificateSubjectName(new X500Name(subject)));
+            info.set(X509CertInfo.ISSUER, new CertificateIssuerName(new X500Name(name)));
+            info.set(X509CertInfo.KEY, new CertificateX509Key(publicKey));
+            info.set(X509CertInfo.VERSION, new CertificateVersion(CertificateVersion.V3));
+            
+            //AlgorithmId algo = new AlgorithmId(AlgorithmId.md5WithRSAEncryption_oid);
+            //AlgorithmId algo = AlgorithmId.get(signer.getAlgorithm());
+            info.set(X509CertInfo.ALGORITHM_ID, new CertificateAlgorithmId(AlgorithmId.get(signer.getAlgorithm())));
+            //info.set(CertificateAlgorithmId.NAME + "." + CertificateAlgorithmId.ALGORITHM, AlgorithmId.get(signer.getAlgorithm()));
+ 
+            // Sign the cert to identify the algorithm that's used.
+            //X509CertImpl cert = new X509CertImpl(info);
+            //cert.sign(getPrivateKey(), signer.getAlgorithm());
+ 
+            // Update the algorith, and resign.
+            //algo = (AlgorithmId)cert.get(X509CertImpl.SIG_ALG);
+            //info.set(CertificateAlgorithmId.NAME + "." + CertificateAlgorithmId.ALGORITHM, algo);
+            X509CertImpl cert = new X509CertImpl(info);
+            cert.sign(getPrivateKey(), signer.getAlgorithm());
+            
+            
+            return cert;
+            
+        } catch (CertificateException | IOException | InvalidKeyException |
+                 NoSuchProviderException | SignatureException | 
+                 NoSuchAlgorithmException ex) {
+            throw new CryptoException(
+                        "Could not generate cert: " + ex.getLocalizedMessage(),ex);
         }
     }
     

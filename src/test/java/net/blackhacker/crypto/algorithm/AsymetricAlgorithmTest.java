@@ -63,40 +63,36 @@ public class AsymetricAlgorithmTest {
     }
     
     @Test
-    public void makePublicKeySpecTest() throws CryptoException {
-        int x = 100;
-        byte[] b= new byte[algorithm.getBlockSize()];
-        assertNotNull(algorithm.makePublicKeySpec(b));
-        
-        try {
-            algorithm.makePublicKeySpec();
-            fail("empty params");
-        } catch(RuntimeException e){
-        }
-
-        try {
-            algorithm.makePublicKeySpec(new Object());
-            fail("arbitrary params");
-        } catch(CryptoException e){
-        }
+    public void makePublicKeySpecNotNullTest() throws CryptoException {
+        assertNotNull(algorithm.makePublicKeySpec(new byte[algorithm.getBlockSize()]));
     }
 
-    @Test
-    public void makePrivateKeySpecTest() throws CryptoException {
-        int x = 100;
-        byte[] b= new byte[algorithm.getBlockSize()];
-        assertNotNull(algorithm.makePrivateKeySpec(b));
-        
-        try {
-            algorithm.makePrivateKeySpec();
-            fail("empty params");
-        } catch(RuntimeException e){
-        }
-
-        try {
-            algorithm.makePrivateKeySpec(new Object());
+    @Test(expected=RuntimeException.class)
+    public void makePublicKeySpecEmptyTest() throws CryptoException {
+        algorithm.makePublicKeySpec();
+        fail("empty params");
+    }
+    
+    @Test(expected=CryptoException.class)
+    public void makePublicKeySpecArbitraryTest() throws CryptoException {        
+            algorithm.makePublicKeySpec(new Object());
             fail("arbitrary params");
-        } catch(CryptoException e){
-        }
+    }
+    
+    @Test
+    public void makePrivateKeySpecNotNullTest() throws CryptoException {
+        assertNotNull(algorithm.makePrivateKeySpec(new byte[algorithm.getBlockSize()]));
+    }
+    
+    @Test(expected=RuntimeException.class)
+    public void makePrivateKeySpecEmptyTest() throws CryptoException { 
+        algorithm.makePrivateKeySpec();
+        fail("empty params");
+    }
+
+    @Test(expected=CryptoException.class)
+    public void makePrivateKeySpecArbitraryTest() throws CryptoException { 
+        algorithm.makePrivateKeySpec(new Object());
+        fail("arbitrary params");
     }
 }

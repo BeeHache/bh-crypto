@@ -26,7 +26,7 @@ package net.blackhacker.crypto.algorithm;
 /**
  * Padding algorithms supported
  * 
- * @author Benjamin King aka Blackhacker<bh@blackhacker.net>
+ * @author Benjamin King aka Blackhacker&lt;bh@blackhacker.net&gt;
  */
 public enum Padding {
     NOpADDING, 

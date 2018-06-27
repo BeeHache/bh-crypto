@@ -29,8 +29,8 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import net.blackhacker.crypto.CryptoException;
 import net.blackhacker.crypto.Strings;
-import net.blackhacker.crypto.Utils;
-import net.blackhacker.crypto.Validator;
+import net.blackhacker.crypto.utils.Utils;
+import net.blackhacker.crypto.utils.Validator;
 
 /**
  * Represents each of the supported asymmetric algorithms

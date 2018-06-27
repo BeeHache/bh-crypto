@@ -62,6 +62,7 @@ public class PKTest {
     private PK friend;
     private PK foe;
     private byte[] message;
+    private String algorithm;
     
     static private SecureRandom secureRandom;
     
@@ -89,55 +90,43 @@ public class PKTest {
     
     @Before
     public void setup() throws CryptoException {
-        friend = new PK(transformation);
-        me = new PK(transformation, friend.getPublicKeyEncoded());
-        foe = new PK(transformation);
+        friend = new PK(transformation, "friend");
+        me = new PK(transformation, friend.getPublicKeyEncoded(), "me");
+        foe = new PK(transformation, "foe");
         message = new byte[transformation.getBlockSizeBytes()];
         secureRandom.nextBytes(message);
+        algorithm = me.getTransformation().toString();
+    }
+    
+    @Test
+    public void encryptNotNullTest() throws CryptoException {
+        byte[] friendCipherBytes = friend.encrypt(message);
+        assertNotNull(algorithm + ":friend.encrypt: failed", friendCipherBytes);
+    }
+    
+    @Test
+    public void encryptNotWeakTest() throws CryptoException {
+        if(friend.hasIV()) {
+            assertThat(algorithm + ":friend.encrypt: weak", 
+                friend.encrypt(message), not(equalTo(friend.encrypt(message))));
+        }        
     }
 
     @Test
-    public void encryptDecryptTest() throws CryptoException {
-        byte[] clearbytes2;
-        String algorithm = me.getTransformation().toString();
-        
-        byte[] friendCipherBytes = friend.encrypt(message);
-        assertNotNull(algorithm + ":friend.encrypt: failed", friendCipherBytes);
-        
-        if(friend.hasIV()) {
-            assertThat(algorithm + ":friend.encrypt: weak", 
-                friend.encrypt(message), not(equalTo(friendCipherBytes)));
-        }
-        
-        byte[] friendClearBytes = friend.decrypt(friendCipherBytes);
+    public void encryptDecryptFriend() throws CryptoException {
+        byte[] friendClearBytes = friend.decrypt(friend.encrypt(message));
         assertNotNull(algorithm + ":friend.decrypt: failed", friendClearBytes);
         assertArrayEquals(algorithm + ":friend doesn't decrypt itself", 
-                message, friendClearBytes);
-        
-        byte[] meCipherBytes = me.encrypt(message);
-        assertNotNull(algorithm + ":me.encrypt: failed", meCipherBytes);
-
-        friendClearBytes = friend.decrypt(meCipherBytes);
-        assertNotNull(algorithm + ":friend.decrypt: failed", friendClearBytes);
-        assertArrayEquals(algorithm + ":friend doesn't decrypt me", 
-                message, friendClearBytes);
-        
-        try {
-            clearbytes2 = foe.decrypt(friendCipherBytes);
+                message, friendClearBytes);        
+    }
+    
+    @Test(expected=CryptoException.class)
+    public void foeDecrypt() throws CryptoException {
+        byte[] friendCipherBytes = friend.encrypt(message);
+        byte[] friendClearBytes = friend.decrypt(friendCipherBytes);
+        byte[] foeClearbytes = foe.decrypt(friendCipherBytes);
             assertThat(algorithm + ":foe.decrypt: foe decrypted friend's message",
-                    friendClearBytes, not(equalTo(clearbytes2)));
-        } catch(CryptoException e) {
-            // this is good. foes shouldn't be able to decrypt friend bytes
-        }
-        
-        try {
-            clearbytes2 = foe.decrypt(meCipherBytes);
-            assertThat(
-                algorithm + ":foe.decrypt: foe decrypted me's message", 
-                friendClearBytes, not(equalTo(clearbytes2)));
-        } catch (CryptoException e) {
-            // 
-        }
+                    foeClearbytes, not(equalTo(friendClearBytes)));
     }
     
     @Test(expected = CryptoException.class)
@@ -150,5 +139,9 @@ public class PKTest {
         byte[] friendSig = friend.sign(message);
         assertNotNull("friendSig is NULL", friendSig);
         assertTrue("me couldn't verify friendSig", me.verify(message, friendSig));
+    }
+    
+    
+    public void x() {
     }
 }

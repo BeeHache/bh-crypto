@@ -23,6 +23,7 @@
  */
 package net.blackhacker.crypto;
 
+import net.blackhacker.crypto.utils.Validator;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
@@ -52,11 +53,11 @@ public class Crypto {
     /**
      * Constructor
      * 
-     * @param transformation
+     * @param transformation Transformation object
      * @throws CryptoException
      */
     public  Crypto(Transformation transformation) throws CryptoException {
-        this.transformation = transformation;
+        this.transformation = Validator.notNull(transformation, "transformation");
         
         try {
             cipher = Cipher.getInstance(transformation.toString());
@@ -103,7 +104,7 @@ public class Crypto {
     }
     
     /**
-     * Generates a new Initialization Vector (IV) and stores it internally
+     * Generates a new Initialization Vector (IV)
      * 
      * @return new IV in the form a byte target
      */
