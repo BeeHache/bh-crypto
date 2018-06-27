@@ -24,6 +24,7 @@
 package net.blackhacker.crypto.utils;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 /**
  *
@@ -77,24 +78,26 @@ public class Utils {
 
 
     /**
-     *  Concatenates multiple byte arrays into a single target
+     *  Concatenates multiple byte arrays into a single target array
      * 
      * @param arrays  a list of byte arrays to be concatenated
      * @return  the concatenated byte target
      */
     static public byte[] concat(byte[]... arrays){
         int bufferSize = 0;
-        if (arrays!=null) for(byte[] array : arrays) {
-            bufferSize+= array==null ? 0 : array.length;
-        }
-        
-        byte[] buffer = new byte[bufferSize];
+        byte[] buffer = null;
         if (arrays!=null) {
+            for(byte[] array : arrays) {
+                bufferSize+= array==null ? 0 : array.length;
+            }
+        
+            buffer = new byte[bufferSize];
             int i = 0;
             for (byte[]array : arrays){
-                if (array!=null)
-                    for (int a=0 ; a < array.length; a++)
-                        buffer[i++] = array[a];
+                if (array!=null){
+                    System.arraycopy(array, 0, buffer, i, array.length);
+                    i+= array.length;
+                }
             }
         }
         
@@ -110,14 +113,13 @@ public class Utils {
      */
     static public void split(byte[] source, byte[]... targets) {
         int sx = 0;
-        if (source != null) try {
+        if (source != null) {
             for (byte[] target : targets) {
-                if (target != null)
-                    for(int tx=0; tx < target.length; tx++) {
-                        target[tx] = source[sx++];
-                    }
+                if (target != null) {
+                    System.arraycopy(source, sx, target, 0, target.length);
+                    sx+= target.length;
+                }
             }
-        }catch(IndexOutOfBoundsException e) {
         }
     }
     
