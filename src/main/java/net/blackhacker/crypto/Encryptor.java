@@ -38,9 +38,7 @@ public interface Encryptor {
      * @return encrypted version of clearBytes
      * @throws CryptoException
      */
-    default byte[] encrypt(final byte[] clearBytes) throws CryptoException {
-        return _encrypt(Validator.notNull(clearBytes, "clearBytes"), 0, clearBytes.length);
-    }
+     byte[] encrypt(final byte[] clearBytes) throws CryptoException;
     
     /**
      * 
@@ -50,12 +48,5 @@ public interface Encryptor {
      * @return
      * @throws CryptoException 
      */
-    default byte[] encrypt(final byte[] clearBytes, int offset, int length) throws CryptoException {
-        return _encrypt(
-                Validator.notNull(clearBytes, "clearBytes"),
-                Validator.gte(offset, 0, "offset"), 
-                Validator.lte(length, clearBytes.length, "length"));
-    }
-    
-    byte[] _encrypt(final byte[] clearBytes, int offset, int length) throws CryptoException;
+    byte[] encrypt(final byte[] clearBytes, int offset, int length) throws CryptoException;
 }

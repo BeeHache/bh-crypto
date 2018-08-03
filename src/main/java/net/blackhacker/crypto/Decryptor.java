@@ -39,10 +39,7 @@ public interface Decryptor {
      * @return clear version of data
      * @throws CryptoException 
      */
-    default byte[] decrypt(final byte[] data) throws CryptoException {
-        Validator.notNull(data, "data");
-        return _decrypt(data, 0, data.length);
-    }
+    byte[] decrypt(final byte[] data) throws CryptoException;
     
     /**
      * 
@@ -52,13 +49,6 @@ public interface Decryptor {
      * @return
      * @throws CryptoException 
      */
-    default byte[] decrypt(final byte[] data, int offset, int length) throws CryptoException {
-        Validator.notNull(data, "data");
-        Validator.gte(offset, 0, "offset");
-        Validator.lte(length, data.length, "length");
-        return _decrypt(data, offset, length);
-    }
-    
-    public byte[] _decrypt(final byte[] data, int offset, int length) throws CryptoException;
+    byte[] decrypt(final byte[] data, int offset, int length) throws CryptoException;
 
 }

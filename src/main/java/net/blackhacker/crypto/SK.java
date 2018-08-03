@@ -79,6 +79,34 @@ public class SK extends Crypto implements Encryptor, Decryptor {
                 e);
         }
     }
+
+    /**
+     * Encrypts array of bytes
+     * 
+     * @param clearBytes
+     * @return encrypted version of clearBytes
+     * @throws CryptoException
+     */
+    @Override
+    public byte[] encrypt(final byte[] clearBytes) throws CryptoException {
+        return _encrypt(Validator.notNull(clearBytes, "clearBytes"), 0, clearBytes.length);
+    }
+    
+    /**
+     * 
+     * @param clearBytes
+     * @param offset
+     * @param length
+     * @return
+     * @throws CryptoException 
+     */
+    @Override
+    public byte[] encrypt(final byte[] clearBytes, int offset, int length) throws CryptoException {
+        return _encrypt(
+                Validator.notNull(clearBytes, "clearBytes"),
+                Validator.gte(offset, 0, "offset"), 
+                Validator.lte(length, clearBytes.length, "length"));
+    }
     
     /**
      * encrypts byte arrays
@@ -89,8 +117,7 @@ public class SK extends Crypto implements Encryptor, Decryptor {
      * @return encrypted version data
      * @throws CryptoException
      */
-    @Override
-    final public byte[] _encrypt(final byte[] clearBytes, int offset, int length) throws CryptoException {
+    private byte[] _encrypt(final byte[] clearBytes, int offset, int length) throws CryptoException {
         Cipher cipher = getCipher();
         AlgorithmParameterSpec aps=null;
         byte[] iv = null;
@@ -131,8 +158,37 @@ public class SK extends Crypto implements Encryptor, Decryptor {
     }
     
 
+     /**
+     * Decrypts an encrypted byte array
+     * 
+     * @param data encrypted byte array
+     * @return clear version of data
+     * @throws CryptoException 
+     */
     @Override
-    public byte[] _decrypt(final byte[] data, int offset, int length) throws CryptoException {
+    public byte[] decrypt(final byte[] data) throws CryptoException {
+        Validator.notNull(data, "data");
+        return _decrypt(data, 0, data.length);
+    }
+    
+    /**
+     * 
+     * @param data
+     * @param offset
+     * @param length
+     * @return
+     * @throws CryptoException 
+     */
+    @Override
+    public byte[] decrypt(final byte[] data, int offset, int length) throws CryptoException {
+        Validator.notNull(data, "data");
+        Validator.gte(offset, 0, "offset");
+        Validator.lte(length, data.length, "length");
+        return _decrypt(data, offset, length);
+    }
+     
+    
+    private byte[] _decrypt(final byte[] data, int offset, int length) throws CryptoException {
         
         Cipher cipher = getCipher();
         AlgorithmParameterSpec aps = null;

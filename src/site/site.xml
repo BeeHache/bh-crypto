@@ -9,11 +9,11 @@
     <skin>
       <groupId>org.apache.maven.skins</groupId>
       <artifactId>maven-fluido-skin</artifactId>
-      <version>1.6</version>
+      <version>1.7</version>
     </skin>
     <custom>
         <fluidoSkin>
-            <topBarEnabled>false</topBarEnabled>
+            <topBarEnabled>true</topBarEnabled>
             <sideBarEnabled>true</sideBarEnabled>
             <gitHub>
                 <projectId>BeeHache/bh-crypto</projectId>
