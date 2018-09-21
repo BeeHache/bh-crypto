@@ -44,7 +44,7 @@ public enum AsymmetricAlgorithm {
     //DiffieHellman(1024, 0, DHPublicKeySpec.class, DHPrivateKeySpec.class, "DH"),
     DSA1024(1024, 64, "DSA"),
     DSA2048(2048, 64, "DSA"),
-    DSA3072(3072, 64, "DSA"),
+    DSA3072(3072, 64, "DSA")
     //EC(1024, 0, ECPublicKeySpec.class, ECPrivateKeySpec.class, null),
     ;
     

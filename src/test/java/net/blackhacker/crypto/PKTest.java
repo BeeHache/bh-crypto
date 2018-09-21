@@ -48,8 +48,6 @@ import org.junit.rules.ErrorCollector;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-
-
 /**
  *
  * @author ben
@@ -90,9 +88,9 @@ public class PKTest {
     
     @Before
     public void setup() throws CryptoException {
-        friend = new PK(transformation, "friend");
-        me = new PK(transformation, friend.getPublicKeyEncoded(), "me");
-        foe = new PK(transformation, "foe");
+        friend = new PK(transformation, "CN=friend");
+        me = new PK(transformation, friend.getPublicKeyEncoded(), "CN=me");
+        foe = new PK(transformation, "CN=foe");
         message = new byte[transformation.getBlockSizeBytes()];
         secureRandom.nextBytes(message);
         algorithm = me.getTransformation().toString();
@@ -141,7 +139,38 @@ public class PKTest {
         assertTrue("me couldn't verify friendSig", me.verify(message, friendSig));
     }
     
-    
-    public void x() {
+
+    @Test
+    public void issueCertificateNotNullTest() throws CryptoException {
+        try {
+            assertNotNull("friendCert NULL", friend.issueSelfSignedCetificate());
+        } catch(Exception e) {
+            throw new CryptoException(e.getLocalizedMessage(),e);
+        }
     }
+    
+    @Test
+    public void issueCertificateFriendVerifyTest() throws CryptoException {
+        try {
+            friend.issueSelfSignedCetificate().verify(friend.getPublicKey());
+        } catch(Exception e) {
+            throw new CryptoException(e.getLocalizedMessage(),e);
+        }
+    }
+
+    @Test(expected = CryptoException.class)
+    public void issueCertificateFoeVerifyTest() throws CryptoException {
+        try {
+            friend.issueSelfSignedCetificate().verify(foe.getPublicKey());
+        } catch(Exception e) {
+            throw new CryptoException(e.getLocalizedMessage(),e);
+        }
+    }
+
+    
+    @Test
+    public void issueSignedCertificateTest() throws CryptoException {
+        
+    }
+    
 }

@@ -55,23 +55,25 @@
     <github.global.server>github</github.global.server>
   </properties>
   <dependencies>
+      <!--
       <dependency>
             <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk16</artifactId>
-            <version>1.46</version>
-            <scope>test</scope>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>1.54</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcpkix-jdk15on</artifactId>
-            <version>1.59</version>
-            <scope>test</scope>
+            <version>1.60</version>
+            <scope>compile</scope>
         </dependency>
+        -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
-            <scope>test</scope>
+            <scope>compile</scope>
         </dependency>
   </dependencies>
     <build>

@@ -38,7 +38,7 @@ import org.junit.Test;
  */
 
 public class UtilsTest {
-    private Random random = new Random();
+    private final Random random = new Random();
 
     @BeforeClass
     public static void setUpClass() throws Exception {

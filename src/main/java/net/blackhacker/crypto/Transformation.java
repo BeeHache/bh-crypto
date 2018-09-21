@@ -187,13 +187,25 @@ public class Transformation {
         }        
     }
 
-    public KeySpec makePublicKeySpec(Object... params) throws CryptoException{
+    /**
+     * 
+     * @param params
+     * @return
+     * @throws CryptoException 
+     */
+    public KeySpec makePublicKeySpec(Object... params) throws CryptoException {
         if (isAsymmetric())
             return asymmetricAlgorithm.makePublicKeySpec(params);
             
         throw new CryptoException(Strings.NOT_ASYMETRIC_MSG);
     }
-        
+    
+    /**
+     * 
+     * @param params
+     * @return
+     * @throws CryptoException 
+     */
     public KeySpec makePrivateKeySpec(Object... params) throws CryptoException {
         if (isAsymmetric())
             return asymmetricAlgorithm.makePrivateKeySpec(params);

@@ -23,8 +23,6 @@
  */
 package net.blackhacker.crypto;
 
-import net.blackhacker.crypto.utils.Validator;
-
 /**
  *
  * @author Benjamin King aka Blackhacker(bh@blackhacker.net)

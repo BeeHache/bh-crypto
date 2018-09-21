@@ -150,6 +150,18 @@ public class Crypto {
             throws CryptoException {
         return transformation.makeKeySpec(parameters);
     }
+    
+    /**
+     * 
+     * @param params
+     * @return
+     * @throws CryptoException 
+     * @see KeySpec
+     */
+    final public KeySpec makePublicKeySpec(Object... params) 
+            throws CryptoException {
+        return transformation.makePublicKeySpec(params);
+    }
 
     /**
      * Returns the block size for the algorithm described in the internal 
@@ -189,4 +201,14 @@ public class Crypto {
     public boolean isAsymetric() {
         return transformation.isAsymmetric();
     }
+    
+    /**
+     * 
+     * @return 
+     */
+    public String getAlgorithmString() {
+        return transformation.getAlgorithmString();
+    }
+    
+    
 }

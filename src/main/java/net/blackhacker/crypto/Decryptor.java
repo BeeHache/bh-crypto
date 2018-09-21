@@ -23,8 +23,6 @@
  */
 package net.blackhacker.crypto;
 
-import net.blackhacker.crypto.utils.Validator;
-
 /**
  * Implemented by all classes that decrypt encrypted bytes
  * 
