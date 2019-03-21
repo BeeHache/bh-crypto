@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2015-2018 Benjamin King aka Blackhacker(bh@blackhacker.net)
+ * Copyright (c) 2015-2019 Benjamin King aka Blackhacker(bh@blackhacker.net)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -91,7 +91,7 @@ public class PKTest {
         friend = new PK(transformation, "CN=friend");
         me = new PK(transformation, friend.getPublicKeyEncoded(), "CN=me");
         foe = new PK(transformation, "CN=foe");
-        message = new byte[transformation.getBlockSizeBytes()];
+        message = new byte[Math.abs(secureRandom.nextInt()) % 100];
         secureRandom.nextBytes(message);
         algorithm = me.getTransformation().toString();
     }
@@ -100,6 +100,11 @@ public class PKTest {
     public void encryptNotNullTest() throws CryptoException {
         byte[] friendCipherBytes = friend.encrypt(message);
         assertNotNull(algorithm + ":friend.encrypt: failed", friendCipherBytes);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void encryptIncorrectLengthTest() throws CryptoException {
+        friend.encrypt(message, 0, message.length + 5);
     }
     
     @Test

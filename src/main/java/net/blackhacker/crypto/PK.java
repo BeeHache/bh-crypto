@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2015-2018 Benjamin King aka Blackhacker(bh@blackhacker.net)
+ * Copyright (c) 2015-2019 Benjamin King aka Blackhacker(bh@blackhacker.net)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -246,8 +246,8 @@ public class PK extends Crypto implements Encryptor, Decryptor {
     public byte[] encrypt(final byte[] clearBytes, int offset, int length) throws CryptoException {
         return _encrypt(
             Validator.notNull(clearBytes, "clearBytes"),
-            Validator.gte(offset, 0, "offset"), 
-            Validator.lte(length, clearBytes.length, "length"));
+            Validator.gte(offset, 0, "offset"),
+            Validator.lte(length, clearBytes.length - offset, "length"));
     }
     
 /**
@@ -321,7 +321,7 @@ public class PK extends Crypto implements Encryptor, Decryptor {
     public byte[] decrypt(final byte[] data, int offset, int length) throws CryptoException {
         Validator.notNull(data, "data");
         Validator.gte(offset, 0, "offset");
-        Validator.lte(length, data.length, "length");
+        Validator.lte(length, data.length - offset, "length");
         return _decrypt(data, offset, length);
     }
  
